@@ -1,0 +1,15 @@
+server:
+  model: debug
+  port: 8080
+
+logger:
+  file_path: ./log/manager.log
+
+database:
+  host: 127.0.0.1
+  port: 3306
+  username: root
+  password: a123456
+  db_name: manager
+  table_prefix: ""
+  log_mode: true
