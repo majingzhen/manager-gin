@@ -6,10 +6,6 @@
 // @create 2023-08-08 10:06:19
 package model
 
-import (
-	"time"
-)
-
 // SysUserRole 结构体
 
 type SysUserRole struct {
