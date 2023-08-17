@@ -13,7 +13,7 @@ type Response struct {
 
 func FailWithMessage(message string, c *gin.Context) {
 	response := Response{
-		Code:    http.StatusInternalServerError,
+		Code:    1,
 		Message: message,
 		Data:    nil,
 	}
@@ -22,7 +22,7 @@ func FailWithMessage(message string, c *gin.Context) {
 
 func OkWithData(data interface{}, c *gin.Context) {
 	response := Response{
-		Code:    http.StatusOK,
+		Code:    0,
 		Message: "Success",
 		Data:    data,
 	}
@@ -31,7 +31,7 @@ func OkWithData(data interface{}, c *gin.Context) {
 
 func OkWithMessage(message string, c *gin.Context) {
 	response := Response{
-		Code:    http.StatusOK,
+		Code:    0,
 		Message: message,
 		Data:    nil,
 	}
@@ -40,7 +40,7 @@ func OkWithMessage(message string, c *gin.Context) {
 
 func OkWithDetailed(data interface{}, message string, c *gin.Context) {
 	response := Response{
-		Code:    http.StatusOK,
+		Code:    0,
 		Message: message,
 		Data:    data,
 	}

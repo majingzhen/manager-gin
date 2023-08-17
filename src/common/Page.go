@@ -18,3 +18,9 @@ type Id struct {
 type Ids struct {
 	Ids []string `json:"ids" form:"ids"`
 }
+
+// Calculate 定义一个方法来计算 Limit 和 Offset
+func (p *PageInfoV2) Calculate() {
+	p.Limit = p.PageSize
+	p.Offset = (p.Page - 1) * p.PageSize
+}

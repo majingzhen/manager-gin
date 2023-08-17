@@ -1,6 +1,9 @@
 package utils
 
-import "time"
+import (
+	"strings"
+	"time"
+)
 
 func GetCurTimeStr() string {
 	currentTime := time.Now()
@@ -13,7 +16,12 @@ func Time2Str(t time.Time) string {
 }
 
 func Str2Time(str string) time.Time {
-	layout := "2006-01-02 15:04:05"
+	var layout string
+	if strings.Index(str, "T") > -1 {
+		layout = time.RFC3339
+	} else {
+		layout = "2006-01-02 15:04:05"
+	}
 	t, _ := time.Parse(layout, str)
 	return t
 }
