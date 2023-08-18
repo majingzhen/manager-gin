@@ -3,7 +3,7 @@
 // @author
 // @File: sys_notice
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysNoticeService *SysNoticeService) Create(sysNoticeView *view.SysNoticeVi
 
 // Delete 删除SysNotice记录
 // Author
-func (sysNoticeService *SysNoticeService) Delete(id int) (err error) {
+func (sysNoticeService *SysNoticeService) Delete(id string) (err error) {
 	err = sysNoticeDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysNotice记录
 // Author
-func (sysNoticeService *SysNoticeService) DeleteByIds(ids []int) (err error) {
+func (sysNoticeService *SysNoticeService) DeleteByIds(ids []string) (err error) {
 	err = sysNoticeDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysNotice记录
 // Author
-func (sysNoticeService *SysNoticeService) Update(id int, sysNoticeView *view.SysNoticeView) (err error) {
+func (sysNoticeService *SysNoticeService) Update(id string, sysNoticeView *view.SysNoticeView) (err error) {
 	sysNoticeView.Id = id
 	err1, sysNotice := viewUtils.View2Data(sysNoticeView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysNoticeService *SysNoticeService) Update(id int, sysNoticeView *view.Sys
 
 // Get 根据id获取SysNotice记录
 // Author
-func (sysNoticeService *SysNoticeService) Get(id int) (err error, sysNoticeView *view.SysNoticeView) {
+func (sysNoticeService *SysNoticeService) Get(id string) (err error, sysNoticeView *view.SysNoticeView) {
 	err1, sysNotice := sysNoticeDao.Get(id)
 	if err1 != nil {
 		return err1, nil

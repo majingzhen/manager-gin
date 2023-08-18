@@ -3,7 +3,7 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:00:54
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysRoleApi = api.SysRoleApiApp
 
 // InitSysRoleRouter 初始化 SysRole 路由信息
 func (r *SysRoleRouter) InitSysRoleRouter(Router *gin.RouterGroup) {
-	sysRoleRouter := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
+	sysRoleRouter := Router.Group("sysRole")
+	sysRoleRouter.Use(middleware.JWTAuthFilter())
 	sysRoleRouterWithoutRecord := Router.Group("sysRole")
 	{
 		sysRoleRouter.POST("create", sysRoleApi.Create)             // 新建SysRole

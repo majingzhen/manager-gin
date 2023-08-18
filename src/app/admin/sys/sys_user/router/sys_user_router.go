@@ -3,7 +3,7 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:02:24
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysUserApi = api.SysUserApiApp
 
 // InitSysUserRouter 初始化 SysUser 路由信息
 func (r *SysUserRouter) InitSysUserRouter(Router *gin.RouterGroup) {
-	sysUserRouter := Router.Group("sysUser").Use(middleware.JWTAuthFilter())
+	sysUserRouter := Router.Group("sysUser")
+	sysUserRouter.Use(middleware.JWTAuthFilter())
 	sysUserRouterWithoutRecord := Router.Group("sysUser")
 	{
 		sysUserRouter.POST("create", sysUserApi.Create)             // 新建SysUser

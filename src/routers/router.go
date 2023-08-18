@@ -22,14 +22,12 @@ func (routers *Routers) InitRouter() *gin.Engine {
 	r.Use(cors.New(config))
 
 	sysRouter := new(SysRouter)
-	biRouter := new(BiRouter)
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.String(200, "hello")
 	})
 	api := r.Group("/api")
 	{
 		sysRouter.InitSysRouter(api)
-		biRouter.InitBiRouter(api)
 	}
 
 	return r

@@ -3,47 +3,29 @@
 // @author
 // @File: sys_menu
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 // SysMenuView 结构体
 
 type SysMenuView struct {
-	Component string `json:"component"`
-
-	CreateBy string `json:"createBy"`
-
+	Id         string `json:"id"`
+	MenuName   string `json:"menuName"`
+	ParentId   string `json:"parentId"`
+	OrderNum   int    `json:"orderNum"`
+	Path       string `json:"path"`
+	Component  string `json:"component"`
+	Query      string `json:"query"`
+	IsFrame    int    `json:"isFrame"`
+	IsCache    int    `json:"isCache"`
+	MenuType   string `json:"menuType"`
+	Visible    string `json:"visible"`
+	Status     string `json:"status"`
+	Perms      string `json:"perms"`
+	Icon       string `json:"icon"`
+	CreateBy   string `json:"createBy"`
 	CreateTime string `json:"createTime"`
-
-	Icon string `json:"icon"`
-
-	Id int `json:"id"`
-
-	IsCache int `json:"isCache"`
-
-	IsFrame int `json:"isFrame"`
-
-	MenuName string `json:"menuName"`
-
-	MenuType interface{} `json:"menuType"`
-
-	OrderNum int `json:"orderNum"`
-
-	ParentId int `json:"parentId"`
-
-	Path string `json:"path"`
-
-	Perms string `json:"perms"`
-
-	Query string `json:"query"`
-
-	Remark string `json:"remark"`
-
-	Status interface{} `json:"status"`
-
-	UpdateBy string `json:"updateBy"`
-
+	UpdateBy   string `json:"updateBy"`
 	UpdateTime string `json:"updateTime"`
-
-	Visible interface{} `json:"visible"`
+	Remark     string `json:"remark"`
 }

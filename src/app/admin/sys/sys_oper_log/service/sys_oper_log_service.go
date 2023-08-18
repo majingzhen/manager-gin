@@ -3,7 +3,7 @@
 // @author
 // @File: sys_oper_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysOperLogService *SysOperLogService) Create(sysOperLogView *view.SysOperL
 
 // Delete 删除SysOperLog记录
 // Author
-func (sysOperLogService *SysOperLogService) Delete(id int) (err error) {
+func (sysOperLogService *SysOperLogService) Delete(id string) (err error) {
 	err = sysOperLogDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysOperLog记录
 // Author
-func (sysOperLogService *SysOperLogService) DeleteByIds(ids []int) (err error) {
+func (sysOperLogService *SysOperLogService) DeleteByIds(ids []string) (err error) {
 	err = sysOperLogDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysOperLog记录
 // Author
-func (sysOperLogService *SysOperLogService) Update(id int, sysOperLogView *view.SysOperLogView) (err error) {
+func (sysOperLogService *SysOperLogService) Update(id string, sysOperLogView *view.SysOperLogView) (err error) {
 	sysOperLogView.Id = id
 	err1, sysOperLog := viewUtils.View2Data(sysOperLogView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysOperLogService *SysOperLogService) Update(id int, sysOperLogView *view.
 
 // Get 根据id获取SysOperLog记录
 // Author
-func (sysOperLogService *SysOperLogService) Get(id int) (err error, sysOperLogView *view.SysOperLogView) {
+func (sysOperLogService *SysOperLogService) Get(id string) (err error, sysOperLogView *view.SysOperLogView) {
 	err1, sysOperLog := sysOperLogDao.Get(id)
 	if err1 != nil {
 		return err1, nil

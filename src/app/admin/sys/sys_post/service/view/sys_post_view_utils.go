@@ -3,7 +3,7 @@
 // @author
 // @File: sys_post
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,10 +26,6 @@ func (sysPostViewUtils *SysPostViewUtils) Data2View(data *model.SysPost) (err er
 	}()
 	var tmp SysPostView
 
-	tmp.CreateBy = data.CreateBy
-
-	tmp.CreateTime = utils.Time2Str(data.CreateTime)
-
 	tmp.Id = data.Id
 
 	tmp.PostCode = data.PostCode
@@ -38,13 +34,17 @@ func (sysPostViewUtils *SysPostViewUtils) Data2View(data *model.SysPost) (err er
 
 	tmp.PostSort = data.PostSort
 
-	tmp.Remark = data.Remark
-
 	tmp.Status = data.Status
+
+	tmp.CreateBy = data.CreateBy
+
+	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
 	tmp.UpdateBy = data.UpdateBy
 
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
+
+	tmp.Remark = data.Remark
 
 	view = &tmp
 	return
@@ -59,10 +59,6 @@ func (sysPostViewUtils *SysPostViewUtils) View2Data(view *SysPostView) (err erro
 	}()
 	var tmp model.SysPost
 
-	tmp.CreateBy = view.CreateBy
-
-	tmp.CreateTime = utils.Str2Time(view.CreateTime)
-
 	tmp.Id = view.Id
 
 	tmp.PostCode = view.PostCode
@@ -71,13 +67,17 @@ func (sysPostViewUtils *SysPostViewUtils) View2Data(view *SysPostView) (err erro
 
 	tmp.PostSort = view.PostSort
 
-	tmp.Remark = view.Remark
-
 	tmp.Status = view.Status
+
+	tmp.CreateBy = view.CreateBy
+
+	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
 	tmp.UpdateBy = view.UpdateBy
 
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
+
+	tmp.Remark = view.Remark
 
 	data = &tmp
 	return

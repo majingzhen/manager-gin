@@ -3,15 +3,19 @@
 // @author
 // @File: sys_role_menu
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
+
+import (
+	"time"
+)
 
 // SysRoleMenu 结构体
 
 type SysRoleMenu struct {
-	MenuId int `json:"menuId" form:"menuId" gorm:"column:menu_id;comment:;"`
+	RoleId string `json:"roleId" form:"roleId" gorm:"column:role_id;comment:角色ID;"`
 
-	RoleId int `json:"roleId" form:"roleId" gorm:"column:role_id;comment:;"`
+	MenuId string `json:"menuId" form:"menuId" gorm:"column:menu_id;comment:菜单ID;"`
 }
 
 // TableName SysRoleMenu 表名

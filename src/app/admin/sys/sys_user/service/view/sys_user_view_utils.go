@@ -3,7 +3,7 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:02:24
 package view
 
 import (
@@ -25,48 +25,30 @@ func (sysUserViewUtils *SysUserViewUtils) Data2View(data *model.SysUser) (err er
 		}
 	}()
 	var tmp SysUserView
-
-	tmp.Avatar = data.Avatar
-
-	tmp.CreateBy = data.CreateBy
-
-	tmp.CreateTime = utils.Time2Str(data.CreateTime)
-
-	tmp.DelFlag = data.DelFlag
-
-	tmp.DeptId = data.DeptId
-
-	tmp.Email = data.Email
-
 	tmp.Id = data.Id
-
-	tmp.LoginDate = utils.Time2Str(data.LoginDate)
-
-	tmp.LoginIp = data.LoginIp
-
-	tmp.NickName = data.NickName
-
-	tmp.Password = data.Password
-
-	tmp.Phonenumber = data.Phonenumber
-
-	tmp.Remark = data.Remark
-
-	tmp.Sex = data.Sex
-
-	tmp.Status = data.Status
-
-	tmp.UpdateBy = data.UpdateBy
-
-	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
-
+	tmp.OrgId = data.OrgId
 	tmp.UserName = data.UserName
-
+	tmp.NickName = data.NickName
 	tmp.UserType = data.UserType
-
+	tmp.Email = data.Email
+	tmp.PhoneNumber = data.PhoneNumber
+	tmp.Sex = data.Sex
+	tmp.Avatar = data.Avatar
+	tmp.Password = data.Password
+	tmp.Salt = data.Salt
+	tmp.Status = data.Status
+	tmp.DeletedAt = utils.Time2Str(data.DeletedAt)
+	tmp.LoginIp = data.LoginIp
+	tmp.LoginDate = utils.Time2Str(data.LoginDate)
+	tmp.CreateBy = data.CreateBy
+	tmp.CreateTime = utils.Time2Str(data.CreateTime)
+	tmp.UpdateBy = data.UpdateBy
+	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
+	tmp.Remark = data.Remark
 	view = &tmp
 	return
 }
+
 func (sysUserViewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err error, data *model.SysUser) {
 	defer func() {
 		if e := recover(); e != nil {
@@ -76,44 +58,38 @@ func (sysUserViewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err erro
 		}
 	}()
 	var tmp model.SysUser
+	tmp.Id = view.Id
+	tmp.OrgId = view.OrgId
+	tmp.UserName = view.UserName
+	tmp.NickName = view.NickName
+	tmp.UserType = view.UserType
+	tmp.Email = view.Email
+	tmp.PhoneNumber = view.PhoneNumber
+	tmp.Sex = view.Sex
 
 	tmp.Avatar = view.Avatar
+
+	tmp.Password = view.Password
+
+	tmp.Salt = view.Salt
+
+	tmp.Status = view.Status
+
+	tmp.DeletedAt = utils.Str2Time(view.DeletedAt)
+
+	tmp.LoginIp = view.LoginIp
+
+	tmp.LoginDate = utils.Str2Time(view.LoginDate)
 
 	tmp.CreateBy = view.CreateBy
 
 	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
-	tmp.DelFlag = view.DelFlag
-
-	tmp.DeptId = view.DeptId
-
-	tmp.Email = view.Email
-
-	tmp.Id = view.Id
-
-	tmp.LoginDate = utils.Str2Time(view.LoginDate)
-
-	tmp.LoginIp = view.LoginIp
-
-	tmp.NickName = view.NickName
-
-	tmp.Password = view.Password
-
-	tmp.Phonenumber = view.Phonenumber
-
-	tmp.Remark = view.Remark
-
-	tmp.Sex = view.Sex
-
-	tmp.Status = view.Status
-
 	tmp.UpdateBy = view.UpdateBy
 
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
 
-	tmp.UserName = view.UserName
-
-	tmp.UserType = view.UserType
+	tmp.Remark = view.Remark
 
 	data = &tmp
 	return

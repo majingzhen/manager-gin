@@ -3,7 +3,7 @@
 // @author
 // @File: sys_menu
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysMenuService *SysMenuService) Create(sysMenuView *view.SysMenuView) (err
 
 // Delete 删除SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) Delete(id int) (err error) {
+func (sysMenuService *SysMenuService) Delete(id string) (err error) {
 	err = sysMenuDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) DeleteByIds(ids []int) (err error) {
+func (sysMenuService *SysMenuService) DeleteByIds(ids []string) (err error) {
 	err = sysMenuDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) Update(id int, sysMenuView *view.SysMenuView) (err error) {
+func (sysMenuService *SysMenuService) Update(id string, sysMenuView *view.SysMenuView) (err error) {
 	sysMenuView.Id = id
 	err1, sysMenu := viewUtils.View2Data(sysMenuView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysMenuService *SysMenuService) Update(id int, sysMenuView *view.SysMenuVi
 
 // Get 根据id获取SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) Get(id int) (err error, sysMenuView *view.SysMenuView) {
+func (sysMenuService *SysMenuService) Get(id string) (err error, sysMenuView *view.SysMenuView) {
 	err1, sysMenu := sysMenuDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -84,5 +84,11 @@ func (sysMenuService *SysMenuService) Find(info *common.PageInfoV2) (err error) 
 		return err2
 	}
 	info.FormList = viewList
+	return err
+}
+
+// RoleMenuTreeData 根据角色查询菜单列表
+func (sysMenuService *SysMenuService) RoleMenuTreeData(roleId string) (err error) {
+
 	return err
 }

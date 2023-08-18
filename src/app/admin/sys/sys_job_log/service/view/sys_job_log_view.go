@@ -3,25 +3,25 @@
 // @author
 // @File: sys_job_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 // SysJobLogView 结构体
 
 type SysJobLogView struct {
-	CreateTime string `json:"createTime"`
-
-	ExceptionInfo string `json:"exceptionInfo"`
-
-	Id int `json:"id"`
-
-	InvokeTarget string `json:"invokeTarget"`
-
-	JobGroup string `json:"jobGroup"`
-
-	JobMessage string `json:"jobMessage"`
+	Id string `json:"id"`
 
 	JobName string `json:"jobName"`
 
-	Status interface{} `json:"status"`
+	JobGroup string `json:"jobGroup"`
+
+	InvokeTarget string `json:"invokeTarget"`
+
+	JobMessage string `json:"jobMessage"`
+
+	Status string `json:"status"`
+
+	ExceptionInfo string `json:"exceptionInfo"`
+
+	CreateTime string `json:"createTime"`
 }

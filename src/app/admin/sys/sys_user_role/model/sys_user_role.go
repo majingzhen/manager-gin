@@ -3,15 +3,19 @@
 // @author
 // @File: sys_user_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
+
+import (
+	"time"
+)
 
 // SysUserRole 结构体
 
 type SysUserRole struct {
-	RoleId int `json:"roleId" form:"roleId" gorm:"column:role_id;comment:;"`
+	UserId string `json:"userId" form:"userId" gorm:"column:user_id;comment:用户ID;"`
 
-	UserId int `json:"userId" form:"userId" gorm:"column:user_id;comment:;"`
+	RoleId string `json:"roleId" form:"roleId" gorm:"column:role_id;comment:角色ID;"`
 }
 
 // TableName SysUserRole 表名

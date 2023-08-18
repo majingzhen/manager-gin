@@ -3,7 +3,7 @@
 // @author
 // @File: sys_config
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysConfigDao) Create(sysConfig SysConfig) (err error) {
 
 // Delete 删除SysConfig记录
 // Author
-func (dao *SysConfigDao) Delete(id int) (err error) {
+func (dao *SysConfigDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysConfig{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysConfig记录
 // Author
-func (dao *SysConfigDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysConfigDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysConfig{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysConfigDao) Update(sysConfig SysConfig) (err error) {
 
 // Get 根据id获取SysConfig记录
 // Author
-func (dao *SysConfigDao) Get(id int) (err error, sysConfig *SysConfig) {
+func (dao *SysConfigDao) Get(id string) (err error, sysConfig *SysConfig) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysConfig).Error
 	return
 }

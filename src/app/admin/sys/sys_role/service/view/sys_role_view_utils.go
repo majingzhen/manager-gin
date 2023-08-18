@@ -3,7 +3,7 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:00:53
 package view
 
 import (
@@ -26,33 +26,33 @@ func (sysRoleViewUtils *SysRoleViewUtils) Data2View(data *model.SysRole) (err er
 	}()
 	var tmp SysRoleView
 
+	tmp.Id = data.Id
+
+	tmp.RoleName = data.RoleName
+
+	tmp.RoleKey = data.RoleKey
+
+	tmp.RoleSort = data.RoleSort
+
+	tmp.DataScope = data.DataScope
+
+	tmp.MenuCheckStrictly = data.MenuCheckStrictly
+
+	tmp.DeptCheckStrictly = data.DeptCheckStrictly
+
+	tmp.Status = data.Status
+
+	tmp.DeletedAt = utils.Time2Str(data.DeletedAt)
+
 	tmp.CreateBy = data.CreateBy
 
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
-	tmp.DataScope = data.DataScope
-
-	tmp.DelFlag = data.DelFlag
-
-	tmp.DeptCheckStrictly = data.DeptCheckStrictly
-
-	tmp.Id = data.Id
-
-	tmp.MenuCheckStrictly = data.MenuCheckStrictly
-
-	tmp.Remark = data.Remark
-
-	tmp.RoleKey = data.RoleKey
-
-	tmp.RoleName = data.RoleName
-
-	tmp.RoleSort = data.RoleSort
-
-	tmp.Status = data.Status
-
 	tmp.UpdateBy = data.UpdateBy
 
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
+
+	tmp.Remark = data.Remark
 
 	view = &tmp
 	return
@@ -67,33 +67,33 @@ func (sysRoleViewUtils *SysRoleViewUtils) View2Data(view *SysRoleView) (err erro
 	}()
 	var tmp model.SysRole
 
+	tmp.Id = view.Id
+
+	tmp.RoleName = view.RoleName
+
+	tmp.RoleKey = view.RoleKey
+
+	tmp.RoleSort = view.RoleSort
+
+	tmp.DataScope = view.DataScope
+
+	tmp.MenuCheckStrictly = view.MenuCheckStrictly
+
+	tmp.DeptCheckStrictly = view.DeptCheckStrictly
+
+	tmp.Status = view.Status
+
+	tmp.DeletedAt = utils.Str2Time(view.DeletedAt)
+
 	tmp.CreateBy = view.CreateBy
 
 	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
-	tmp.DataScope = view.DataScope
-
-	tmp.DelFlag = view.DelFlag
-
-	tmp.DeptCheckStrictly = view.DeptCheckStrictly
-
-	tmp.Id = view.Id
-
-	tmp.MenuCheckStrictly = view.MenuCheckStrictly
-
-	tmp.Remark = view.Remark
-
-	tmp.RoleKey = view.RoleKey
-
-	tmp.RoleName = view.RoleName
-
-	tmp.RoleSort = view.RoleSort
-
-	tmp.Status = view.Status
-
 	tmp.UpdateBy = view.UpdateBy
 
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
+
+	tmp.Remark = view.Remark
 
 	data = &tmp
 	return

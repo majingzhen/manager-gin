@@ -3,11 +3,10 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:00:53
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_role/service"
@@ -16,7 +15,6 @@ import (
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
-	"strconv"
 )
 
 type SysRoleApi struct {
@@ -30,6 +28,7 @@ var sysRoleService = service.SysRoleServiceApp
 func (sysRoleApi *SysRoleApi) Create(c *gin.Context) {
 	var sysRoleView view.SysRoleView
 	_ = c.ShouldBindJSON(&sysRoleView)
+	sysRoleView.Id = utils.GenUID()
 	sysRoleView.CreateTime = utils.GetCurTimeStr()
 	sysRoleView.UpdateTime = utils.GetCurTimeStr()
 	if err := sysRoleService.Create(&sysRoleView); err != nil {
@@ -44,9 +43,9 @@ func (sysRoleApi *SysRoleApi) Create(c *gin.Context) {
 // @Summary 删除SysRole
 // @Router /sysRole/delete [delete]
 func (sysRoleApi *SysRoleApi) Delete(c *gin.Context) {
-	var id int
+	var id common.Id
 	_ = c.ShouldBindJSON(&id)
-	if err := sysRoleService.Delete(id); err != nil {
+	if err := sysRoleService.Delete(id.ID); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -58,9 +57,9 @@ func (sysRoleApi *SysRoleApi) Delete(c *gin.Context) {
 // @Summary 批量删除SysRole
 // @Router /sysRole/deleteByIds [delete]
 func (sysRoleApi *SysRoleApi) DeleteByIds(c *gin.Context) {
-	var ids []int
+	var ids common.Ids
 	_ = c.ShouldBindJSON(&ids)
-	if err := sysRoleService.DeleteByIds(ids); err != nil {
+	if err := sysRoleService.DeleteByIds(ids.Ids); err != nil {
 		global.Logger.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -72,21 +71,14 @@ func (sysRoleApi *SysRoleApi) DeleteByIds(c *gin.Context) {
 // @Summary 更新SysRole
 // @Router /sysRole/update [put]
 func (sysRoleApi *SysRoleApi) Update(c *gin.Context) {
-	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	sysRoleViewJson := c.Query("sysRoleView")
 	var sysRoleView view.SysRoleView
-	err = json.Unmarshal([]byte(sysRoleViewJson), &sysRoleView)
-	sysRoleView.UpdateTime = utils.GetCurTimeStr()
-	if err := sysRoleService.Update(atoi, &sysRoleView); err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
+	_ = c.ShouldBindJSON(&sysRoleView)
+	id := sysRoleView.Id
+	if id == "" {
 		response.FailWithMessage("更新失败", c)
 	}
-	if err = sysRoleService.Update(atoi, &sysRoleView); err != nil {
+	sysRoleView.UpdateTime = utils.GetCurTimeStr()
+	if err := sysRoleService.Update(id, &sysRoleView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -99,12 +91,7 @@ func (sysRoleApi *SysRoleApi) Update(c *gin.Context) {
 // @Router /sysRole/get [get]
 func (sysRoleApi *SysRoleApi) Get(c *gin.Context) {
 	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("查询失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	if err, sysRoleView := sysRoleService.Get(atoi); err != nil {
+	if err, sysRoleView := sysRoleService.Get(id); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
@@ -117,7 +104,12 @@ func (sysRoleApi *SysRoleApi) Get(c *gin.Context) {
 // @Router /sysRole/find [get]
 func (sysRoleApi *SysRoleApi) Find(c *gin.Context) {
 	var pageInfo common.PageInfoV2
-	_ = c.ShouldBindQuery(&pageInfo)
+	// 绑定查询参数到 pageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage("获取分页数据解析失败!", c)
+	}
+	// 调用 Calculate 方法自动计算 Limit 和 Offset
+	pageInfo.Calculate()
 	if err := sysRoleService.Find(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

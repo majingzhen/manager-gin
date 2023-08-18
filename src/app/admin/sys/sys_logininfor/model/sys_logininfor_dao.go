@@ -3,7 +3,7 @@
 // @author
 // @File: sys_logininfor
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysLogininforDao) Create(sysLogininfor SysLogininfor) (err error) {
 
 // Delete 删除SysLogininfor记录
 // Author
-func (dao *SysLogininforDao) Delete(id int) (err error) {
+func (dao *SysLogininforDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysLogininfor{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysLogininfor记录
 // Author
-func (dao *SysLogininforDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysLogininforDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysLogininfor{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysLogininforDao) Update(sysLogininfor SysLogininfor) (err error) {
 
 // Get 根据id获取SysLogininfor记录
 // Author
-func (dao *SysLogininforDao) Get(id int) (err error, sysLogininfor *SysLogininfor) {
+func (dao *SysLogininforDao) Get(id string) (err error, sysLogininfor *SysLogininfor) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysLogininfor).Error
 	return
 }

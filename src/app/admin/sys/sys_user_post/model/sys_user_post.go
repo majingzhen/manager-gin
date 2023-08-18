@@ -3,15 +3,19 @@
 // @author
 // @File: sys_user_post
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
+
+import (
+	"time"
+)
 
 // SysUserPost 结构体
 
 type SysUserPost struct {
-	PostId int `json:"postId" form:"postId" gorm:"column:post_id;comment:;"`
+	UserId string `json:"userId" form:"userId" gorm:"column:user_id;comment:用户ID;"`
 
-	UserId int `json:"userId" form:"userId" gorm:"column:user_id;comment:;"`
+	PostId string `json:"postId" form:"postId" gorm:"column:post_id;comment:岗位ID;"`
 }
 
 // TableName SysUserPost 表名

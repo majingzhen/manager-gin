@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysJobLogApi = api.SysJobLogApiApp
 
 // InitSysJobLogRouter 初始化 SysJobLog 路由信息
 func (r *SysJobLogRouter) InitSysJobLogRouter(Router *gin.RouterGroup) {
-	sysJobLogRouter := Router.Group("sysJobLog").Use(middleware.JWTAuthFilter())
+	sysJobLogRouter := Router.Group("sysJobLog")
+	sysJobLogRouter.Use(middleware.JWTAuthFilter())
 	sysJobLogRouterWithoutRecord := Router.Group("sysJobLog")
 	{
 		sysJobLogRouter.POST("create", sysJobLogApi.Create)             // 新建SysJobLog

@@ -3,37 +3,37 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:00:53
 package view
 
 // SysRoleView 结构体
 
 type SysRoleView struct {
+	Id string `json:"id"`
+
+	RoleName string `json:"roleName"`
+
+	RoleKey string `json:"roleKey"`
+
+	RoleSort int `json:"roleSort"`
+
+	DataScope string `json:"dataScope"`
+
+	MenuCheckStrictly interface{} `json:"menuCheckStrictly"`
+
+	DeptCheckStrictly interface{} `json:"deptCheckStrictly"`
+
+	Status string `json:"status"`
+
+	DeletedAt string `json:"deletedAt"`
+
 	CreateBy string `json:"createBy"`
 
 	CreateTime string `json:"createTime"`
 
-	DataScope interface{} `json:"dataScope"`
-
-	DelFlag interface{} `json:"delFlag"`
-
-	DeptCheckStrictly int8 `json:"deptCheckStrictly"`
-
-	Id int `json:"id"`
-
-	MenuCheckStrictly int8 `json:"menuCheckStrictly"`
-
-	Remark string `json:"remark"`
-
-	RoleKey string `json:"roleKey"`
-
-	RoleName string `json:"roleName"`
-
-	RoleSort int `json:"roleSort"`
-
-	Status interface{} `json:"status"`
-
 	UpdateBy string `json:"updateBy"`
 
 	UpdateTime string `json:"updateTime"`
+
+	Remark string `json:"remark"`
 }

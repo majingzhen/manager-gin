@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysJobLogDao) Create(sysJobLog SysJobLog) (err error) {
 
 // Delete 删除SysJobLog记录
 // Author
-func (dao *SysJobLogDao) Delete(id int) (err error) {
+func (dao *SysJobLogDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysJobLog{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysJobLog记录
 // Author
-func (dao *SysJobLogDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysJobLogDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysJobLog{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysJobLogDao) Update(sysJobLog SysJobLog) (err error) {
 
 // Get 根据id获取SysJobLog记录
 // Author
-func (dao *SysJobLogDao) Get(id int) (err error, sysJobLog *SysJobLog) {
+func (dao *SysJobLogDao) Get(id string) (err error, sysJobLog *SysJobLog) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysJobLog).Error
 	return
 }

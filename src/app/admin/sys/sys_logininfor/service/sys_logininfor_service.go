@@ -3,7 +3,7 @@
 // @author
 // @File: sys_logininfor
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysLogininforService *SysLogininforService) Create(sysLogininforView *view
 
 // Delete 删除SysLogininfor记录
 // Author
-func (sysLogininforService *SysLogininforService) Delete(id int) (err error) {
+func (sysLogininforService *SysLogininforService) Delete(id string) (err error) {
 	err = sysLogininforDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysLogininfor记录
 // Author
-func (sysLogininforService *SysLogininforService) DeleteByIds(ids []int) (err error) {
+func (sysLogininforService *SysLogininforService) DeleteByIds(ids []string) (err error) {
 	err = sysLogininforDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysLogininfor记录
 // Author
-func (sysLogininforService *SysLogininforService) Update(id int, sysLogininforView *view.SysLogininforView) (err error) {
+func (sysLogininforService *SysLogininforService) Update(id string, sysLogininforView *view.SysLogininforView) (err error) {
 	sysLogininforView.Id = id
 	err1, sysLogininfor := viewUtils.View2Data(sysLogininforView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysLogininforService *SysLogininforService) Update(id int, sysLogininforVi
 
 // Get 根据id获取SysLogininfor记录
 // Author
-func (sysLogininforService *SysLogininforService) Get(id int) (err error, sysLogininforView *view.SysLogininforView) {
+func (sysLogininforService *SysLogininforService) Get(id string) (err error, sysLogininforView *view.SysLogininforView) {
 	err1, sysLogininfor := sysLogininforDao.Get(id)
 	if err1 != nil {
 		return err1, nil

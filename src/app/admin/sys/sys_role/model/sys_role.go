@@ -3,7 +3,7 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:00:53
 package model
 
 import (
@@ -13,33 +13,33 @@ import (
 // SysRole 结构体
 
 type SysRole struct {
-	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:角色ID;"`
 
-	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:;"`
+	RoleName string `json:"roleName" form:"roleName" gorm:"column:role_name;comment:角色名称;"`
 
-	DataScope interface{} `json:"dataScope" form:"dataScope" gorm:"column:data_scope;comment:;"`
+	RoleKey string `json:"roleKey" form:"roleKey" gorm:"column:role_key;comment:角色权限字符串;"`
 
-	DelFlag interface{} `json:"delFlag" form:"delFlag" gorm:"column:del_flag;comment:;"`
+	RoleSort int `json:"roleSort" form:"roleSort" gorm:"column:role_sort;comment:显示顺序;"`
 
-	DeptCheckStrictly int8 `json:"deptCheckStrictly" form:"deptCheckStrictly" gorm:"column:dept_check_strictly;comment:;"`
+	DataScope string `json:"dataScope" form:"dataScope" gorm:"column:data_scope;comment:数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	MenuCheckStrictly interface{} `json:"menuCheckStrictly" form:"menuCheckStrictly" gorm:"column:menu_check_strictly;comment:菜单树选择项是否关联显示;"`
 
-	MenuCheckStrictly int8 `json:"menuCheckStrictly" form:"menuCheckStrictly" gorm:"column:menu_check_strictly;comment:;"`
+	DeptCheckStrictly interface{} `json:"deptCheckStrictly" form:"deptCheckStrictly" gorm:"column:dept_check_strictly;comment:部门树选择项是否关联显示;"`
 
-	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
+	Status string `json:"status" form:"status" gorm:"column:status;comment:角色状态（0正常 1停用）;"`
 
-	RoleKey string `json:"roleKey" form:"roleKey" gorm:"column:role_key;comment:;"`
+	DeletedAt time.Time `json:"deletedAt" form:"deletedAt" gorm:"column:deleted_at;comment:删除标志;"`
 
-	RoleName string `json:"roleName" form:"roleName" gorm:"column:role_name;comment:;"`
+	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
 
-	RoleSort int `json:"roleSort" form:"roleSort" gorm:"column:role_sort;comment:;"`
+	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
 
-	Status interface{} `json:"status" form:"status" gorm:"column:status;comment:;"`
+	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:更新者;"`
 
-	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:;"`
+	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
 
-	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:;"`
+	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
 }
 
 // TableName SysRole 表名

@@ -3,27 +3,27 @@
 // @author
 // @File: sys_logininfor
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 // SysLogininforView 结构体
 
 type SysLogininforView struct {
-	Browser string `json:"browser"`
+	Id string `json:"id"`
 
-	Id int `json:"id"`
+	UserName string `json:"userName"`
 
 	Ipaddr string `json:"ipaddr"`
 
 	LoginLocation string `json:"loginLocation"`
 
-	LoginTime string `json:"loginTime"`
-
-	Msg string `json:"msg"`
+	Browser string `json:"browser"`
 
 	Os string `json:"os"`
 
-	Status interface{} `json:"status"`
+	Status string `json:"status"`
 
-	UserName string `json:"userName"`
+	Msg string `json:"msg"`
+
+	LoginTime string `json:"loginTime"`
 }

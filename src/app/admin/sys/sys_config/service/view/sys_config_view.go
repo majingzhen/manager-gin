@@ -3,29 +3,29 @@
 // @author
 // @File: sys_config
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 // SysConfigView 结构体
 
 type SysConfigView struct {
-	ConfigKey string `json:"configKey"`
+	Id string `json:"id"`
 
 	ConfigName string `json:"configName"`
 
-	ConfigType interface{} `json:"configType"`
+	ConfigKey string `json:"configKey"`
 
 	ConfigValue string `json:"configValue"`
+
+	ConfigType string `json:"configType"`
 
 	CreateBy string `json:"createBy"`
 
 	CreateTime string `json:"createTime"`
 
-	Id int `json:"id"`
-
-	Remark string `json:"remark"`
-
 	UpdateBy string `json:"updateBy"`
 
 	UpdateTime string `json:"updateTime"`
+
+	Remark string `json:"remark"`
 }

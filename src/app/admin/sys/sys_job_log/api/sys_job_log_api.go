@@ -3,11 +3,10 @@
 // @author
 // @File: sys_job_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_job_log/service"
@@ -16,7 +15,6 @@ import (
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
-	"strconv"
 )
 
 type SysJobLogApi struct {
@@ -30,6 +28,7 @@ var sysJobLogService = service.SysJobLogServiceApp
 func (sysJobLogApi *SysJobLogApi) Create(c *gin.Context) {
 	var sysJobLogView view.SysJobLogView
 	_ = c.ShouldBindJSON(&sysJobLogView)
+	sysJobLogView.Id = utils.GenUID()
 	sysJobLogView.CreateTime = utils.GetCurTimeStr()
 	if err := sysJobLogService.Create(&sysJobLogView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
@@ -43,9 +42,9 @@ func (sysJobLogApi *SysJobLogApi) Create(c *gin.Context) {
 // @Summary 删除SysJobLog
 // @Router /sysJobLog/delete [delete]
 func (sysJobLogApi *SysJobLogApi) Delete(c *gin.Context) {
-	var id int
+	var id common.Id
 	_ = c.ShouldBindJSON(&id)
-	if err := sysJobLogService.Delete(id); err != nil {
+	if err := sysJobLogService.Delete(id.ID); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -57,9 +56,9 @@ func (sysJobLogApi *SysJobLogApi) Delete(c *gin.Context) {
 // @Summary 批量删除SysJobLog
 // @Router /sysJobLog/deleteByIds [delete]
 func (sysJobLogApi *SysJobLogApi) DeleteByIds(c *gin.Context) {
-	var ids []int
+	var ids common.Ids
 	_ = c.ShouldBindJSON(&ids)
-	if err := sysJobLogService.DeleteByIds(ids); err != nil {
+	if err := sysJobLogService.DeleteByIds(ids.Ids); err != nil {
 		global.Logger.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -71,20 +70,13 @@ func (sysJobLogApi *SysJobLogApi) DeleteByIds(c *gin.Context) {
 // @Summary 更新SysJobLog
 // @Router /sysJobLog/update [put]
 func (sysJobLogApi *SysJobLogApi) Update(c *gin.Context) {
-	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	sysJobLogViewJson := c.Query("sysJobLogView")
 	var sysJobLogView view.SysJobLogView
-	err = json.Unmarshal([]byte(sysJobLogViewJson), &sysJobLogView)
-	if err := sysJobLogService.Update(atoi, &sysJobLogView); err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
+	_ = c.ShouldBindJSON(&sysJobLogView)
+	id := sysJobLogView.Id
+	if id == "" {
 		response.FailWithMessage("更新失败", c)
 	}
-	if err = sysJobLogService.Update(atoi, &sysJobLogView); err != nil {
+	if err := sysJobLogService.Update(id, &sysJobLogView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -97,12 +89,7 @@ func (sysJobLogApi *SysJobLogApi) Update(c *gin.Context) {
 // @Router /sysJobLog/get [get]
 func (sysJobLogApi *SysJobLogApi) Get(c *gin.Context) {
 	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("查询失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	if err, sysJobLogView := sysJobLogService.Get(atoi); err != nil {
+	if err, sysJobLogView := sysJobLogService.Get(id); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
@@ -115,7 +102,12 @@ func (sysJobLogApi *SysJobLogApi) Get(c *gin.Context) {
 // @Router /sysJobLog/find [get]
 func (sysJobLogApi *SysJobLogApi) Find(c *gin.Context) {
 	var pageInfo common.PageInfoV2
-	_ = c.ShouldBindQuery(&pageInfo)
+	// 绑定查询参数到 pageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage("获取分页数据解析失败!", c)
+	}
+	// 调用 Calculate 方法自动计算 Limit 和 Offset
+	pageInfo.Calculate()
 	if err := sysJobLogService.Find(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

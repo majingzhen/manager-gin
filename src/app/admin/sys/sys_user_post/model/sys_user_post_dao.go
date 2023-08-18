@@ -3,7 +3,7 @@
 // @author
 // @File: sys_user_post
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysUserPostDao) Create(sysUserPost SysUserPost) (err error) {
 
 // Delete 删除SysUserPost记录
 // Author
-func (dao *SysUserPostDao) Delete(id int) (err error) {
+func (dao *SysUserPostDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysUserPost{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysUserPost记录
 // Author
-func (dao *SysUserPostDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysUserPostDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysUserPost{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysUserPostDao) Update(sysUserPost SysUserPost) (err error) {
 
 // Get 根据id获取SysUserPost记录
 // Author
-func (dao *SysUserPostDao) Get(id int) (err error, sysUserPost *SysUserPost) {
+func (dao *SysUserPostDao) Get(id string) (err error, sysUserPost *SysUserPost) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysUserPost).Error
 	return
 }

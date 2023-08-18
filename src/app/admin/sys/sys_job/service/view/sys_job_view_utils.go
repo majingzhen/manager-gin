@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,31 +26,31 @@ func (sysJobViewUtils *SysJobViewUtils) Data2View(data *model.SysJob) (err error
 	}()
 	var tmp SysJobView
 
+	tmp.Id = data.Id
+
+	tmp.JobName = data.JobName
+
+	tmp.JobGroup = data.JobGroup
+
+	tmp.InvokeTarget = data.InvokeTarget
+
+	tmp.CronExpression = data.CronExpression
+
+	tmp.MisfirePolicy = data.MisfirePolicy
+
 	tmp.Concurrent = data.Concurrent
+
+	tmp.Status = data.Status
 
 	tmp.CreateBy = data.CreateBy
 
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
-	tmp.CronExpression = data.CronExpression
-
-	tmp.Id = data.Id
-
-	tmp.InvokeTarget = data.InvokeTarget
-
-	tmp.JobGroup = data.JobGroup
-
-	tmp.JobName = data.JobName
-
-	tmp.MisfirePolicy = data.MisfirePolicy
-
-	tmp.Remark = data.Remark
-
-	tmp.Status = data.Status
-
 	tmp.UpdateBy = data.UpdateBy
 
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
+
+	tmp.Remark = data.Remark
 
 	view = &tmp
 	return
@@ -65,31 +65,31 @@ func (sysJobViewUtils *SysJobViewUtils) View2Data(view *SysJobView) (err error, 
 	}()
 	var tmp model.SysJob
 
+	tmp.Id = view.Id
+
+	tmp.JobName = view.JobName
+
+	tmp.JobGroup = view.JobGroup
+
+	tmp.InvokeTarget = view.InvokeTarget
+
+	tmp.CronExpression = view.CronExpression
+
+	tmp.MisfirePolicy = view.MisfirePolicy
+
 	tmp.Concurrent = view.Concurrent
+
+	tmp.Status = view.Status
 
 	tmp.CreateBy = view.CreateBy
 
 	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
-	tmp.CronExpression = view.CronExpression
-
-	tmp.Id = view.Id
-
-	tmp.InvokeTarget = view.InvokeTarget
-
-	tmp.JobGroup = view.JobGroup
-
-	tmp.JobName = view.JobName
-
-	tmp.MisfirePolicy = view.MisfirePolicy
-
-	tmp.Remark = view.Remark
-
-	tmp.Status = view.Status
-
 	tmp.UpdateBy = view.UpdateBy
 
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
+
+	tmp.Remark = view.Remark
 
 	data = &tmp
 	return

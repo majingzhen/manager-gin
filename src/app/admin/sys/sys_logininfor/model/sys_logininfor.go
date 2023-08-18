@@ -3,7 +3,7 @@
 // @author
 // @File: sys_logininfor
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -13,23 +13,23 @@ import (
 // SysLogininfor 结构体
 
 type SysLogininfor struct {
-	Browser string `json:"browser" form:"browser" gorm:"column:browser;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:访问ID;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	UserName string `json:"userName" form:"userName" gorm:"column:user_name;comment:用户账号;"`
 
-	Ipaddr string `json:"ipaddr" form:"ipaddr" gorm:"column:ipaddr;comment:;"`
+	Ipaddr string `json:"ipaddr" form:"ipaddr" gorm:"column:ipaddr;comment:登录IP地址;"`
 
-	LoginLocation string `json:"loginLocation" form:"loginLocation" gorm:"column:login_location;comment:;"`
+	LoginLocation string `json:"loginLocation" form:"loginLocation" gorm:"column:login_location;comment:登录地点;"`
 
-	LoginTime time.Time `json:"loginTime" form:"loginTime" gorm:"column:login_time;comment:;"`
+	Browser string `json:"browser" form:"browser" gorm:"column:browser;comment:浏览器类型;"`
 
-	Msg string `json:"msg" form:"msg" gorm:"column:msg;comment:;"`
+	Os string `json:"os" form:"os" gorm:"column:os;comment:操作系统;"`
 
-	Os string `json:"os" form:"os" gorm:"column:os;comment:;"`
+	Status string `json:"status" form:"status" gorm:"column:status;comment:登录状态（0成功 1失败）;"`
 
-	Status interface{} `json:"status" form:"status" gorm:"column:status;comment:;"`
+	Msg string `json:"msg" form:"msg" gorm:"column:msg;comment:提示消息;"`
 
-	UserName string `json:"userName" form:"userName" gorm:"column:user_name;comment:;"`
+	LoginTime time.Time `json:"loginTime" form:"loginTime" gorm:"column:login_time;comment:访问时间;"`
 }
 
 // TableName SysLogininfor 表名

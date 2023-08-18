@@ -3,7 +3,7 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:02:24
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysUserDao) Create(sysUser SysUser) (err error) {
 
 // Delete 删除SysUser记录
 // Author
-func (dao *SysUserDao) Delete(id int) (err error) {
+func (dao *SysUserDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysUser{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysUser记录
 // Author
-func (dao *SysUserDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysUserDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysUser{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysUserDao) Update(sysUser SysUser) (err error) {
 
 // Get 根据id获取SysUser记录
 // Author
-func (dao *SysUserDao) Get(id int) (err error, sysUser *SysUser) {
+func (dao *SysUserDao) Get(id string) (err error, sysUser *SysUser) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysUser).Error
 	return
 }
@@ -68,4 +68,9 @@ func (dao *SysUserDao) Find(info *common.PageInfoV2) (err error, sysUsers *[]Sys
 	err = db.Limit(info.Limit).Offset(info.Offset).Find(&tmp).Error
 	sysUsers = &tmp
 	return err, sysUsers, total
+}
+
+func (dao *SysUserDao) GetByUserName(name string) (err error, sysUser *SysUser) {
+	err = global.GOrmDao.Where("user_name = ?", name).First(&sysUser).Error
+	return
 }

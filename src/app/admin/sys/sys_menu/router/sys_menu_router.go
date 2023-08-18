@@ -3,7 +3,7 @@
 // @author
 // @File: sys_menu
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysMenuApi = api.SysMenuApiApp
 
 // InitSysMenuRouter 初始化 SysMenu 路由信息
 func (r *SysMenuRouter) InitSysMenuRouter(Router *gin.RouterGroup) {
-	sysMenuRouter := Router.Group("sysMenu").Use(middleware.JWTAuthFilter())
+	sysMenuRouter := Router.Group("sysMenu")
+	sysMenuRouter.Use(middleware.JWTAuthFilter())
 	sysMenuRouterWithoutRecord := Router.Group("sysMenu")
 	{
 		sysMenuRouter.POST("create", sysMenuApi.Create)             // 新建SysMenu

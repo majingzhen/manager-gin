@@ -3,7 +3,7 @@
 // @author
 // @File: sys_config
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,25 +26,25 @@ func (sysConfigViewUtils *SysConfigViewUtils) Data2View(data *model.SysConfig) (
 	}()
 	var tmp SysConfigView
 
-	tmp.ConfigKey = data.ConfigKey
+	tmp.Id = data.Id
 
 	tmp.ConfigName = data.ConfigName
 
-	tmp.ConfigType = data.ConfigType
+	tmp.ConfigKey = data.ConfigKey
 
 	tmp.ConfigValue = data.ConfigValue
+
+	tmp.ConfigType = data.ConfigType
 
 	tmp.CreateBy = data.CreateBy
 
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
-	tmp.Id = data.Id
-
-	tmp.Remark = data.Remark
-
 	tmp.UpdateBy = data.UpdateBy
 
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
+
+	tmp.Remark = data.Remark
 
 	view = &tmp
 	return
@@ -59,25 +59,25 @@ func (sysConfigViewUtils *SysConfigViewUtils) View2Data(view *SysConfigView) (er
 	}()
 	var tmp model.SysConfig
 
-	tmp.ConfigKey = view.ConfigKey
+	tmp.Id = view.Id
 
 	tmp.ConfigName = view.ConfigName
 
-	tmp.ConfigType = view.ConfigType
+	tmp.ConfigKey = view.ConfigKey
 
 	tmp.ConfigValue = view.ConfigValue
+
+	tmp.ConfigType = view.ConfigType
 
 	tmp.CreateBy = view.CreateBy
 
 	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
-	tmp.Id = view.Id
-
-	tmp.Remark = view.Remark
-
 	tmp.UpdateBy = view.UpdateBy
 
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
+
+	tmp.Remark = view.Remark
 
 	data = &tmp
 	return

@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -13,21 +13,21 @@ import (
 // SysJobLog 结构体
 
 type SysJobLog struct {
-	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:任务日志ID;"`
 
-	ExceptionInfo string `json:"exceptionInfo" form:"exceptionInfo" gorm:"column:exception_info;comment:;"`
+	JobName string `json:"jobName" form:"jobName" gorm:"column:job_name;comment:任务名称;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	JobGroup string `json:"jobGroup" form:"jobGroup" gorm:"column:job_group;comment:任务组名;"`
 
-	InvokeTarget string `json:"invokeTarget" form:"invokeTarget" gorm:"column:invoke_target;comment:;"`
+	InvokeTarget string `json:"invokeTarget" form:"invokeTarget" gorm:"column:invoke_target;comment:调用目标字符串;"`
 
-	JobGroup string `json:"jobGroup" form:"jobGroup" gorm:"column:job_group;comment:;"`
+	JobMessage string `json:"jobMessage" form:"jobMessage" gorm:"column:job_message;comment:日志信息;"`
 
-	JobMessage string `json:"jobMessage" form:"jobMessage" gorm:"column:job_message;comment:;"`
+	Status string `json:"status" form:"status" gorm:"column:status;comment:执行状态（0正常 1失败）;"`
 
-	JobName string `json:"jobName" form:"jobName" gorm:"column:job_name;comment:;"`
+	ExceptionInfo string `json:"exceptionInfo" form:"exceptionInfo" gorm:"column:exception_info;comment:异常信息;"`
 
-	Status interface{} `json:"status" form:"status" gorm:"column:status;comment:;"`
+	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
 }
 
 // TableName SysJobLog 表名

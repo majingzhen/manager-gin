@@ -3,11 +3,10 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:02:24
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_user/service"
@@ -16,7 +15,6 @@ import (
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
-	"strconv"
 )
 
 type SysUserApi struct {
@@ -30,6 +28,7 @@ var sysUserService = service.SysUserServiceApp
 func (sysUserApi *SysUserApi) Create(c *gin.Context) {
 	var sysUserView view.SysUserView
 	_ = c.ShouldBindJSON(&sysUserView)
+	sysUserView.Id = utils.GenUID()
 	sysUserView.CreateTime = utils.GetCurTimeStr()
 	sysUserView.UpdateTime = utils.GetCurTimeStr()
 	if err := sysUserService.Create(&sysUserView); err != nil {
@@ -44,9 +43,9 @@ func (sysUserApi *SysUserApi) Create(c *gin.Context) {
 // @Summary 删除SysUser
 // @Router /sysUser/delete [delete]
 func (sysUserApi *SysUserApi) Delete(c *gin.Context) {
-	var id int
+	var id common.Id
 	_ = c.ShouldBindJSON(&id)
-	if err := sysUserService.Delete(id); err != nil {
+	if err := sysUserService.Delete(id.ID); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -58,9 +57,9 @@ func (sysUserApi *SysUserApi) Delete(c *gin.Context) {
 // @Summary 批量删除SysUser
 // @Router /sysUser/deleteByIds [delete]
 func (sysUserApi *SysUserApi) DeleteByIds(c *gin.Context) {
-	var ids []int
+	var ids common.Ids
 	_ = c.ShouldBindJSON(&ids)
-	if err := sysUserService.DeleteByIds(ids); err != nil {
+	if err := sysUserService.DeleteByIds(ids.Ids); err != nil {
 		global.Logger.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -72,21 +71,14 @@ func (sysUserApi *SysUserApi) DeleteByIds(c *gin.Context) {
 // @Summary 更新SysUser
 // @Router /sysUser/update [put]
 func (sysUserApi *SysUserApi) Update(c *gin.Context) {
-	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	sysUserViewJson := c.Query("sysUserView")
 	var sysUserView view.SysUserView
-	err = json.Unmarshal([]byte(sysUserViewJson), &sysUserView)
-	sysUserView.UpdateTime = utils.GetCurTimeStr()
-	if err := sysUserService.Update(atoi, &sysUserView); err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
+	_ = c.ShouldBindJSON(&sysUserView)
+	id := sysUserView.Id
+	if id == "" {
 		response.FailWithMessage("更新失败", c)
 	}
-	if err = sysUserService.Update(atoi, &sysUserView); err != nil {
+	sysUserView.UpdateTime = utils.GetCurTimeStr()
+	if err := sysUserService.Update(id, &sysUserView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -99,12 +91,7 @@ func (sysUserApi *SysUserApi) Update(c *gin.Context) {
 // @Router /sysUser/get [get]
 func (sysUserApi *SysUserApi) Get(c *gin.Context) {
 	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("查询失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	if err, sysUserView := sysUserService.Get(atoi); err != nil {
+	if err, sysUserView := sysUserService.Get(id); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
@@ -117,7 +104,12 @@ func (sysUserApi *SysUserApi) Get(c *gin.Context) {
 // @Router /sysUser/find [get]
 func (sysUserApi *SysUserApi) Find(c *gin.Context) {
 	var pageInfo common.PageInfoV2
-	_ = c.ShouldBindQuery(&pageInfo)
+	// 绑定查询参数到 pageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage("获取分页数据解析失败!", c)
+	}
+	// 调用 Calculate 方法自动计算 Limit 和 Offset
+	pageInfo.Calculate()
 	if err := sysUserService.Find(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

@@ -3,7 +3,7 @@
 // @author
 // @File: sys_config
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysConfigService *SysConfigService) Create(sysConfigView *view.SysConfigVi
 
 // Delete 删除SysConfig记录
 // Author
-func (sysConfigService *SysConfigService) Delete(id int) (err error) {
+func (sysConfigService *SysConfigService) Delete(id string) (err error) {
 	err = sysConfigDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysConfig记录
 // Author
-func (sysConfigService *SysConfigService) DeleteByIds(ids []int) (err error) {
+func (sysConfigService *SysConfigService) DeleteByIds(ids []string) (err error) {
 	err = sysConfigDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysConfig记录
 // Author
-func (sysConfigService *SysConfigService) Update(id int, sysConfigView *view.SysConfigView) (err error) {
+func (sysConfigService *SysConfigService) Update(id string, sysConfigView *view.SysConfigView) (err error) {
 	sysConfigView.Id = id
 	err1, sysConfig := viewUtils.View2Data(sysConfigView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysConfigService *SysConfigService) Update(id int, sysConfigView *view.Sys
 
 // Get 根据id获取SysConfig记录
 // Author
-func (sysConfigService *SysConfigService) Get(id int) (err error, sysConfigView *view.SysConfigView) {
+func (sysConfigService *SysConfigService) Get(id string) (err error, sysConfigView *view.SysConfigView) {
 	err1, sysConfig := sysConfigDao.Get(id)
 	if err1 != nil {
 		return err1, nil

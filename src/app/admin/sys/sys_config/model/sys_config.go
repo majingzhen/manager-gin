@@ -3,7 +3,7 @@
 // @author
 // @File: sys_config
 // @version 1.0.0
-// @create 2023-08-08 10:06:18
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -13,25 +13,25 @@ import (
 // SysConfig 结构体
 
 type SysConfig struct {
-	ConfigKey string `json:"configKey" form:"configKey" gorm:"column:config_key;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:参数主键;"`
 
-	ConfigName string `json:"configName" form:"configName" gorm:"column:config_name;comment:;"`
+	ConfigName string `json:"configName" form:"configName" gorm:"column:config_name;comment:参数名称;"`
 
-	ConfigType interface{} `json:"configType" form:"configType" gorm:"column:config_type;comment:;"`
+	ConfigKey string `json:"configKey" form:"configKey" gorm:"column:config_key;comment:参数键名;"`
 
-	ConfigValue string `json:"configValue" form:"configValue" gorm:"column:config_value;comment:;"`
+	ConfigValue string `json:"configValue" form:"configValue" gorm:"column:config_value;comment:参数键值;"`
 
-	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:;"`
+	ConfigType string `json:"configType" form:"configType" gorm:"column:config_type;comment:系统内置（Y是 N否）;"`
 
-	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:;"`
+	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
 
-	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
+	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:更新者;"`
 
-	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:;"`
+	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
 
-	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:;"`
+	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
 }
 
 // TableName SysConfig 表名

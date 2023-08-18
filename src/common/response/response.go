@@ -17,7 +17,7 @@ func FailWithMessage(message string, c *gin.Context) {
 		Message: message,
 		Data:    nil,
 	}
-	c.JSON(http.StatusInternalServerError, response)
+	c.JSON(http.StatusOK, response)
 }
 
 func OkWithData(data interface{}, c *gin.Context) {

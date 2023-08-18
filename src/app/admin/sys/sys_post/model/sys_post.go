@@ -3,7 +3,7 @@
 // @author
 // @File: sys_post
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -13,25 +13,25 @@ import (
 // SysPost 结构体
 
 type SysPost struct {
-	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:岗位ID;"`
 
-	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:;"`
+	PostCode string `json:"postCode" form:"postCode" gorm:"column:post_code;comment:岗位编码;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	PostName string `json:"postName" form:"postName" gorm:"column:post_name;comment:岗位名称;"`
 
-	PostCode string `json:"postCode" form:"postCode" gorm:"column:post_code;comment:;"`
+	PostSort int `json:"postSort" form:"postSort" gorm:"column:post_sort;comment:显示顺序;"`
 
-	PostName string `json:"postName" form:"postName" gorm:"column:post_name;comment:;"`
+	Status string `json:"status" form:"status" gorm:"column:status;comment:状态（0正常 1停用）;"`
 
-	PostSort int `json:"postSort" form:"postSort" gorm:"column:post_sort;comment:;"`
+	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
 
-	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
+	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
 
-	Status interface{} `json:"status" form:"status" gorm:"column:status;comment:;"`
+	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:更新者;"`
 
-	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:;"`
+	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
 
-	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:;"`
+	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
 }
 
 // TableName SysPost 表名

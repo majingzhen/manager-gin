@@ -3,7 +3,7 @@
 // @author
 // @File: sys_logininfor
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,23 +26,23 @@ func (sysLogininforViewUtils *SysLogininforViewUtils) Data2View(data *model.SysL
 	}()
 	var tmp SysLogininforView
 
-	tmp.Browser = data.Browser
-
 	tmp.Id = data.Id
+
+	tmp.UserName = data.UserName
 
 	tmp.Ipaddr = data.Ipaddr
 
 	tmp.LoginLocation = data.LoginLocation
 
-	tmp.LoginTime = utils.Time2Str(data.LoginTime)
-
-	tmp.Msg = data.Msg
+	tmp.Browser = data.Browser
 
 	tmp.Os = data.Os
 
 	tmp.Status = data.Status
 
-	tmp.UserName = data.UserName
+	tmp.Msg = data.Msg
+
+	tmp.LoginTime = utils.Time2Str(data.LoginTime)
 
 	view = &tmp
 	return
@@ -57,23 +57,23 @@ func (sysLogininforViewUtils *SysLogininforViewUtils) View2Data(view *SysLoginin
 	}()
 	var tmp model.SysLogininfor
 
-	tmp.Browser = view.Browser
-
 	tmp.Id = view.Id
+
+	tmp.UserName = view.UserName
 
 	tmp.Ipaddr = view.Ipaddr
 
 	tmp.LoginLocation = view.LoginLocation
 
-	tmp.LoginTime = utils.Str2Time(view.LoginTime)
-
-	tmp.Msg = view.Msg
+	tmp.Browser = view.Browser
 
 	tmp.Os = view.Os
 
 	tmp.Status = view.Status
 
-	tmp.UserName = view.UserName
+	tmp.Msg = view.Msg
+
+	tmp.LoginTime = utils.Str2Time(view.LoginTime)
 
 	data = &tmp
 	return

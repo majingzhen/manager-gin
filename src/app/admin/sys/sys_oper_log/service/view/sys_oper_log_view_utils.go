@@ -3,7 +3,7 @@
 // @author
 // @File: sys_oper_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,39 +26,39 @@ func (sysOperLogViewUtils *SysOperLogViewUtils) Data2View(data *model.SysOperLog
 	}()
 	var tmp SysOperLogView
 
+	tmp.Id = data.Id
+
+	tmp.Title = data.Title
+
 	tmp.BusinessType = data.BusinessType
 
-	tmp.CostTime = data.CostTime
+	tmp.Method = data.Method
+
+	tmp.RequestMethod = data.RequestMethod
+
+	tmp.OperatorType = data.OperatorType
+
+	tmp.OperName = data.OperName
 
 	tmp.DeptName = data.DeptName
 
-	tmp.ErrorMsg = data.ErrorMsg
-
-	tmp.Id = data.Id
-
-	tmp.JsonResult = data.JsonResult
-
-	tmp.Method = data.Method
+	tmp.OperUrl = data.OperUrl
 
 	tmp.OperIp = data.OperIp
 
 	tmp.OperLocation = data.OperLocation
 
-	tmp.OperName = data.OperName
-
 	tmp.OperParam = data.OperParam
 
-	tmp.OperTime = utils.Time2Str(data.OperTime)
-
-	tmp.OperUrl = data.OperUrl
-
-	tmp.OperatorType = data.OperatorType
-
-	tmp.RequestMethod = data.RequestMethod
+	tmp.JsonResult = data.JsonResult
 
 	tmp.Status = data.Status
 
-	tmp.Title = data.Title
+	tmp.ErrorMsg = data.ErrorMsg
+
+	tmp.OperTime = utils.Time2Str(data.OperTime)
+
+	tmp.CostTime = data.CostTime
 
 	view = &tmp
 	return
@@ -73,39 +73,39 @@ func (sysOperLogViewUtils *SysOperLogViewUtils) View2Data(view *SysOperLogView) 
 	}()
 	var tmp model.SysOperLog
 
+	tmp.Id = view.Id
+
+	tmp.Title = view.Title
+
 	tmp.BusinessType = view.BusinessType
 
-	tmp.CostTime = view.CostTime
+	tmp.Method = view.Method
+
+	tmp.RequestMethod = view.RequestMethod
+
+	tmp.OperatorType = view.OperatorType
+
+	tmp.OperName = view.OperName
 
 	tmp.DeptName = view.DeptName
 
-	tmp.ErrorMsg = view.ErrorMsg
-
-	tmp.Id = view.Id
-
-	tmp.JsonResult = view.JsonResult
-
-	tmp.Method = view.Method
+	tmp.OperUrl = view.OperUrl
 
 	tmp.OperIp = view.OperIp
 
 	tmp.OperLocation = view.OperLocation
 
-	tmp.OperName = view.OperName
-
 	tmp.OperParam = view.OperParam
 
-	tmp.OperTime = utils.Str2Time(view.OperTime)
-
-	tmp.OperUrl = view.OperUrl
-
-	tmp.OperatorType = view.OperatorType
-
-	tmp.RequestMethod = view.RequestMethod
+	tmp.JsonResult = view.JsonResult
 
 	tmp.Status = view.Status
 
-	tmp.Title = view.Title
+	tmp.ErrorMsg = view.ErrorMsg
+
+	tmp.OperTime = utils.Str2Time(view.OperTime)
+
+	tmp.CostTime = view.CostTime
 
 	data = &tmp
 	return

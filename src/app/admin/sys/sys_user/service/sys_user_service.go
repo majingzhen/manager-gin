@@ -3,7 +3,7 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:02:24
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysUserService *SysUserService) Create(sysUserView *view.SysUserView) (err
 
 // Delete 删除SysUser记录
 // Author
-func (sysUserService *SysUserService) Delete(id int) (err error) {
+func (sysUserService *SysUserService) Delete(id string) (err error) {
 	err = sysUserDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysUser记录
 // Author
-func (sysUserService *SysUserService) DeleteByIds(ids []int) (err error) {
+func (sysUserService *SysUserService) DeleteByIds(ids []string) (err error) {
 	err = sysUserDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysUser记录
 // Author
-func (sysUserService *SysUserService) Update(id int, sysUserView *view.SysUserView) (err error) {
+func (sysUserService *SysUserService) Update(id string, sysUserView *view.SysUserView) (err error) {
 	sysUserView.Id = id
 	err1, sysUser := viewUtils.View2Data(sysUserView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysUserService *SysUserService) Update(id int, sysUserView *view.SysUserVi
 
 // Get 根据id获取SysUser记录
 // Author
-func (sysUserService *SysUserService) Get(id int) (err error, sysUserView *view.SysUserView) {
+func (sysUserService *SysUserService) Get(id string) (err error, sysUserView *view.SysUserView) {
 	err1, sysUser := sysUserDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -85,4 +85,18 @@ func (sysUserService *SysUserService) Find(info *common.PageInfoV2) (err error) 
 	}
 	info.FormList = viewList
 	return err
+}
+
+// GetByUserName 根据userName获取SysUser记录
+// Author
+func (sysUserService *SysUserService) GetByUserName(userName string) (err error, sysUserView *view.SysUserView) {
+	err1, sysUser := sysUserDao.GetByUserName(userName)
+	if err1 != nil {
+		return err1, nil
+	}
+	err2, sysUserView := viewUtils.Data2View(sysUser)
+	if err2 != nil {
+		return err2, nil
+	}
+	return
 }

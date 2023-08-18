@@ -3,7 +3,7 @@
 // @author
 // @File: sys_notice
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,25 +26,25 @@ func (sysNoticeViewUtils *SysNoticeViewUtils) Data2View(data *model.SysNotice) (
 	}()
 	var tmp SysNoticeView
 
-	tmp.CreateBy = data.CreateBy
-
-	tmp.CreateTime = utils.Time2Str(data.CreateTime)
-
 	tmp.Id = data.Id
-
-	tmp.NoticeContent = data.NoticeContent
 
 	tmp.NoticeTitle = data.NoticeTitle
 
 	tmp.NoticeType = data.NoticeType
 
-	tmp.Remark = data.Remark
+	tmp.NoticeContent = data.NoticeContent
 
 	tmp.Status = data.Status
+
+	tmp.CreateBy = data.CreateBy
+
+	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
 	tmp.UpdateBy = data.UpdateBy
 
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
+
+	tmp.Remark = data.Remark
 
 	view = &tmp
 	return
@@ -59,25 +59,25 @@ func (sysNoticeViewUtils *SysNoticeViewUtils) View2Data(view *SysNoticeView) (er
 	}()
 	var tmp model.SysNotice
 
-	tmp.CreateBy = view.CreateBy
-
-	tmp.CreateTime = utils.Str2Time(view.CreateTime)
-
 	tmp.Id = view.Id
-
-	tmp.NoticeContent = view.NoticeContent
 
 	tmp.NoticeTitle = view.NoticeTitle
 
 	tmp.NoticeType = view.NoticeType
 
-	tmp.Remark = view.Remark
+	tmp.NoticeContent = view.NoticeContent
 
 	tmp.Status = view.Status
+
+	tmp.CreateBy = view.CreateBy
+
+	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
 	tmp.UpdateBy = view.UpdateBy
 
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
+
+	tmp.Remark = view.Remark
 
 	data = &tmp
 	return

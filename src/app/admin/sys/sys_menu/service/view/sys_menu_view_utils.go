@@ -3,7 +3,7 @@
 // @author
 // @File: sys_menu
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,43 +26,43 @@ func (sysMenuViewUtils *SysMenuViewUtils) Data2View(data *model.SysMenu) (err er
 	}()
 	var tmp SysMenuView
 
+	tmp.Id = data.Id
+
+	tmp.MenuName = data.MenuName
+
+	tmp.ParentId = data.ParentId
+
+	tmp.OrderNum = data.OrderNum
+
+	tmp.Path = data.Path
+
 	tmp.Component = data.Component
+
+	tmp.Query = data.Query
+
+	tmp.IsFrame = data.IsFrame
+
+	tmp.IsCache = data.IsCache
+
+	tmp.MenuType = data.MenuType
+
+	tmp.Visible = data.Visible
+
+	tmp.Status = data.Status
+
+	tmp.Perms = data.Perms
+
+	tmp.Icon = data.Icon
 
 	tmp.CreateBy = data.CreateBy
 
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
-	tmp.Icon = data.Icon
-
-	tmp.Id = data.Id
-
-	tmp.IsCache = data.IsCache
-
-	tmp.IsFrame = data.IsFrame
-
-	tmp.MenuName = data.MenuName
-
-	tmp.MenuType = data.MenuType
-
-	tmp.OrderNum = data.OrderNum
-
-	tmp.ParentId = data.ParentId
-
-	tmp.Path = data.Path
-
-	tmp.Perms = data.Perms
-
-	tmp.Query = data.Query
-
-	tmp.Remark = data.Remark
-
-	tmp.Status = data.Status
-
 	tmp.UpdateBy = data.UpdateBy
 
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
 
-	tmp.Visible = data.Visible
+	tmp.Remark = data.Remark
 
 	view = &tmp
 	return
@@ -77,43 +77,43 @@ func (sysMenuViewUtils *SysMenuViewUtils) View2Data(view *SysMenuView) (err erro
 	}()
 	var tmp model.SysMenu
 
+	tmp.Id = view.Id
+
+	tmp.MenuName = view.MenuName
+
+	tmp.ParentId = view.ParentId
+
+	tmp.OrderNum = view.OrderNum
+
+	tmp.Path = view.Path
+
 	tmp.Component = view.Component
+
+	tmp.Query = view.Query
+
+	tmp.IsFrame = view.IsFrame
+
+	tmp.IsCache = view.IsCache
+
+	tmp.MenuType = view.MenuType
+
+	tmp.Visible = view.Visible
+
+	tmp.Status = view.Status
+
+	tmp.Perms = view.Perms
+
+	tmp.Icon = view.Icon
 
 	tmp.CreateBy = view.CreateBy
 
 	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
-	tmp.Icon = view.Icon
-
-	tmp.Id = view.Id
-
-	tmp.IsCache = view.IsCache
-
-	tmp.IsFrame = view.IsFrame
-
-	tmp.MenuName = view.MenuName
-
-	tmp.MenuType = view.MenuType
-
-	tmp.OrderNum = view.OrderNum
-
-	tmp.ParentId = view.ParentId
-
-	tmp.Path = view.Path
-
-	tmp.Perms = view.Perms
-
-	tmp.Query = view.Query
-
-	tmp.Remark = view.Remark
-
-	tmp.Status = view.Status
-
 	tmp.UpdateBy = view.UpdateBy
 
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
 
-	tmp.Visible = view.Visible
+	tmp.Remark = view.Remark
 
 	data = &tmp
 	return

@@ -3,17 +3,13 @@
 // @author
 // @File: sys_post
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 // SysPostView 结构体
 
 type SysPostView struct {
-	CreateBy string `json:"createBy"`
-
-	CreateTime string `json:"createTime"`
-
-	Id int `json:"id"`
+	Id string `json:"id"`
 
 	PostCode string `json:"postCode"`
 
@@ -21,11 +17,15 @@ type SysPostView struct {
 
 	PostSort int `json:"postSort"`
 
-	Remark string `json:"remark"`
+	Status string `json:"status"`
 
-	Status interface{} `json:"status"`
+	CreateBy string `json:"createBy"`
+
+	CreateTime string `json:"createTime"`
 
 	UpdateBy string `json:"updateBy"`
 
 	UpdateTime string `json:"updateTime"`
+
+	Remark string `json:"remark"`
 }

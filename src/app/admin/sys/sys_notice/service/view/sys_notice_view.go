@@ -3,29 +3,29 @@
 // @author
 // @File: sys_notice
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 // SysNoticeView 结构体
 
 type SysNoticeView struct {
+	Id string `json:"id"`
+
+	NoticeTitle string `json:"noticeTitle"`
+
+	NoticeType string `json:"noticeType"`
+
+	NoticeContent interface{} `json:"noticeContent"`
+
+	Status string `json:"status"`
+
 	CreateBy string `json:"createBy"`
 
 	CreateTime string `json:"createTime"`
 
-	Id int `json:"id"`
-
-	NoticeContent interface{} `json:"noticeContent"`
-
-	NoticeTitle string `json:"noticeTitle"`
-
-	NoticeType interface{} `json:"noticeType"`
-
-	Remark string `json:"remark"`
-
-	Status interface{} `json:"status"`
-
 	UpdateBy string `json:"updateBy"`
 
 	UpdateTime string `json:"updateTime"`
+
+	Remark string `json:"remark"`
 }

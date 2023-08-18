@@ -3,7 +3,7 @@
 // @author
 // @File: sys_notice
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysNoticeApi = api.SysNoticeApiApp
 
 // InitSysNoticeRouter 初始化 SysNotice 路由信息
 func (r *SysNoticeRouter) InitSysNoticeRouter(Router *gin.RouterGroup) {
-	sysNoticeRouter := Router.Group("sysNotice").Use(middleware.JWTAuthFilter())
+	sysNoticeRouter := Router.Group("sysNotice")
+	sysNoticeRouter.Use(middleware.JWTAuthFilter())
 	sysNoticeRouterWithoutRecord := Router.Group("sysNotice")
 	{
 		sysNoticeRouter.POST("create", sysNoticeApi.Create)             // 新建SysNotice

@@ -3,11 +3,10 @@
 // @author
 // @File: sys_menu
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_menu/service"
@@ -16,7 +15,6 @@ import (
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
-	"strconv"
 )
 
 type SysMenuApi struct {
@@ -30,6 +28,7 @@ var sysMenuService = service.SysMenuServiceApp
 func (sysMenuApi *SysMenuApi) Create(c *gin.Context) {
 	var sysMenuView view.SysMenuView
 	_ = c.ShouldBindJSON(&sysMenuView)
+	sysMenuView.Id = utils.GenUID()
 	sysMenuView.CreateTime = utils.GetCurTimeStr()
 	sysMenuView.UpdateTime = utils.GetCurTimeStr()
 	if err := sysMenuService.Create(&sysMenuView); err != nil {
@@ -44,9 +43,9 @@ func (sysMenuApi *SysMenuApi) Create(c *gin.Context) {
 // @Summary 删除SysMenu
 // @Router /sysMenu/delete [delete]
 func (sysMenuApi *SysMenuApi) Delete(c *gin.Context) {
-	var id int
+	var id common.Id
 	_ = c.ShouldBindJSON(&id)
-	if err := sysMenuService.Delete(id); err != nil {
+	if err := sysMenuService.Delete(id.ID); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -58,9 +57,9 @@ func (sysMenuApi *SysMenuApi) Delete(c *gin.Context) {
 // @Summary 批量删除SysMenu
 // @Router /sysMenu/deleteByIds [delete]
 func (sysMenuApi *SysMenuApi) DeleteByIds(c *gin.Context) {
-	var ids []int
+	var ids common.Ids
 	_ = c.ShouldBindJSON(&ids)
-	if err := sysMenuService.DeleteByIds(ids); err != nil {
+	if err := sysMenuService.DeleteByIds(ids.Ids); err != nil {
 		global.Logger.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -72,21 +71,14 @@ func (sysMenuApi *SysMenuApi) DeleteByIds(c *gin.Context) {
 // @Summary 更新SysMenu
 // @Router /sysMenu/update [put]
 func (sysMenuApi *SysMenuApi) Update(c *gin.Context) {
-	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	sysMenuViewJson := c.Query("sysMenuView")
 	var sysMenuView view.SysMenuView
-	err = json.Unmarshal([]byte(sysMenuViewJson), &sysMenuView)
-	sysMenuView.UpdateTime = utils.GetCurTimeStr()
-	if err := sysMenuService.Update(atoi, &sysMenuView); err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
+	_ = c.ShouldBindJSON(&sysMenuView)
+	id := sysMenuView.Id
+	if id == "" {
 		response.FailWithMessage("更新失败", c)
 	}
-	if err = sysMenuService.Update(atoi, &sysMenuView); err != nil {
+	sysMenuView.UpdateTime = utils.GetCurTimeStr()
+	if err := sysMenuService.Update(id, &sysMenuView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -99,12 +91,7 @@ func (sysMenuApi *SysMenuApi) Update(c *gin.Context) {
 // @Router /sysMenu/get [get]
 func (sysMenuApi *SysMenuApi) Get(c *gin.Context) {
 	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("查询失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	if err, sysMenuView := sysMenuService.Get(atoi); err != nil {
+	if err, sysMenuView := sysMenuService.Get(id); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
@@ -117,7 +104,12 @@ func (sysMenuApi *SysMenuApi) Get(c *gin.Context) {
 // @Router /sysMenu/find [get]
 func (sysMenuApi *SysMenuApi) Find(c *gin.Context) {
 	var pageInfo common.PageInfoV2
-	_ = c.ShouldBindQuery(&pageInfo)
+	// 绑定查询参数到 pageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage("获取分页数据解析失败!", c)
+	}
+	// 调用 Calculate 方法自动计算 Limit 和 Offset
+	pageInfo.Calculate()
 	if err := sysMenuService.Find(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

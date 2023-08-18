@@ -3,11 +3,10 @@
 // @author
 // @File: sys_logininfor
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_logininfor/service"
@@ -15,7 +14,7 @@ import (
 	"manager-gin/src/common"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
-	"strconv"
+	"manager-gin/src/utils"
 )
 
 type SysLogininforApi struct {
@@ -29,6 +28,7 @@ var sysLogininforService = service.SysLogininforServiceApp
 func (sysLogininforApi *SysLogininforApi) Create(c *gin.Context) {
 	var sysLogininforView view.SysLogininforView
 	_ = c.ShouldBindJSON(&sysLogininforView)
+	sysLogininforView.Id = utils.GenUID()
 	if err := sysLogininforService.Create(&sysLogininforView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -41,9 +41,9 @@ func (sysLogininforApi *SysLogininforApi) Create(c *gin.Context) {
 // @Summary 删除SysLogininfor
 // @Router /sysLogininfor/delete [delete]
 func (sysLogininforApi *SysLogininforApi) Delete(c *gin.Context) {
-	var id int
+	var id common.Id
 	_ = c.ShouldBindJSON(&id)
-	if err := sysLogininforService.Delete(id); err != nil {
+	if err := sysLogininforService.Delete(id.ID); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -55,9 +55,9 @@ func (sysLogininforApi *SysLogininforApi) Delete(c *gin.Context) {
 // @Summary 批量删除SysLogininfor
 // @Router /sysLogininfor/deleteByIds [delete]
 func (sysLogininforApi *SysLogininforApi) DeleteByIds(c *gin.Context) {
-	var ids []int
+	var ids common.Ids
 	_ = c.ShouldBindJSON(&ids)
-	if err := sysLogininforService.DeleteByIds(ids); err != nil {
+	if err := sysLogininforService.DeleteByIds(ids.Ids); err != nil {
 		global.Logger.Error("批量删除失败!", zap.Error(err))
 		response.FailWithMessage("批量删除失败", c)
 	} else {
@@ -69,20 +69,13 @@ func (sysLogininforApi *SysLogininforApi) DeleteByIds(c *gin.Context) {
 // @Summary 更新SysLogininfor
 // @Router /sysLogininfor/update [put]
 func (sysLogininforApi *SysLogininforApi) Update(c *gin.Context) {
-	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	sysLogininforViewJson := c.Query("sysLogininforView")
 	var sysLogininforView view.SysLogininforView
-	err = json.Unmarshal([]byte(sysLogininforViewJson), &sysLogininforView)
-	if err := sysLogininforService.Update(atoi, &sysLogininforView); err != nil {
-		global.Logger.Error("更新解析上报数据失败!", zap.Error(err))
+	_ = c.ShouldBindJSON(&sysLogininforView)
+	id := sysLogininforView.Id
+	if id == "" {
 		response.FailWithMessage("更新失败", c)
 	}
-	if err = sysLogininforService.Update(atoi, &sysLogininforView); err != nil {
+	if err := sysLogininforService.Update(id, &sysLogininforView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
@@ -95,12 +88,7 @@ func (sysLogininforApi *SysLogininforApi) Update(c *gin.Context) {
 // @Router /sysLogininfor/get [get]
 func (sysLogininforApi *SysLogininforApi) Get(c *gin.Context) {
 	id := c.Query("id")
-	atoi, err := strconv.Atoi(id)
-	if err != nil {
-		global.Logger.Error("查询失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
-	}
-	if err, sysLogininforView := sysLogininforService.Get(atoi); err != nil {
+	if err, sysLogininforView := sysLogininforService.Get(id); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
@@ -113,7 +101,12 @@ func (sysLogininforApi *SysLogininforApi) Get(c *gin.Context) {
 // @Router /sysLogininfor/find [get]
 func (sysLogininforApi *SysLogininforApi) Find(c *gin.Context) {
 	var pageInfo common.PageInfoV2
-	_ = c.ShouldBindQuery(&pageInfo)
+	// 绑定查询参数到 pageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage("获取分页数据解析失败!", c)
+	}
+	// 调用 Calculate 方法自动计算 Limit 和 Offset
+	pageInfo.Calculate()
 	if err := sysLogininforService.Find(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

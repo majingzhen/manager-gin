@@ -3,7 +3,7 @@
 // @author
 // @File: sys_oper_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysOperLogApi = api.SysOperLogApiApp
 
 // InitSysOperLogRouter 初始化 SysOperLog 路由信息
 func (r *SysOperLogRouter) InitSysOperLogRouter(Router *gin.RouterGroup) {
-	sysOperLogRouter := Router.Group("sysOperLog").Use(middleware.JWTAuthFilter())
+	sysOperLogRouter := Router.Group("sysOperLog")
+	sysOperLogRouter.Use(middleware.JWTAuthFilter())
 	sysOperLogRouterWithoutRecord := Router.Group("sysOperLog")
 	{
 		sysOperLogRouter.POST("create", sysOperLogApi.Create)             // 新建SysOperLog

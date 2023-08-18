@@ -3,47 +3,30 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:02:24
 package view
 
 // SysUserView 结构体
 
 type SysUserView struct {
-	Avatar string `json:"avatar"`
-
-	CreateBy string `json:"createBy"`
-
-	CreateTime string `json:"createTime"`
-
-	DelFlag interface{} `json:"delFlag"`
-
-	DeptId int `json:"deptId"`
-
-	Email string `json:"email"`
-
-	Id int `json:"id"`
-
-	LoginDate string `json:"loginDate"`
-
-	LoginIp string `json:"loginIp"`
-
-	NickName string `json:"nickName"`
-
-	Password string `json:"password"`
-
-	Phonenumber string `json:"phonenumber"`
-
-	Remark string `json:"remark"`
-
-	Sex interface{} `json:"sex"`
-
-	Status interface{} `json:"status"`
-
-	UpdateBy string `json:"updateBy"`
-
-	UpdateTime string `json:"updateTime"`
-
-	UserName string `json:"userName"`
-
-	UserType string `json:"userType"`
+	Id          string `json:"id"`
+	OrgId       string `json:"orgId"`
+	UserName    string `json:"userName"`
+	NickName    string `json:"nickName"`
+	UserType    string `json:"userType"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phoneNumber"`
+	Sex         string `json:"sex"`
+	Avatar      string `json:"avatar"`
+	Password    string `json:"password"`
+	Salt        string `json:"salt"`
+	Status      string `json:"status"`
+	DeletedAt   string `json:"deletedAt"`
+	LoginIp     string `json:"loginIp"`
+	LoginDate   string `json:"loginDate"`
+	CreateBy    string `json:"createBy"`
+	CreateTime  string `json:"createTime"`
+	UpdateBy    string `json:"updateBy"`
+	UpdateTime  string `json:"updateTime"`
+	Remark      string `json:"remark"`
 }

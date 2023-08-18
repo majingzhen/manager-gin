@@ -3,7 +3,7 @@
 // @author
 // @File: sys_role_menu
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysRoleMenuDao) Create(sysRoleMenu SysRoleMenu) (err error) {
 
 // Delete 删除SysRoleMenu记录
 // Author
-func (dao *SysRoleMenuDao) Delete(id int) (err error) {
+func (dao *SysRoleMenuDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysRoleMenu{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysRoleMenu记录
 // Author
-func (dao *SysRoleMenuDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysRoleMenuDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysRoleMenu{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysRoleMenuDao) Update(sysRoleMenu SysRoleMenu) (err error) {
 
 // Get 根据id获取SysRoleMenu记录
 // Author
-func (dao *SysRoleMenuDao) Get(id int) (err error, sysRoleMenu *SysRoleMenu) {
+func (dao *SysRoleMenuDao) Get(id string) (err error, sysRoleMenu *SysRoleMenu) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysRoleMenu).Error
 	return
 }

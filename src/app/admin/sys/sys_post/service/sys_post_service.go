@@ -3,7 +3,7 @@
 // @author
 // @File: sys_post
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysPostService *SysPostService) Create(sysPostView *view.SysPostView) (err
 
 // Delete 删除SysPost记录
 // Author
-func (sysPostService *SysPostService) Delete(id int) (err error) {
+func (sysPostService *SysPostService) Delete(id string) (err error) {
 	err = sysPostDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysPost记录
 // Author
-func (sysPostService *SysPostService) DeleteByIds(ids []int) (err error) {
+func (sysPostService *SysPostService) DeleteByIds(ids []string) (err error) {
 	err = sysPostDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysPost记录
 // Author
-func (sysPostService *SysPostService) Update(id int, sysPostView *view.SysPostView) (err error) {
+func (sysPostService *SysPostService) Update(id string, sysPostView *view.SysPostView) (err error) {
 	sysPostView.Id = id
 	err1, sysPost := viewUtils.View2Data(sysPostView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysPostService *SysPostService) Update(id int, sysPostView *view.SysPostVi
 
 // Get 根据id获取SysPost记录
 // Author
-func (sysPostService *SysPostService) Get(id int) (err error, sysPostView *view.SysPostView) {
+func (sysPostService *SysPostService) Get(id string) (err error, sysPostView *view.SysPostView) {
 	err1, sysPost := sysPostDao.Get(id)
 	if err1 != nil {
 		return err1, nil

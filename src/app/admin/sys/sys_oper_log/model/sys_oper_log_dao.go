@@ -3,7 +3,7 @@
 // @author
 // @File: sys_oper_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysOperLogDao) Create(sysOperLog SysOperLog) (err error) {
 
 // Delete 删除SysOperLog记录
 // Author
-func (dao *SysOperLogDao) Delete(id int) (err error) {
+func (dao *SysOperLogDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysOperLog{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysOperLog记录
 // Author
-func (dao *SysOperLogDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysOperLogDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysOperLog{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysOperLogDao) Update(sysOperLog SysOperLog) (err error) {
 
 // Get 根据id获取SysOperLog记录
 // Author
-func (dao *SysOperLogDao) Get(id int) (err error, sysOperLog *SysOperLog) {
+func (dao *SysOperLogDao) Get(id string) (err error, sysOperLog *SysOperLog) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysOperLog).Error
 	return
 }

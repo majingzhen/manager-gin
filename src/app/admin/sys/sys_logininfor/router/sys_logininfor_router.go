@@ -3,7 +3,7 @@
 // @author
 // @File: sys_logininfor
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysLogininforApi = api.SysLogininforApiApp
 
 // InitSysLogininforRouter 初始化 SysLogininfor 路由信息
 func (r *SysLogininforRouter) InitSysLogininforRouter(Router *gin.RouterGroup) {
-	sysLogininforRouter := Router.Group("sysLogininfor").Use(middleware.JWTAuthFilter())
+	sysLogininforRouter := Router.Group("sysLogininfor")
+	sysLogininforRouter.Use(middleware.JWTAuthFilter())
 	sysLogininforRouterWithoutRecord := Router.Group("sysLogininfor")
 	{
 		sysLogininforRouter.POST("create", sysLogininforApi.Create)             // 新建SysLogininfor

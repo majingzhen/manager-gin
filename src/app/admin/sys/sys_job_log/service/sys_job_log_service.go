@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysJobLogService *SysJobLogService) Create(sysJobLogView *view.SysJobLogVi
 
 // Delete 删除SysJobLog记录
 // Author
-func (sysJobLogService *SysJobLogService) Delete(id int) (err error) {
+func (sysJobLogService *SysJobLogService) Delete(id string) (err error) {
 	err = sysJobLogDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysJobLog记录
 // Author
-func (sysJobLogService *SysJobLogService) DeleteByIds(ids []int) (err error) {
+func (sysJobLogService *SysJobLogService) DeleteByIds(ids []string) (err error) {
 	err = sysJobLogDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysJobLog记录
 // Author
-func (sysJobLogService *SysJobLogService) Update(id int, sysJobLogView *view.SysJobLogView) (err error) {
+func (sysJobLogService *SysJobLogService) Update(id string, sysJobLogView *view.SysJobLogView) (err error) {
 	sysJobLogView.Id = id
 	err1, sysJobLog := viewUtils.View2Data(sysJobLogView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysJobLogService *SysJobLogService) Update(id int, sysJobLogView *view.Sys
 
 // Get 根据id获取SysJobLog记录
 // Author
-func (sysJobLogService *SysJobLogService) Get(id int) (err error, sysJobLogView *view.SysJobLogView) {
+func (sysJobLogService *SysJobLogService) Get(id string) (err error, sysJobLogView *view.SysJobLogView) {
 	err1, sysJobLog := sysJobLogDao.Get(id)
 	if err1 != nil {
 		return err1, nil

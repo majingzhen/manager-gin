@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysJobApi = api.SysJobApiApp
 
 // InitSysJobRouter 初始化 SysJob 路由信息
 func (r *SysJobRouter) InitSysJobRouter(Router *gin.RouterGroup) {
-	sysJobRouter := Router.Group("sysJob").Use(middleware.JWTAuthFilter())
+	sysJobRouter := Router.Group("sysJob")
+	sysJobRouter.Use(middleware.JWTAuthFilter())
 	sysJobRouterWithoutRecord := Router.Group("sysJob")
 	{
 		sysJobRouter.POST("create", sysJobApi.Create)             // 新建SysJob

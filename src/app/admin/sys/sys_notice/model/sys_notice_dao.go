@@ -3,7 +3,7 @@
 // @author
 // @File: sys_notice
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysNoticeDao) Create(sysNotice SysNotice) (err error) {
 
 // Delete 删除SysNotice记录
 // Author
-func (dao *SysNoticeDao) Delete(id int) (err error) {
+func (dao *SysNoticeDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysNotice{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysNotice记录
 // Author
-func (dao *SysNoticeDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysNoticeDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysNotice{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysNoticeDao) Update(sysNotice SysNotice) (err error) {
 
 // Get 根据id获取SysNotice记录
 // Author
-func (dao *SysNoticeDao) Get(id int) (err error, sysNotice *SysNotice) {
+func (dao *SysNoticeDao) Get(id string) (err error, sysNotice *SysNotice) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysNotice).Error
 	return
 }

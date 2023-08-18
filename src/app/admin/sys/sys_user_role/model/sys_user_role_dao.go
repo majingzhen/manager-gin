@@ -3,7 +3,7 @@
 // @author
 // @File: sys_user_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -24,14 +24,14 @@ func (dao *SysUserRoleDao) Create(sysUserRole SysUserRole) (err error) {
 
 // Delete 删除SysUserRole记录
 // Author
-func (dao *SysUserRoleDao) Delete(id int) (err error) {
+func (dao *SysUserRoleDao) Delete(id string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysUserRole{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysUserRole记录
 // Author
-func (dao *SysUserRoleDao) DeleteByIds(ids []int) (err error) {
+func (dao *SysUserRoleDao) DeleteByIds(ids []string) (err error) {
 	err = global.GOrmDao.Delete(&[]SysUserRole{}, "id in ?", ids).Error
 	return err
 }
@@ -45,7 +45,7 @@ func (dao *SysUserRoleDao) Update(sysUserRole SysUserRole) (err error) {
 
 // Get 根据id获取SysUserRole记录
 // Author
-func (dao *SysUserRoleDao) Get(id int) (err error, sysUserRole *SysUserRole) {
+func (dao *SysUserRoleDao) Get(id string) (err error, sysUserRole *SysUserRole) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysUserRole).Error
 	return
 }

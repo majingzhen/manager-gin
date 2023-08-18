@@ -9,7 +9,7 @@ import (
 
 const TokenExpireDuration = time.Hour * 2
 
-var MySecret = []byte("夏天夏天悄悄过去")
+var MySecret = []byte("manager_gin_token")
 
 type MyClaims struct {
 	UserId string
@@ -18,7 +18,6 @@ type MyClaims struct {
 
 // GenerateToken 生成Token
 func GenerateToken(userId string) (string, error) {
-
 	// 创建一个我们自己的声明
 	c := MyClaims{
 		userId,

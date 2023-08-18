@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -13,31 +13,31 @@ import (
 // SysJob 结构体
 
 type SysJob struct {
-	Concurrent interface{} `json:"concurrent" form:"concurrent" gorm:"column:concurrent;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:任务ID;"`
 
-	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:;"`
+	JobName string `json:"jobName" form:"jobName" gorm:"column:job_name;comment:任务名称;"`
 
-	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:;"`
+	JobGroup string `json:"jobGroup" form:"jobGroup" gorm:"column:job_group;comment:任务组名;"`
 
-	CronExpression string `json:"cronExpression" form:"cronExpression" gorm:"column:cron_expression;comment:;"`
+	InvokeTarget string `json:"invokeTarget" form:"invokeTarget" gorm:"column:invoke_target;comment:调用目标字符串;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	CronExpression string `json:"cronExpression" form:"cronExpression" gorm:"column:cron_expression;comment:cron执行表达式;"`
 
-	InvokeTarget string `json:"invokeTarget" form:"invokeTarget" gorm:"column:invoke_target;comment:;"`
+	MisfirePolicy string `json:"misfirePolicy" form:"misfirePolicy" gorm:"column:misfire_policy;comment:计划执行错误策略（1立即执行 2执行一次 3放弃执行）;"`
 
-	JobGroup string `json:"jobGroup" form:"jobGroup" gorm:"column:job_group;comment:;"`
+	Concurrent string `json:"concurrent" form:"concurrent" gorm:"column:concurrent;comment:是否并发执行（0允许 1禁止）;"`
 
-	JobName string `json:"jobName" form:"jobName" gorm:"column:job_name;comment:;"`
+	Status string `json:"status" form:"status" gorm:"column:status;comment:状态（0正常 1暂停）;"`
 
-	MisfirePolicy string `json:"misfirePolicy" form:"misfirePolicy" gorm:"column:misfire_policy;comment:;"`
+	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
 
-	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
+	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
 
-	Status interface{} `json:"status" form:"status" gorm:"column:status;comment:;"`
+	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:更新者;"`
 
-	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:;"`
+	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
 
-	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:;"`
+	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注信息;"`
 }
 
 // TableName SysJob 表名

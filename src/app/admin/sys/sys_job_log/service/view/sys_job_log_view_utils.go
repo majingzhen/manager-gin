@@ -3,7 +3,7 @@
 // @author
 // @File: sys_job_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package view
 
 import (
@@ -26,21 +26,21 @@ func (sysJobLogViewUtils *SysJobLogViewUtils) Data2View(data *model.SysJobLog) (
 	}()
 	var tmp SysJobLogView
 
-	tmp.CreateTime = utils.Time2Str(data.CreateTime)
-
-	tmp.ExceptionInfo = data.ExceptionInfo
-
 	tmp.Id = data.Id
-
-	tmp.InvokeTarget = data.InvokeTarget
-
-	tmp.JobGroup = data.JobGroup
-
-	tmp.JobMessage = data.JobMessage
 
 	tmp.JobName = data.JobName
 
+	tmp.JobGroup = data.JobGroup
+
+	tmp.InvokeTarget = data.InvokeTarget
+
+	tmp.JobMessage = data.JobMessage
+
 	tmp.Status = data.Status
+
+	tmp.ExceptionInfo = data.ExceptionInfo
+
+	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
 	view = &tmp
 	return
@@ -55,21 +55,21 @@ func (sysJobLogViewUtils *SysJobLogViewUtils) View2Data(view *SysJobLogView) (er
 	}()
 	var tmp model.SysJobLog
 
-	tmp.CreateTime = utils.Str2Time(view.CreateTime)
-
-	tmp.ExceptionInfo = view.ExceptionInfo
-
 	tmp.Id = view.Id
-
-	tmp.InvokeTarget = view.InvokeTarget
-
-	tmp.JobGroup = view.JobGroup
-
-	tmp.JobMessage = view.JobMessage
 
 	tmp.JobName = view.JobName
 
+	tmp.JobGroup = view.JobGroup
+
+	tmp.InvokeTarget = view.InvokeTarget
+
+	tmp.JobMessage = view.JobMessage
+
 	tmp.Status = view.Status
+
+	tmp.ExceptionInfo = view.ExceptionInfo
+
+	tmp.CreateTime = utils.Str2Time(view.CreateTime)
 
 	data = &tmp
 	return

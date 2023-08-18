@@ -3,15 +3,19 @@
 // @author
 // @File: sys_role_dept
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
+
+import (
+	"time"
+)
 
 // SysRoleDept 结构体
 
 type SysRoleDept struct {
-	DeptId int `json:"deptId" form:"deptId" gorm:"column:dept_id;comment:;"`
+	RoleId string `json:"roleId" form:"roleId" gorm:"column:role_id;comment:角色ID;"`
 
-	RoleId int `json:"roleId" form:"roleId" gorm:"column:role_id;comment:;"`
+	DeptId string `json:"deptId" form:"deptId" gorm:"column:dept_id;comment:部门ID;"`
 }
 
 // TableName SysRoleDept 表名

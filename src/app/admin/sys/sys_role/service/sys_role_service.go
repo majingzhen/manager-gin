@@ -3,7 +3,7 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:00:53
 package service
 
 import (
@@ -33,21 +33,21 @@ func (sysRoleService *SysRoleService) Create(sysRoleView *view.SysRoleView) (err
 
 // Delete 删除SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Delete(id int) (err error) {
+func (sysRoleService *SysRoleService) Delete(id string) (err error) {
 	err = sysRoleDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysRole记录
 // Author
-func (sysRoleService *SysRoleService) DeleteByIds(ids []int) (err error) {
+func (sysRoleService *SysRoleService) DeleteByIds(ids []string) (err error) {
 	err = sysRoleDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Update(id int, sysRoleView *view.SysRoleView) (err error) {
+func (sysRoleService *SysRoleService) Update(id string, sysRoleView *view.SysRoleView) (err error) {
 	sysRoleView.Id = id
 	err1, sysRole := viewUtils.View2Data(sysRoleView)
 	if err1 != nil {
@@ -59,7 +59,7 @@ func (sysRoleService *SysRoleService) Update(id int, sysRoleView *view.SysRoleVi
 
 // Get 根据id获取SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Get(id int) (err error, sysRoleView *view.SysRoleView) {
+func (sysRoleService *SysRoleService) Get(id string) (err error, sysRoleView *view.SysRoleView) {
 	err1, sysRole := sysRoleDao.Get(id)
 	if err1 != nil {
 		return err1, nil

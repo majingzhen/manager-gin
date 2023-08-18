@@ -3,7 +3,7 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 14:02:24
 package model
 
 import (
@@ -13,43 +13,45 @@ import (
 // SysUser 结构体
 
 type SysUser struct {
-	Avatar string `json:"avatar" form:"avatar" gorm:"column:avatar;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:用户ID;"`
 
-	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:;"`
+	OrgId string `json:"orgId" form:"orgId" gorm:"column:org_id;comment:组织ID;"`
 
-	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:;"`
+	UserName string `json:"userName" form:"userName" gorm:"column:user_name;comment:用户账号;"`
 
-	DelFlag interface{} `json:"delFlag" form:"delFlag" gorm:"column:del_flag;comment:;"`
+	NickName string `json:"nickName" form:"nickName" gorm:"column:nick_name;comment:用户昵称;"`
 
-	DeptId int `json:"deptId" form:"deptId" gorm:"column:dept_id;comment:;"`
+	UserType string `json:"userType" form:"userType" gorm:"column:user_type;comment:用户类型（00系统用户）;"`
 
-	Email string `json:"email" form:"email" gorm:"column:email;comment:;"`
+	Email string `json:"email" form:"email" gorm:"column:email;comment:用户邮箱;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	PhoneNumber string `json:"phoneNumber" form:"phoneNumber" gorm:"column:phone_number;comment:手机号码;"`
 
-	LoginDate time.Time `json:"loginDate" form:"loginDate" gorm:"column:login_date;comment:;"`
+	Sex string `json:"sex" form:"sex" gorm:"column:sex;comment:用户性别（0男 1女 2未知）;"`
 
-	LoginIp string `json:"loginIp" form:"loginIp" gorm:"column:login_ip;comment:;"`
+	Avatar string `json:"avatar" form:"avatar" gorm:"column:avatar;comment:头像地址;"`
 
-	NickName string `json:"nickName" form:"nickName" gorm:"column:nick_name;comment:;"`
+	Password string `json:"password" form:"password" gorm:"column:password;comment:密码;"`
 
-	Password string `json:"password" form:"password" gorm:"column:password;comment:;"`
+	Salt string `json:"salt" form:"salt" gorm:"column:salt;comment:盐值;;"`
 
-	Phonenumber string `json:"phonenumber" form:"phonenumber" gorm:"column:phonenumber;comment:;"`
+	Status string `json:"status" form:"status" gorm:"column:status;comment:帐号状态（0正常 1停用）;"`
 
-	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:;"`
+	DeletedAt time.Time `json:"deletedAt" form:"deletedAt" gorm:"column:deleted_at;comment:删除标志;"`
 
-	Sex interface{} `json:"sex" form:"sex" gorm:"column:sex;comment:;"`
+	LoginIp string `json:"loginIp" form:"loginIp" gorm:"column:login_ip;comment:最后登录IP;"`
 
-	Status interface{} `json:"status" form:"status" gorm:"column:status;comment:;"`
+	LoginDate time.Time `json:"loginDate" form:"loginDate" gorm:"column:login_date;comment:最后登录时间;"`
 
-	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:;"`
+	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
 
-	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:;"`
+	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
 
-	UserName string `json:"userName" form:"userName" gorm:"column:user_name;comment:;"`
+	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:更新者;"`
 
-	UserType string `json:"userType" form:"userType" gorm:"column:user_type;comment:;"`
+	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
+
+	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
 }
 
 // TableName SysUser 表名

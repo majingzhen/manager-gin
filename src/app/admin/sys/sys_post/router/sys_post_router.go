@@ -3,7 +3,7 @@
 // @author
 // @File: sys_post
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package router
 
 import (
@@ -18,7 +18,8 @@ var sysPostApi = api.SysPostApiApp
 
 // InitSysPostRouter 初始化 SysPost 路由信息
 func (r *SysPostRouter) InitSysPostRouter(Router *gin.RouterGroup) {
-	sysPostRouter := Router.Group("sysPost").Use(middleware.JWTAuthFilter())
+	sysPostRouter := Router.Group("sysPost")
+	sysPostRouter.Use(middleware.JWTAuthFilter())
 	sysPostRouterWithoutRecord := Router.Group("sysPost")
 	{
 		sysPostRouter.POST("create", sysPostApi.Create)             // 新建SysPost

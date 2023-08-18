@@ -3,7 +3,7 @@
 // @author
 // @File: sys_oper_log
 // @version 1.0.0
-// @create 2023-08-08 10:06:19
+// @create 2023-08-18 13:41:26
 package model
 
 import (
@@ -13,39 +13,39 @@ import (
 // SysOperLog 结构体
 
 type SysOperLog struct {
-	BusinessType int `json:"businessType" form:"businessType" gorm:"column:business_type;comment:;"`
+	Id string `json:"id" form:"id" gorm:"column:id;comment:日志主键;"`
 
-	CostTime int `json:"costTime" form:"costTime" gorm:"column:cost_time;comment:;"`
+	Title string `json:"title" form:"title" gorm:"column:title;comment:模块标题;"`
 
-	DeptName string `json:"deptName" form:"deptName" gorm:"column:dept_name;comment:;"`
+	BusinessType int `json:"businessType" form:"businessType" gorm:"column:business_type;comment:业务类型（0其它 1新增 2修改 3删除）;"`
 
-	ErrorMsg string `json:"errorMsg" form:"errorMsg" gorm:"column:error_msg;comment:;"`
+	Method string `json:"method" form:"method" gorm:"column:method;comment:方法名称;"`
 
-	Id int `json:"id" form:"id" gorm:"column:id;comment:;"`
+	RequestMethod string `json:"requestMethod" form:"requestMethod" gorm:"column:request_method;comment:请求方式;"`
 
-	JsonResult string `json:"jsonResult" form:"jsonResult" gorm:"column:json_result;comment:;"`
+	OperatorType int `json:"operatorType" form:"operatorType" gorm:"column:operator_type;comment:操作类别（0其它 1后台用户 2手机端用户）;"`
 
-	Method string `json:"method" form:"method" gorm:"column:method;comment:;"`
+	OperName string `json:"operName" form:"operName" gorm:"column:oper_name;comment:操作人员;"`
 
-	OperIp string `json:"operIp" form:"operIp" gorm:"column:oper_ip;comment:;"`
+	DeptName string `json:"deptName" form:"deptName" gorm:"column:dept_name;comment:部门名称;"`
 
-	OperLocation string `json:"operLocation" form:"operLocation" gorm:"column:oper_location;comment:;"`
+	OperUrl string `json:"operUrl" form:"operUrl" gorm:"column:oper_url;comment:请求URL;"`
 
-	OperName string `json:"operName" form:"operName" gorm:"column:oper_name;comment:;"`
+	OperIp string `json:"operIp" form:"operIp" gorm:"column:oper_ip;comment:主机地址;"`
 
-	OperParam string `json:"operParam" form:"operParam" gorm:"column:oper_param;comment:;"`
+	OperLocation string `json:"operLocation" form:"operLocation" gorm:"column:oper_location;comment:操作地点;"`
 
-	OperTime time.Time `json:"operTime" form:"operTime" gorm:"column:oper_time;comment:;"`
+	OperParam string `json:"operParam" form:"operParam" gorm:"column:oper_param;comment:请求参数;"`
 
-	OperUrl string `json:"operUrl" form:"operUrl" gorm:"column:oper_url;comment:;"`
+	JsonResult string `json:"jsonResult" form:"jsonResult" gorm:"column:json_result;comment:返回参数;"`
 
-	OperatorType int `json:"operatorType" form:"operatorType" gorm:"column:operator_type;comment:;"`
+	Status int `json:"status" form:"status" gorm:"column:status;comment:操作状态（0正常 1异常）;"`
 
-	RequestMethod string `json:"requestMethod" form:"requestMethod" gorm:"column:request_method;comment:;"`
+	ErrorMsg string `json:"errorMsg" form:"errorMsg" gorm:"column:error_msg;comment:错误消息;"`
 
-	Status int `json:"status" form:"status" gorm:"column:status;comment:;"`
+	OperTime time.Time `json:"operTime" form:"operTime" gorm:"column:oper_time;comment:操作时间;"`
 
-	Title string `json:"title" form:"title" gorm:"column:title;comment:;"`
+	CostTime int `json:"costTime" form:"costTime" gorm:"column:cost_time;comment:消耗时间;"`
 }
 
 // TableName SysOperLog 表名
