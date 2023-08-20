@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_dict_type/model"
+	"manager-gin/src/common"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
@@ -25,28 +26,42 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2View(data *model.SysDictT
 		}
 	}()
 	var tmp SysDictTypeView
-
 	tmp.Id = data.Id
-
 	tmp.DictName = data.DictName
-
 	tmp.DictType = data.DictType
-
 	tmp.Status = data.Status
-
 	tmp.CreateBy = data.CreateBy
-
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
-
 	tmp.UpdateBy = data.UpdateBy
-
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
-
 	tmp.Remark = data.Remark
-
 	view = &tmp
 	return
 }
+
+func (sysDictTypeViewUtils *SysDictTypeViewUtils) Page2Data(pageInfo *SysDictTypePageView) (err error, data *model.SysDictType, page *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysDictTypeViewUtils View2Data error: %v", e)
+			global.Logger.Error("SysDictTypeViewUtils.Data2View:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+
+	var tmp model.SysDictType
+	tmp.DictName = pageInfo.DictName
+	tmp.DictType = pageInfo.DictType
+	tmp.Status = pageInfo.Status
+	data = &tmp
+	page = &common.PageInfo{
+		PageSize:      pageInfo.PageSize,
+		PageNum:       pageInfo.PageNum,
+		OrderByColumn: pageInfo.OrderByColumn,
+		IsAsc:         pageInfo.IsAsc,
+	}
+	return
+}
+
 func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2Data(view *SysDictTypeView) (err error, data *model.SysDictType) {
 	defer func() {
 		if e := recover(); e != nil {
@@ -56,25 +71,15 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2Data(view *SysDictTypeVie
 		}
 	}()
 	var tmp model.SysDictType
-
 	tmp.Id = view.Id
-
 	tmp.DictName = view.DictName
-
 	tmp.DictType = view.DictType
-
 	tmp.Status = view.Status
-
 	tmp.CreateBy = view.CreateBy
-
 	tmp.CreateTime = utils.Str2Time(view.CreateTime)
-
 	tmp.UpdateBy = view.UpdateBy
-
 	tmp.UpdateTime = utils.Str2Time(view.UpdateTime)
-
 	tmp.Remark = view.Remark
-
 	data = &tmp
 	return
 }

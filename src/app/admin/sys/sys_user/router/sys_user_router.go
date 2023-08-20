@@ -29,6 +29,6 @@ func (r *SysUserRouter) InitSysUserRouter(Router *gin.RouterGroup) {
 	}
 	{
 		sysUserRouterWithoutRecord.GET("get", sysUserApi.Get)   // 根据ID获取SysUser
-		sysUserRouterWithoutRecord.GET("find", sysUserApi.Find) // 获取SysUser列表
+		sysUserRouterWithoutRecord.GET("list", sysUserApi.List) // 获取SysUser列表
 	}
 }

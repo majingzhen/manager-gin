@@ -12,5 +12,5 @@ import (
 
 type SysUserViewPage struct {
 	SysUserView
-	common.PageInfoV2
+	common.PageInfo
 }

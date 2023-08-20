@@ -29,6 +29,6 @@ func (r *SysMenuRouter) InitSysMenuRouter(Router *gin.RouterGroup) {
 	}
 	{
 		sysMenuRouterWithoutRecord.GET("get", sysMenuApi.Get)   // 根据ID获取SysMenu
-		sysMenuRouterWithoutRecord.GET("find", sysMenuApi.Find) // 获取SysMenu列表
+		sysMenuRouterWithoutRecord.GET("list", sysMenuApi.List) // 获取SysMenu列表
 	}
 }

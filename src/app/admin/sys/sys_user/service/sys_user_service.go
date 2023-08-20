@@ -71,10 +71,10 @@ func (sysUserService *SysUserService) Get(id string) (err error, sysUserView *vi
 	return
 }
 
-// Find 分页获取SysUser记录
+// List 分页获取SysUser记录
 // Author
-func (sysUserService *SysUserService) Find(info *common.PageInfoV2) (err error) {
-	err1, sysUsers, total := sysUserDao.Find(info)
+func (sysUserService *SysUserService) List(info *common.PageInfo) (err error) {
+	err1, sysUsers, total := sysUserDao.List(info)
 	if err1 != nil {
 		return err1
 	}
@@ -83,7 +83,7 @@ func (sysUserService *SysUserService) Find(info *common.PageInfoV2) (err error) 
 	if err2 != nil {
 		return err2
 	}
-	info.FormList = viewList
+	info.Rows = viewList
 	return err
 }
 

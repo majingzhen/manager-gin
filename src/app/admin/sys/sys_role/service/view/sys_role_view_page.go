@@ -12,5 +12,5 @@ import (
 
 type SysRoleViewPage struct {
 	SysRoleView
-	common.PageInfoV2
+	common.PageInfo
 }

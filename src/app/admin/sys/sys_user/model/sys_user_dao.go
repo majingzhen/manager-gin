@@ -50,9 +50,9 @@ func (dao *SysUserDao) Get(id string) (err error, sysUser *SysUser) {
 	return
 }
 
-// Find 分页获取SysUser记录
+// List 分页获取SysUser记录
 // Author
-func (dao *SysUserDao) Find(info *common.PageInfoV2) (err error, sysUsers *[]SysUser, total int64) {
+func (dao *SysUserDao) List(info *common.PageInfo) (err error, sysUsers *[]SysUser, total int64) {
 	// 创建db
 	db := global.GOrmDao.Model(&SysUser{})
 	// 如果有条件搜索 下方会自动创建搜索语句

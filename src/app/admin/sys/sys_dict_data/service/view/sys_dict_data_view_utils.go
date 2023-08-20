@@ -3,20 +3,21 @@
 // @author
 // @File: sys_dict_data
 // @version 1.0.0
-// @create 2023-08-18 13:41:26
+// @create 2023-08-20 19:08:42
 package view
 
 import (
 	"fmt"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_dict_data/model"
+	"manager-gin/src/common"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
 
 type SysDictDataViewUtils struct{}
 
-func (sysDictDataViewUtils *SysDictDataViewUtils) Data2View(data *model.SysDictData) (err error, view *SysDictDataView) {
+func (viewUtils *SysDictDataViewUtils) Data2View(data *model.SysDictData) (err error, view *SysDictDataView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictDataViewUtils View2Data error: %v", e)
@@ -57,7 +58,7 @@ func (sysDictDataViewUtils *SysDictDataViewUtils) Data2View(data *model.SysDictD
 	view = &tmp
 	return
 }
-func (sysDictDataViewUtils *SysDictDataViewUtils) View2Data(view *SysDictDataView) (err error, data *model.SysDictData) {
+func (viewUtils *SysDictDataViewUtils) View2Data(view *SysDictDataView) (err error, data *model.SysDictData) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictDataViewUtils View2Data error: %v", e)
@@ -99,7 +100,52 @@ func (sysDictDataViewUtils *SysDictDataViewUtils) View2Data(view *SysDictDataVie
 	return
 }
 
-func (sysDictDataViewUtils *SysDictDataViewUtils) View2DataList(viewList *[]SysDictDataView) (err error, dataList *[]model.SysDictData) {
+func (viewUtils *SysDictDataViewUtils) Page2Data(pageInfo *SysDictDataPageView) (err error, data *model.SysDictData, page *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysDictDataViewUtils View2Data error: %v", e)
+			global.Logger.Error("SysDictDataViewUtils.View2Data:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	// TODO 按需修改
+	var tmp model.SysDictData
+
+	tmp.Id = pageInfo.Id
+
+	tmp.DictSort = pageInfo.DictSort
+
+	tmp.DictLabel = pageInfo.DictLabel
+
+	tmp.DictValue = pageInfo.DictValue
+
+	tmp.DictType = pageInfo.DictType
+
+	tmp.CssClass = pageInfo.CssClass
+
+	tmp.ListClass = pageInfo.ListClass
+
+	tmp.IsDefault = pageInfo.IsDefault
+
+	tmp.Status = pageInfo.Status
+
+	tmp.CreateBy = pageInfo.CreateBy
+
+	tmp.UpdateBy = pageInfo.UpdateBy
+
+	tmp.Remark = pageInfo.Remark
+
+	data = &tmp
+	page = &common.PageInfo{
+		PageSize:      pageInfo.PageSize,
+		PageNum:       pageInfo.PageNum,
+		OrderByColumn: pageInfo.OrderByColumn,
+		IsAsc:         pageInfo.IsAsc,
+	}
+	return
+}
+
+func (viewUtils *SysDictDataViewUtils) View2DataList(viewList *[]SysDictDataView) (err error, dataList *[]model.SysDictData) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictDataViewUtils View2DataList error: %v", e)
@@ -111,7 +157,7 @@ func (sysDictDataViewUtils *SysDictDataViewUtils) View2DataList(viewList *[]SysD
 		var dataTmpList []model.SysDictData
 		for i := range *dataList {
 			view := (*viewList)[i]
-			err, data := sysDictDataViewUtils.View2Data(&view)
+			err, data := viewUtils.View2Data(&view)
 			if err == nil {
 				dataTmpList = append(dataTmpList, *data)
 			}
@@ -121,7 +167,7 @@ func (sysDictDataViewUtils *SysDictDataViewUtils) View2DataList(viewList *[]SysD
 	return
 }
 
-func (sysDictDataViewUtils *SysDictDataViewUtils) Data2ViewList(dataList *[]model.SysDictData) (err error, viewList *[]SysDictDataView) {
+func (viewUtils *SysDictDataViewUtils) Data2ViewList(dataList *[]model.SysDictData) (err error, viewList *[]SysDictDataView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictDataViewUtils Data2ViewList error: %v", e)
@@ -133,7 +179,7 @@ func (sysDictDataViewUtils *SysDictDataViewUtils) Data2ViewList(dataList *[]mode
 		var viewTmpList []SysDictDataView
 		for i := range *dataList {
 			data := (*dataList)[i]
-			err, view := sysDictDataViewUtils.Data2View(&data)
+			err, view := viewUtils.Data2View(&data)
 			if err == nil {
 				viewTmpList = append(viewTmpList, *view)
 			}

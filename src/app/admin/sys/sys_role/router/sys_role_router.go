@@ -29,6 +29,6 @@ func (r *SysRoleRouter) InitSysRoleRouter(Router *gin.RouterGroup) {
 	}
 	{
 		sysRoleRouterWithoutRecord.GET("get", sysRoleApi.Get)   // 根据ID获取SysRole
-		sysRoleRouterWithoutRecord.GET("find", sysRoleApi.Find) // 获取SysRole列表
+		sysRoleRouterWithoutRecord.GET("list", sysRoleApi.List) // 获取SysRole列表
 	}
 }

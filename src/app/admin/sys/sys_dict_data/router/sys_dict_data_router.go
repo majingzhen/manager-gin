@@ -3,7 +3,7 @@
 // @author
 // @File: sys_dict_data
 // @version 1.0.0
-// @create 2023-08-18 13:41:26
+// @create 2023-08-20 19:08:42
 package router
 
 import (
@@ -22,13 +22,13 @@ func (r *SysDictDataRouter) InitSysDictDataRouter(Router *gin.RouterGroup) {
 	sysDictDataRouter.Use(middleware.JWTAuthFilter())
 	sysDictDataRouterWithoutRecord := Router.Group("sysDictData")
 	{
-		sysDictDataRouter.POST("create", sysDictDataApi.Create)             // 新建SysDictData
-		sysDictDataRouter.DELETE("delete", sysDictDataApi.Delete)           // 删除SysDictData
-		sysDictDataRouter.DELETE("deleteByIds", sysDictDataApi.DeleteByIds) // 批量删除SysDictData
-		sysDictDataRouter.POST("update", sysDictDataApi.Update)             // 更新SysDictData
+		sysDictDataRouter.POST("create", sysDictDataApi.Create)        // 新建SysDictData
+		sysDictDataRouter.DELETE("delete/:ids", sysDictDataApi.Delete) // 删除SysDictData
+		sysDictDataRouter.POST("update", sysDictDataApi.Update)        // 更新SysDictData
 	}
 	{
-		sysDictDataRouterWithoutRecord.GET("get", sysDictDataApi.Get)   // 根据ID获取SysDictData
-		sysDictDataRouterWithoutRecord.GET("find", sysDictDataApi.Find) // 获取SysDictData列表
+		sysDictDataRouterWithoutRecord.GET("get/:id", sysDictDataApi.Get)          // 根据ID获取SysDictData
+		sysDictDataRouterWithoutRecord.GET("type/:type", sysDictDataApi.GetByType) // 根据type获取SysDictData
+		sysDictDataRouterWithoutRecord.GET("list", sysDictDataApi.List)            // 获取SysDictData列表
 	}
 }

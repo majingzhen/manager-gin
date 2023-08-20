@@ -76,10 +76,10 @@ func (sysMenuService *SysMenuService) Get(id string) (err error, sysMenuView *vi
 	return
 }
 
-// Find 分页获取SysMenu记录
+// List 分页获取SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) Find(info *common.PageInfoV2) (err error) {
-	err1, sysMenus, total := sysMenuDao.Find(info)
+func (sysMenuService *SysMenuService) List(info *common.PageInfo) (err error) {
+	err1, sysMenus, total := sysMenuDao.List(info)
 	if err1 != nil {
 		return err1
 	}
@@ -88,27 +88,9 @@ func (sysMenuService *SysMenuService) Find(info *common.PageInfoV2) (err error) 
 	if err2 != nil {
 		return err2
 	}
-	info.FormList = viewList
+	info.Rows = viewList
 	return err
 }
-
-//// MenuTreeDataByUser 根据用户获取菜单
-//// Author
-//func (sysMenuService *SysMenuService) MenuTreeDataByUser(userId string) (err error, sysMenus *[]view.SysMenuView) {
-//	// 判断用户是否管理员
-//	if _, itIs := userService.IsAdmin(userId); itIs {
-//
-//	}
-//	model := global.GOrmDao.Table("sys_menu m")
-//	model.Joins("JOIN sys_role_menu rm", "m.menu_id = rm.menu.id")
-//	model.Where("rm.role_id in (?) and status = '?'", roleIds, common.STATUS_NORMAL)
-//	model.Order("m.parent_id, m.order_num")
-//	_, err = model.Select("m.*").Rows()
-//	if err != nil {
-//		return err, nil
-//	}
-//	return err, sysMenus
-//}
 
 // GetMenuPermission 根据用户id获取菜单权限
 func (sysMenuService *SysMenuService) GetMenuPermission(user *userView.SysUserView) (err error, perms []string) {

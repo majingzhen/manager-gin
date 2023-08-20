@@ -12,5 +12,5 @@ import (
 
 type SysDictTypeViewPage struct {
 	SysDictTypeView
-	common.PageInfoV2
+	common.PageInfo
 }

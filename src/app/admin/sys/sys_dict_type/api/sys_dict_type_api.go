@@ -7,16 +7,14 @@
 package api
 
 import (
-	"encoding/json"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_dict_type/service"
 	"manager-gin/src/app/admin/sys/sys_dict_type/service/view"
-	"manager-gin/src/common"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
-	"strconv"
+	"strings"
 )
 
 type SysDictTypeApi struct {
@@ -30,7 +28,7 @@ var sysDictTypeService = service.SysDictTypeServiceApp
 func (sysDictTypeApi *SysDictTypeApi) Create(c *gin.Context) {
 	var sysDictTypeView view.SysDictTypeView
 	_ = c.ShouldBindJSON(&sysDictTypeView)
-	sysDictTypeView.Id = strings.ReplaceAll(uuid.NewV4().String(), "-", "")
+	sysDictTypeView.Id = utils.GenUID()
 	sysDictTypeView.CreateTime = utils.GetCurTimeStr()
 	sysDictTypeView.UpdateTime = utils.GetCurTimeStr()
 	if err := sysDictTypeService.Create(&sysDictTypeView); err != nil {
@@ -45,27 +43,13 @@ func (sysDictTypeApi *SysDictTypeApi) Create(c *gin.Context) {
 // @Summary 删除SysDictType
 // @Router /sysDictType/delete [delete]
 func (sysDictTypeApi *SysDictTypeApi) Delete(c *gin.Context) {
-	var id common.Id
-	_ = c.ShouldBindJSON(&id)
-	if err := sysDictTypeService.Delete(id.ID); err != nil {
+	idStr := c.Param("ids")
+	ids := strings.Split(idStr, ",")
+	if err := sysDictTypeService.DeleteByIds(ids); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
 		response.OkWithMessage("删除成功", c)
-	}
-}
-
-// DeleteByIds 批量删除SysDictType
-// @Summary 批量删除SysDictType
-// @Router /sysDictType/deleteByIds [delete]
-func (sysDictTypeApi *SysDictTypeApi) DeleteByIds(c *gin.Context) {
-	var ids common.Ids
-	_ = c.ShouldBindJSON(&ids)
-	if err := sysDictTypeService.DeleteByIds(ids.Ids); err != nil {
-		global.Logger.Error("批量删除失败!", zap.Error(err))
-		response.FailWithMessage("批量删除失败", c)
-	} else {
-		response.OkWithMessage("批量删除成功", c)
 	}
 }
 
@@ -92,30 +76,40 @@ func (sysDictTypeApi *SysDictTypeApi) Update(c *gin.Context) {
 // @Summary 用id查询SysDictType
 // @Router /sysDictType/get [get]
 func (sysDictTypeApi *SysDictTypeApi) Get(c *gin.Context) {
-	id := c.Query("id")
+	id := c.Param("id")
 	if err, sysDictTypeView := sysDictTypeService.Get(id); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(gin.H{"sysDictTypeView": sysDictTypeView}, c)
+		response.OkWithData(sysDictTypeView, c)
 	}
 }
 
-// Find 分页获取SysDictType列表
+// List 分页获取SysDictType列表
 // @Summary 分页获取SysDictType列表
-// @Router /sysDictType/find [get]
-func (sysDictTypeApi *SysDictTypeApi) Find(c *gin.Context) {
-	var pageInfo common.PageInfoV2
+// @Router /sysDictType/list [get]
+func (sysDictTypeApi *SysDictTypeApi) List(c *gin.Context) {
+	var pageInfo view.SysDictTypePageView
 	// 绑定查询参数到 pageInfo
 	if err := c.ShouldBindQuery(&pageInfo); err != nil {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 	}
-	// 调用 Calculate 方法自动计算 Limit 和 Offset
-	pageInfo.Calculate()
-	if err := sysDictTypeService.Find(&pageInfo); err != nil {
+	if err, res := sysDictTypeService.List(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
-		response.OkWithDetailed(pageInfo, "获取成功", c)
+		response.OkWithDetailed(res, "获取成功", c)
+	}
+}
+
+// SelectDictTypeAll 获取DictType全部数据
+// @Summary 获取DictType全部数据
+// @Router /sysDictType/list [get]
+func (sysDictTypeApi *SysDictTypeApi) SelectDictTypeAll(c *gin.Context) {
+	if err, res := sysDictTypeService.SelectDictTypeAll(); err != nil {
+		global.Logger.Error("获取分页信息失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(res, "获取成功", c)
 	}
 }

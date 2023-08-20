@@ -12,5 +12,5 @@ import (
 
 type SysMenuViewPage struct {
 	SysMenuView
-	common.PageInfoV2
+	common.PageInfo
 }

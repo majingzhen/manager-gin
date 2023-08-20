@@ -12,7 +12,7 @@ import "manager-gin/src/app/admin/sys/sys_role/service/view"
 
 type SysUserView struct {
 	Id          string              `json:"id"`
-	OrgId       string              `json:"orgId"`
+	DeptId      string              `json:"deptId"`
 	UserName    string              `json:"userName"`
 	NickName    string              `json:"nickName"`
 	UserType    string              `json:"userType"`

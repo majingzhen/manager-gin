@@ -22,13 +22,13 @@ func (r *SysDictTypeRouter) InitSysDictTypeRouter(Router *gin.RouterGroup) {
 	sysDictTypeRouter.Use(middleware.JWTAuthFilter())
 	sysDictTypeRouterWithoutRecord := Router.Group("sysDictType")
 	{
-		sysDictTypeRouter.POST("create", sysDictTypeApi.Create)             // 新建SysDictType
-		sysDictTypeRouter.DELETE("delete", sysDictTypeApi.Delete)           // 删除SysDictType
-		sysDictTypeRouter.DELETE("deleteByIds", sysDictTypeApi.DeleteByIds) // 批量删除SysDictType
-		sysDictTypeRouter.POST("update", sysDictTypeApi.Update)             // 更新SysDictType
+		sysDictTypeRouter.POST("create", sysDictTypeApi.Create)        // 新建SysDictType
+		sysDictTypeRouter.DELETE("delete/:ids", sysDictTypeApi.Delete) // 删除SysDictType
+		sysDictTypeRouter.POST("update", sysDictTypeApi.Update)        // 更新SysDictType
 	}
 	{
-		sysDictTypeRouterWithoutRecord.GET("get", sysDictTypeApi.Get)   // 根据ID获取SysDictType
-		sysDictTypeRouterWithoutRecord.GET("find", sysDictTypeApi.Find) // 获取SysDictType列表
+		sysDictTypeRouterWithoutRecord.GET("get/:id", sysDictTypeApi.Get)                    // 根据ID获取SysDictType
+		sysDictTypeRouterWithoutRecord.GET("list", sysDictTypeApi.List)                      // 获取SysDictType列表
+		sysDictTypeRouterWithoutRecord.GET("optionSelect", sysDictTypeApi.SelectDictTypeAll) // 获取SysDictType列表
 	}
 }

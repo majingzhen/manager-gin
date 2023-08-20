@@ -3,7 +3,7 @@
 // @author
 // @File: sys_dict_data
 // @version 1.0.0
-// @create 2023-08-18 13:41:26
+// @create 2023-08-20 19:08:42
 package service
 
 import (
@@ -19,7 +19,7 @@ type SysDictDataService struct{}
 
 // Create 创建SysDictData记录
 // Author
-func (sysDictDataService *SysDictDataService) Create(sysDictDataView *view.SysDictDataView) (err error) {
+func (service *SysDictDataService) Create(sysDictDataView *view.SysDictDataView) (err error) {
 	err1, sysDictData := viewUtils.View2Data(sysDictDataView)
 	if err1 != nil {
 		return err1
@@ -31,23 +31,16 @@ func (sysDictDataService *SysDictDataService) Create(sysDictDataView *view.SysDi
 	return nil
 }
 
-// Delete 删除SysDictData记录
-// Author
-func (sysDictDataService *SysDictDataService) Delete(id string) (err error) {
-	err = sysDictDataDao.Delete(id)
-	return err
-}
-
 // DeleteByIds 批量删除SysDictData记录
 // Author
-func (sysDictDataService *SysDictDataService) DeleteByIds(ids []string) (err error) {
+func (service *SysDictDataService) DeleteByIds(ids []string) (err error) {
 	err = sysDictDataDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysDictData记录
 // Author
-func (sysDictDataService *SysDictDataService) Update(id string, sysDictDataView *view.SysDictDataView) (err error) {
+func (service *SysDictDataService) Update(id string, sysDictDataView *view.SysDictDataView) (err error) {
 	sysDictDataView.Id = id
 	err1, sysDictData := viewUtils.View2Data(sysDictDataView)
 	if err1 != nil {
@@ -59,7 +52,7 @@ func (sysDictDataService *SysDictDataService) Update(id string, sysDictDataView 
 
 // Get 根据id获取SysDictData记录
 // Author
-func (sysDictDataService *SysDictDataService) Get(id string) (err error, sysDictDataView *view.SysDictDataView) {
+func (service *SysDictDataService) Get(id string) (err error, sysDictDataView *view.SysDictDataView) {
 	err1, sysDictData := sysDictDataDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -71,18 +64,36 @@ func (sysDictDataService *SysDictDataService) Get(id string) (err error, sysDict
 	return
 }
 
-// Find 分页获取SysDictData记录
+// List 分页获取SysDictData记录
 // Author
-func (sysDictDataService *SysDictDataService) Find(info *common.PageInfoV2) (err error) {
-	err1, sysDictDatas, total := sysDictDataDao.Find(info)
+func (service *SysDictDataService) List(pageInfo *view.SysDictDataPageView) (err error, res *common.PageInfo) {
+	err, param, page := viewUtils.Page2Data(pageInfo)
+	if err != nil {
+		return err, nil
+	}
+	err1, datas, total := sysDictDataDao.List(param, page)
 	if err1 != nil {
-		return err1
+		return err1, res
 	}
-	info.Total = total
-	err2, viewList := viewUtils.Data2ViewList(sysDictDatas)
+	err2, viewList := viewUtils.Data2ViewList(datas)
 	if err2 != nil {
-		return err2
+		return err2, res
 	}
-	info.FormList = viewList
-	return err
+	res = &common.PageInfo{
+		Total: total,
+		Rows:  viewList,
+	}
+	return err, res
+}
+
+func (service *SysDictDataService) GetByType(dictType string) (err error, views *[]view.SysDictDataView) {
+	err1, datas := sysDictDataDao.GetByType(dictType)
+	if err1 != nil {
+		return err1, nil
+	}
+	err2, views := viewUtils.Data2ViewList(datas)
+	if err2 != nil {
+		return err2, nil
+	}
+	return
 }

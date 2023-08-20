@@ -99,18 +99,18 @@ func (sysRoleApi *SysRoleApi) Get(c *gin.Context) {
 	}
 }
 
-// Find 分页获取SysRole列表
+// List 分页获取SysRole列表
 // @Summary 分页获取SysRole列表
-// @Router /sysRole/find [get]
-func (sysRoleApi *SysRoleApi) Find(c *gin.Context) {
-	var pageInfo common.PageInfoV2
+// @Router /sysRole/list [get]
+func (sysRoleApi *SysRoleApi) List(c *gin.Context) {
+	var pageInfo common.PageInfo
 	// 绑定查询参数到 pageInfo
 	if err := c.ShouldBindQuery(&pageInfo); err != nil {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 	}
 	// 调用 Calculate 方法自动计算 Limit 和 Offset
 	pageInfo.Calculate()
-	if err := sysRoleService.Find(&pageInfo); err != nil {
+	if err := sysRoleService.List(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

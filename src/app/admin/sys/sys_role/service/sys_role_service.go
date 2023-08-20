@@ -74,10 +74,10 @@ func (sysRoleService *SysRoleService) Get(id string) (err error, sysRoleView *vi
 	return
 }
 
-// Find 分页获取SysRole记录
+// List 分页获取SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Find(info *common.PageInfoV2) (err error) {
-	err1, sysRoles, total := sysRoleDao.Find(info)
+func (sysRoleService *SysRoleService) List(info *common.PageInfo) (err error) {
+	err1, sysRoles, total := sysRoleDao.List(info)
 	if err1 != nil {
 		return err1
 	}
@@ -86,7 +86,7 @@ func (sysRoleService *SysRoleService) Find(info *common.PageInfoV2) (err error) 
 	if err2 != nil {
 		return err2
 	}
-	info.FormList = viewList
+	info.Rows = viewList
 	return err
 }
 

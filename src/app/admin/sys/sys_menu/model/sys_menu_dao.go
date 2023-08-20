@@ -50,9 +50,9 @@ func (dao *SysMenuDao) Get(id string) (err error, sysMenu *SysMenu) {
 	return
 }
 
-// Find 分页列表
+// List 分页列表
 // Author
-func (dao *SysMenuDao) Find(info *common.PageInfoV2) (err error, sysMenus *[]SysMenu, total int64) {
+func (dao *SysMenuDao) List(info *common.PageInfo) (err error, sysMenus *[]SysMenu, total int64) {
 	// 创建db
 	db := global.GOrmDao.Model(&SysMenu{})
 	// 如果有条件搜索 下方会自动创建搜索语句

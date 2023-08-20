@@ -15,7 +15,7 @@ import (
 type SysUser struct {
 	Id string `json:"id" form:"id" gorm:"column:id;comment:用户ID;"`
 
-	OrgId string `json:"orgId" form:"orgId" gorm:"column:org_id;comment:组织ID;"`
+	DeptId string `json:"orgId" form:"orgId" gorm:"column:dept_id;comment:部门ID;"`
 
 	UserName string `json:"userName" form:"userName" gorm:"column:user_name;comment:用户账号;"`
 

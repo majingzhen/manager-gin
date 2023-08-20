@@ -26,7 +26,7 @@ func (sysUserViewUtils *SysUserViewUtils) Data2View(data *model.SysUser) (err er
 	}()
 	var tmp SysUserView
 	tmp.Id = data.Id
-	tmp.OrgId = data.OrgId
+	tmp.DeptId = data.DeptId
 	tmp.UserName = data.UserName
 	tmp.NickName = data.NickName
 	tmp.UserType = data.UserType
@@ -59,7 +59,7 @@ func (sysUserViewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err erro
 	}()
 	var tmp model.SysUser
 	tmp.Id = view.Id
-	tmp.OrgId = view.OrgId
+	tmp.DeptId = view.DeptId
 	tmp.UserName = view.UserName
 	tmp.NickName = view.NickName
 	tmp.UserType = view.UserType

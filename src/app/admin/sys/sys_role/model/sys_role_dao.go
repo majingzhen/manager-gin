@@ -50,9 +50,9 @@ func (dao *SysRoleDao) Get(id string) (err error, sysRole *SysRole) {
 	return
 }
 
-// Find 分页获取SysRole记录
+// List 分页获取SysRole记录
 // Author
-func (dao *SysRoleDao) Find(info *common.PageInfoV2) (err error, sysRoles *[]SysRole, total int64) {
+func (dao *SysRoleDao) List(info *common.PageInfo) (err error, sysRoles *[]SysRole, total int64) {
 	// 创建db
 	db := global.GOrmDao.Model(&SysRole{})
 	// 如果有条件搜索 下方会自动创建搜索语句
