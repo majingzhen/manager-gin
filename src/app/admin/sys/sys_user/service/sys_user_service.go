@@ -100,3 +100,11 @@ func (sysUserService *SysUserService) GetByUserName(userName string) (err error,
 	}
 	return
 }
+
+// IsAdmin 用户是否管理员
+func (sysUserService SysUserService) IsAdmin(userId string) (itIs bool) {
+	if common.SYSTEM_ADMIN_ID == userId {
+		itIs = true
+	}
+	return
+}

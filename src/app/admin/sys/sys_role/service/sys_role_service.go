@@ -9,11 +9,14 @@ package service
 import (
 	"manager-gin/src/app/admin/sys/sys_role/model"
 	"manager-gin/src/app/admin/sys/sys_role/service/view"
+	"manager-gin/src/app/admin/sys/sys_user/service"
+	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
 )
 
 var sysRoleDao = model.SysRoleDaoApp
 var viewUtils = view.SysRoleViewUtilsApp
+var userService = service.SysUserServiceApp
 
 type SysRoleService struct{}
 
@@ -85,4 +88,21 @@ func (sysRoleService *SysRoleService) Find(info *common.PageInfoV2) (err error) 
 	}
 	info.FormList = viewList
 	return err
+}
+
+// GetRoleByUserId 根据用户获取角色集合
+func (sysRoleService *SysRoleService) GetRoleByUserId(user *userView.SysUserView) (err error, roleNames []string) {
+	is := userService.IsAdmin(user.Id)
+	if is {
+		roleNames = append(roleNames, "admin")
+	}
+	err1, roles := sysRoleDao.GetRoleByUserId(user.Id)
+	if err1 != nil {
+		return err1, nil
+	}
+	for _, role := range *roles {
+		roleNames = append(roleNames, role.RoleName)
+	}
+	_, user.Roles = viewUtils.Data2ViewList(roles)
+	return nil, roleNames
 }

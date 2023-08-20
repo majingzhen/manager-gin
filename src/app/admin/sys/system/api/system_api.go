@@ -7,22 +7,28 @@
 package api
 
 import (
-	"github.com/gin-gonic/gin"
-	"github.com/mojocn/base64Captcha"
-	"go.uber.org/zap"
 	"image/color"
-	"manager-gin/src/app/admin/sys/sys_user/service"
+	menuSer "manager-gin/src/app/admin/sys/sys_menu/service"
+	roleSer "manager-gin/src/app/admin/sys/sys_role/service"
+	userSer "manager-gin/src/app/admin/sys/sys_user/service"
 	"manager-gin/src/app/admin/sys/system/api/view"
 	"manager-gin/src/common"
 	"manager-gin/src/common/response"
+	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
+
+	"github.com/gin-gonic/gin"
+	"github.com/mojocn/base64Captcha"
+	"go.uber.org/zap"
 )
 
 type SystemApi struct {
 }
 
-var sysUserService = service.SysUserServiceApp
+var sysUserService = userSer.SysUserServiceApp
+var roleService = roleSer.SysRoleServiceApp
+var menuService = menuSer.SysMenuServiceApp
 
 // store 验证码
 var store = base64Captcha.DefaultMemStore
@@ -34,7 +40,7 @@ func (systemApi *SystemApi) Login(c *gin.Context) {
 	var loginUserView view.LoginUserView
 	_ = c.ShouldBindJSON(&loginUserView)
 	// 校验验证码
-	captcha := VerifyCaptcha(loginUserView.VerifyKey, loginUserView.VerifyCode)
+	captcha := VerifyCaptcha(loginUserView.VerifyUuid, loginUserView.VerifyCode)
 	if !captcha {
 		response.FailWithMessage("验证码错误", c)
 		return
@@ -57,28 +63,42 @@ func (systemApi *SystemApi) Login(c *gin.Context) {
 		response.FailWithMessage("登录失败", c)
 		return
 	} else {
-		token, err := common.GenerateToken(userView.Id)
+		token, err := framework.GenerateToken(userView.Id)
 		if err != nil {
 			response.FailWithMessage("登录失败", c)
 			return
 		}
-		// 获取用户信息
-		_, sysUserView := sysUserService.Get(userView.Id)
-		resUserView := view.SysUserInfoView{
-			Id:          sysUserView.Id,
-			UserName:    sysUserView.UserName,
-			UserType:    sysUserView.UserType,
-			OrgId:       sysUserView.OrgId,
-			NickName:    sysUserView.NickName,
-			Email:       sysUserView.Email,
-			PhoneNumber: sysUserView.PhoneNumber,
-			Sex:         sysUserView.Sex,
-			Avatar:      sysUserView.Avatar,
-		}
-		// 获取用户菜单
-		resView := view.LoginUserResView{Token: token, SysUserInfo: resUserView}
-		response.OkWithData(resView, c)
+
+		response.OkWithData(token, c)
 	}
+}
+
+// GetUserInfo 获取用户信息
+func (systemApi *SystemApi) GetUserInfo(c *gin.Context) {
+	userView := framework.GetLoginUser(c)
+	// 获取用户角色
+	_, roles := roleService.GetRoleByUserId(userView)
+	// 获取用户权限
+	_, perms := menuService.GetMenuPermission(userView)
+	// 获取用户菜单
+	resView := view.LoginUserResView{
+		UserInfo:    userView,
+		Roles:       roles,
+		Permissions: perms,
+	}
+	response.OkWithData(resView, c)
+}
+
+// GetRouters 获取路由信息
+func (systemApi *SystemApi) GetRouters(c *gin.Context) {
+	userId := framework.GetLoginUserId(c)
+	err, tree := menuService.GetMenuTreeByUserId(userId)
+	if err != nil {
+		// 处理生成验证码时的错误
+		response.FailWithMessage("获取路由失败", c)
+	}
+	response.OkWithData(tree, c)
+
 }
 
 // CaptchaImage 验证码

@@ -1,4 +1,4 @@
-package common
+package framework
 
 import (
 	"errors"
@@ -38,6 +38,7 @@ func GenerateToken(userId string) (string, error) {
 
 // ParseToken 解析Token
 func ParseToken(tokenString string) (*MyClaims, error) {
+
 	// 解析Token
 	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (i interface{}, err error) {
 		return MySecret, nil

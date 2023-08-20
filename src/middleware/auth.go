@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"manager-gin/src/common"
+	"manager-gin/src/common/response"
+	"manager-gin/src/framework"
 	"net/http"
+	"strings"
 )
 
 func JWTAuthFilter() gin.HandlerFunc {
@@ -20,7 +22,14 @@ func JWTAuthFilter() gin.HandlerFunc {
 			// c.Redirect(http.StatusFound, "/login")
 		}
 
-		mc, err := common.ParseToken(authHeader)
+		// 检查Authorization头是否以Bearer开头
+		tokenString := strings.TrimPrefix(strings.Replace(authHeader, "\n", "", -1), "Bearer ")
+		if tokenString == authHeader {
+			response.Unauthorized(c)
+			return
+		}
+
+		mc, err := framework.ParseToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
 				"code": 400,
@@ -31,7 +40,7 @@ func JWTAuthFilter() gin.HandlerFunc {
 			return
 			// c.Redirect(http.StatusFound, "/login")
 		}
-		c.Set("loginUser", mc.UserId)
+		c.Set("user_id", mc.UserId)
 		c.Next()
 	}
 }

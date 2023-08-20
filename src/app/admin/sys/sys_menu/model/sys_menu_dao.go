@@ -70,18 +70,67 @@ func (dao *SysMenuDao) Find(info *common.PageInfoV2) (err error, sysMenus *[]Sys
 	return err, sysMenus, total
 }
 
-// MenuTreeDataByRoles 根据角色集合获取菜单
-// Author
-func (dao *SysMenuDao) MenuTreeDataByRoles(roleIds []string) (err error, sysMenus *[]SysMenu) {
-	// 创建db
-	model := global.GOrmDao.Table("sys_menu m")
-	model.Joins("JOIN sys_role_menu rm", "m.menu_id = rm.menu.id")
-	model.Where("rm.role_id in (?)", roleIds)
-	model.Order("m.parent_id, m.order_num")
-	_, err = model.Select("m.*").Rows()
+// SelectMenuNormalAll 获取全部数据
+func (dao *SysMenuDao) SelectMenuNormalAll() {
+
+}
+
+func (dao *SysMenuDao) GetMenuPermissionByRoleId(roleId string) (err error, perms []string) {
+	var rows []SysMenu
+	db := global.GOrmDao.Table("sys_menu m")
+	db.Joins("join sys_role_menu rm", "m.id = rm.menu_id")
+	db.Select("distinct m.perms")
+	db.Where("rm.role_id = ? and r.status = ?", roleId, common.STATUS_NORMAL)
+	err = db.Scan(&rows).Error
 	if err != nil {
 		return
 	}
+	for _, menu := range rows {
+		perms = append(perms, menu.Perms)
+	}
+	return err, perms
+}
 
-	return err, sysMenus
+func (dao *SysMenuDao) GetMenuPermissionByUserId(userId string) (err error, perms []string) {
+	var rows []SysMenu
+	db := global.GOrmDao.Table("sys_menu m")
+	db.Joins("join sys_role_menu rm", "m.id = rm.menu_id")
+	db.Joins("join sys_user_role ur", "rm.role_id = ur.role_id")
+	db.Select("distinct m.perms")
+	db.Where("ur.role_id = ? and r.status = ? and m.status = ?", userId, common.STATUS_NORMAL, common.STATUS_NORMAL)
+	err = db.Scan(&rows).Error
+	if err != nil {
+		return
+	}
+	for _, menu := range rows {
+		perms = append(perms, menu.Perms)
+	}
+	return err, perms
+}
+
+func (dao *SysMenuDao) SelectMenuAll() (err error, menus *[]SysMenu) {
+	db := global.GOrmDao.Model(&[]SysMenu{})
+	db.Where("status = ? and menu_type in (?, ?)", common.STATUS_NORMAL, common.MENU_TYPE_DIR, common.MENU_TYPE_MENU)
+	var tmp []SysMenu
+	err1 := db.Find(&tmp).Error
+	if err1 != nil {
+		return err1, nil
+	}
+	menus = &tmp
+	return err, menus
+}
+
+func (dao *SysMenuDao) SelectMenuByUserId(userId string) (err error, menus *[]SysMenu) {
+	var rows []SysMenu
+	db := global.GOrmDao.Table("sys_menu m")
+	db.Joins("join sys_role_menu rm", "m.id = rm.menu_id")
+	db.Joins("join sys_user_role ur", "rm.role_id = ur.role_id")
+	db.Select("distinct m.perms")
+	db.Where("ur.role_id = ? and r.status = ? and m.status = ?", userId, common.STATUS_NORMAL, common.STATUS_NORMAL)
+	err = db.Scan(&rows).Error
+	if err != nil {
+		return err, nil
+	}
+	menus = &rows
+	return err, menus
 }

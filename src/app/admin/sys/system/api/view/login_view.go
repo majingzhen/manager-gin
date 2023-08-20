@@ -6,28 +6,18 @@
 // @create 2023-08-18 13:41:26
 package view
 
+import "manager-gin/src/app/admin/sys/sys_user/service/view"
+
 // LoginUserView 结构体
 type LoginUserView struct {
 	UserName   string `json:"userName"`
 	Password   string `json:"password"`
-	VerifyCode string `json:"verifyCode"`
-	VerifyKey  string `json:"verifyKey"`
-}
-
-// SysUserInfoView 用户信息 view
-type SysUserInfoView struct {
-	Id          string `json:"id"`
-	OrgId       string `json:"orgId"`
-	UserName    string `json:"userName"`
-	NickName    string `json:"nickName"`
-	UserType    string `json:"userType"`
-	Email       string `json:"email"`
-	PhoneNumber string `json:"phoneNumber"`
-	Sex         string `json:"sex"`
-	Avatar      string `json:"avatar"`
+	VerifyCode string `json:"code"`
+	VerifyUuid string `json:"uuid"`
 }
 
 type LoginUserResView struct {
-	Token       string          `json:"token"`
-	SysUserInfo SysUserInfoView `json:"userInfo"`
+	UserInfo    *view.SysUserView `json:"user"`
+	Roles       []string          `json:"roles"`
+	Permissions []string          `json:"permissions"`
 }

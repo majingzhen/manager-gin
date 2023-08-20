@@ -13,7 +13,6 @@ import (
 	post "manager-gin/src/app/admin/sys/sys_post/router"
 	role "manager-gin/src/app/admin/sys/sys_role/router"
 	user "manager-gin/src/app/admin/sys/sys_user/router"
-	system "manager-gin/src/app/admin/sys/system/router"
 )
 
 type SysRouter struct{}
@@ -29,7 +28,6 @@ var noticeRouter notice.SysNoticeRouter
 var operLogRouter operLog.SysOperLogRouter
 var postRouter post.SysPostRouter
 var roleRouter role.SysRoleRouter
-var systemRouter system.SystemRouter
 
 // InitSysRouter 初始化 InitSys 路由信息
 func (r *SysRouter) InitSysRouter(Router *gin.RouterGroup) {
@@ -46,6 +44,6 @@ func (r *SysRouter) InitSysRouter(Router *gin.RouterGroup) {
 		operLogRouter.InitSysOperLogRouter(sys)
 		postRouter.InitSysPostRouter(sys)
 		roleRouter.InitSysRoleRouter(sys)
-		systemRouter.InitSystemRouter(sys)
+
 	}
 }
