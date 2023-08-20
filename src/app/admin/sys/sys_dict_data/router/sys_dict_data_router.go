@@ -18,9 +18,8 @@ var sysDictDataApi = api.SysDictDataApiApp
 
 // InitSysDictDataRouter 初始化 SysDictData 路由信息
 func (r *SysDictDataRouter) InitSysDictDataRouter(Router *gin.RouterGroup) {
-	sysDictDataRouter := Router.Group("sysDictData")
-	sysDictDataRouter.Use(middleware.JWTAuthFilter())
-	sysDictDataRouterWithoutRecord := Router.Group("sysDictData")
+	sysDictDataRouter := Router.Group("sysDictData").Use(middleware.JWTAuthFilter())
+	sysDictDataRouterWithoutRecord := Router.Group("sysDictData").Use(middleware.JWTAuthFilter())
 	{
 		sysDictDataRouter.POST("create", sysDictDataApi.Create)        // 新建SysDictData
 		sysDictDataRouter.DELETE("delete/:ids", sysDictDataApi.Delete) // 删除SysDictData

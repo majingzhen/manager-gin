@@ -18,9 +18,8 @@ var sysRoleApi = api.SysRoleApiApp
 
 // InitSysRoleRouter 初始化 SysRole 路由信息
 func (r *SysRoleRouter) InitSysRoleRouter(Router *gin.RouterGroup) {
-	sysRoleRouter := Router.Group("sysRole")
-	sysRoleRouter.Use(middleware.JWTAuthFilter())
-	sysRoleRouterWithoutRecord := Router.Group("sysRole")
+	sysRoleRouter := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
+	sysRoleRouterWithoutRecord := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
 	{
 		sysRoleRouter.POST("create", sysRoleApi.Create)             // 新建SysRole
 		sysRoleRouter.DELETE("delete", sysRoleApi.Delete)           // 删除SysRole

@@ -18,17 +18,15 @@ var sysMenuApi = api.SysMenuApiApp
 
 // InitSysMenuRouter 初始化 SysMenu 路由信息
 func (r *SysMenuRouter) InitSysMenuRouter(Router *gin.RouterGroup) {
-	sysMenuRouter := Router.Group("sysMenu")
-	sysMenuRouter.Use(middleware.JWTAuthFilter())
-	sysMenuRouterWithoutRecord := Router.Group("sysMenu")
+	sysMenuRouter := Router.Group("sysMenu").Use(middleware.JWTAuthFilter())
+	sysMenuRouterWithoutRecord := Router.Group("sysMenu").Use(middleware.JWTAuthFilter())
 	{
-		sysMenuRouter.POST("create", sysMenuApi.Create)             // 新建SysMenu
-		sysMenuRouter.DELETE("delete", sysMenuApi.Delete)           // 删除SysMenu
-		sysMenuRouter.DELETE("deleteByIds", sysMenuApi.DeleteByIds) // 批量删除SysMenu
-		sysMenuRouter.POST("update", sysMenuApi.Update)             // 更新SysMenu
+		sysMenuRouter.POST("create", sysMenuApi.Create)        // 新建SysMenu
+		sysMenuRouter.DELETE("delete/:ids", sysMenuApi.Delete) // 删除SysMenu
+		sysMenuRouter.POST("update", sysMenuApi.Update)        // 更新SysMenu
 	}
 	{
-		sysMenuRouterWithoutRecord.GET("get", sysMenuApi.Get)   // 根据ID获取SysMenu
-		sysMenuRouterWithoutRecord.GET("list", sysMenuApi.List) // 获取SysMenu列表
+		sysMenuRouterWithoutRecord.GET("get/:id", sysMenuApi.Get) // 根据ID获取SysMenu
+		sysMenuRouterWithoutRecord.GET("list", sysMenuApi.List)   // 获取SysMenu列表
 	}
 }

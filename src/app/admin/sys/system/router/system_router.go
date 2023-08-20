@@ -20,6 +20,7 @@ var systemApi = api.SystemApiApp
 func (r *SystemRouter) InitSystemRouter(Router *gin.RouterGroup) {
 	Router.POST("login", systemApi.Login) // 登录
 	Router.GET("captchaImage", systemApi.CaptchaImage)
+	Router.POST("logout", systemApi.Logout)
 	systemRouter := Router.Group("").Use(middleware.JWTAuthFilter())
 	{
 		systemRouter.GET("getInfo", systemApi.GetUserInfo)

@@ -3,32 +3,31 @@
 // @author
 // @File: sys_menu
 // @version 1.0.0
-// @create 2023-08-18 13:41:26
+// @create 2023-08-20 21:21:34
 package view
 
 // SysMenuView 结构体
 
 type SysMenuView struct {
-	Id         string         `json:"id"`
-	MenuName   string         `json:"menuName"`
-	ParentId   string         `json:"parentId"`
-	OrderNum   int            `json:"orderNum"`
-	Path       string         `json:"path"`
-	Component  string         `json:"component"`
-	Query      string         `json:"query"`
-	IsFrame    int            `json:"isFrame"`
-	IsCache    int            `json:"isCache"`
-	MenuType   string         `json:"menuType"`
-	Visible    string         `json:"visible"`
-	Status     string         `json:"status"`
-	Perms      string         `json:"perms"`
-	Icon       string         `json:"icon"`
-	CreateBy   string         `json:"createBy"`
-	CreateTime string         `json:"createTime"`
-	UpdateBy   string         `json:"updateBy"`
-	UpdateTime string         `json:"updateTime"`
-	Remark     string         `json:"remark"`
-	Children   []*SysMenuView `json:"children"`
+	Id         string `json:"id" form:"id"`
+	MenuName   string `json:"menuName" form:"menuName"`
+	ParentId   string `json:"parentId" form:"parentId"`
+	OrderNum   int    `json:"orderNum" form:"orderNum"`
+	Path       string `json:"path" form:"path"`
+	Component  string `json:"component" form:"component"`
+	Query      string `json:"query" form:"query"`
+	IsFrame    int    `json:"isFrame" form:"isFrame"`
+	IsCache    int    `json:"isCache" form:"isCache"`
+	MenuType   string `json:"menuType" form:"menuType"`
+	Visible    string `json:"visible" form:"visible"`
+	Status     string `json:"status" form:"status"`
+	Perms      string `json:"perms" form:"perms"`
+	Icon       string `json:"icon" form:"icon"`
+	CreateBy   string `json:"createBy" form:"createBy"`
+	CreateTime string `json:"createTime" form:"createTime"`
+	UpdateBy   string `json:"updateBy" form:"updateBy"`
+	UpdateTime string `json:"updateTime" form:"updateTime"`
+	Remark     string `json:"remark" form:"remark"`
 }
 
 type TreeNode struct {
@@ -57,4 +56,32 @@ type MetaView struct {
 	Icon    string `json:"icon"`
 	NoCache bool   `json:"NoCache"`
 	Link    string `json:"link"`
+}
+
+type SysMenuPageView struct {
+	// TODO 按需修改
+	Id         string `json:"id" form:"id"`
+	MenuName   string `json:"menuName" form:"menuName"`
+	ParentId   string `json:"parentId" form:"parentId"`
+	OrderNum   int    `json:"orderNum" form:"orderNum"`
+	Path       string `json:"path" form:"path"`
+	Component  string `json:"component" form:"component"`
+	Query      string `json:"query" form:"query"`
+	IsFrame    int    `json:"isFrame" form:"isFrame"`
+	IsCache    int    `json:"isCache" form:"isCache"`
+	MenuType   string `json:"menuType" form:"menuType"`
+	Visible    string `json:"visible" form:"visible"`
+	Status     string `json:"status" form:"status"`
+	Perms      string `json:"perms" form:"perms"`
+	Icon       string `json:"icon" form:"icon"`
+	CreateBy   string `json:"createBy" form:"createBy"`
+	CreateTime string `json:"createTime" form:"createTime"`
+	UpdateBy   string `json:"updateBy" form:"updateBy"`
+	UpdateTime string `json:"updateTime" form:"updateTime"`
+	Remark     string `json:"remark" form:"remark"`
+
+	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
+	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
+	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
+	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
 }

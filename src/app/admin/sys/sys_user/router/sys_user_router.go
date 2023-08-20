@@ -18,9 +18,8 @@ var sysUserApi = api.SysUserApiApp
 
 // InitSysUserRouter 初始化 SysUser 路由信息
 func (r *SysUserRouter) InitSysUserRouter(Router *gin.RouterGroup) {
-	sysUserRouter := Router.Group("sysUser")
-	sysUserRouter.Use(middleware.JWTAuthFilter())
-	sysUserRouterWithoutRecord := Router.Group("sysUser")
+	sysUserRouter := Router.Group("sysUser").Use(middleware.JWTAuthFilter())
+	sysUserRouterWithoutRecord := Router.Group("sysUser").Use(middleware.JWTAuthFilter())
 	{
 		sysUserRouter.POST("create", sysUserApi.Create)             // 新建SysUser
 		sysUserRouter.DELETE("delete", sysUserApi.Delete)           // 删除SysUser

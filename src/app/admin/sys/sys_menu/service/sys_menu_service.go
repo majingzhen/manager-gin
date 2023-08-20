@@ -24,7 +24,7 @@ type SysMenuService struct{}
 
 // Create 创建SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) Create(sysMenuView *view.SysMenuView) (err error) {
+func (service *SysMenuService) Create(sysMenuView *view.SysMenuView) (err error) {
 	err1, sysMenu := viewUtils.View2Data(sysMenuView)
 	if err1 != nil {
 		return err1
@@ -36,23 +36,16 @@ func (sysMenuService *SysMenuService) Create(sysMenuView *view.SysMenuView) (err
 	return nil
 }
 
-// Delete 删除SysMenu记录
-// Author
-func (sysMenuService *SysMenuService) Delete(id string) (err error) {
-	err = sysMenuDao.Delete(id)
-	return err
-}
-
 // DeleteByIds 批量删除SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) DeleteByIds(ids []string) (err error) {
+func (service *SysMenuService) DeleteByIds(ids []string) (err error) {
 	err = sysMenuDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) Update(id string, sysMenuView *view.SysMenuView) (err error) {
+func (service *SysMenuService) Update(id string, sysMenuView *view.SysMenuView) (err error) {
 	sysMenuView.Id = id
 	err1, sysMenu := viewUtils.View2Data(sysMenuView)
 	if err1 != nil {
@@ -64,7 +57,7 @@ func (sysMenuService *SysMenuService) Update(id string, sysMenuView *view.SysMen
 
 // Get 根据id获取SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) Get(id string) (err error, sysMenuView *view.SysMenuView) {
+func (service *SysMenuService) Get(id string) (err error, sysMenuView *view.SysMenuView) {
 	err1, sysMenu := sysMenuDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -78,22 +71,28 @@ func (sysMenuService *SysMenuService) Get(id string) (err error, sysMenuView *vi
 
 // List 分页获取SysMenu记录
 // Author
-func (sysMenuService *SysMenuService) List(info *common.PageInfo) (err error) {
-	err1, sysMenus, total := sysMenuDao.List(info)
+func (service *SysMenuService) List(pageInfo *view.SysMenuPageView) (err error, res *common.PageInfo) {
+	err, param, page := viewUtils.Page2Data(pageInfo)
+	if err != nil {
+		return err, nil
+	}
+	err1, datas, total := sysMenuDao.List(param, page)
 	if err1 != nil {
-		return err1
+		return err1, res
 	}
-	info.Total = total
-	err2, viewList := viewUtils.Data2ViewList(sysMenus)
+	err2, viewList := viewUtils.Data2ViewList(datas)
 	if err2 != nil {
-		return err2
+		return err2, res
 	}
-	info.Rows = viewList
-	return err
+	res = &common.PageInfo{
+		Total: total,
+		Rows:  viewList,
+	}
+	return err, res
 }
 
 // GetMenuPermission 根据用户id获取菜单权限
-func (sysMenuService *SysMenuService) GetMenuPermission(user *userView.SysUserView) (err error, perms []string) {
+func (service *SysMenuService) GetMenuPermission(user *userView.SysUserView) (err error, perms []string) {
 	is := userService.IsAdmin(user.Id)
 	// 管理员拥有所有权限
 	if is {
@@ -120,7 +119,7 @@ func (sysMenuService *SysMenuService) GetMenuPermission(user *userView.SysUserVi
 	return err, perms
 }
 
-func (sysMenuService *SysMenuService) GetMenuTreeByUserId(userId string) (err error, menuTree []*view.RouterView) {
+func (service *SysMenuService) GetMenuTreeByUserId(userId string) (err error, menuTree []*view.RouterView) {
 	var menus *[]model.SysMenu
 	itIs := userService.IsAdmin(userId)
 	if itIs {
@@ -135,6 +134,22 @@ func (sysMenuService *SysMenuService) GetMenuTreeByUserId(userId string) (err er
 
 	tree := buildTree(*viewList, "0")
 	return err, tree
+}
+
+func (service *SysMenuService) SelectMenuList(v *view.SysMenuView, userId string) (err error, menus *[]view.SysMenuView) {
+	err, data := viewUtils.View2Data(v)
+	if err != nil {
+		return err, nil
+	}
+	var dataMenus *[]model.SysMenu
+	itIs := userService.IsAdmin(userId)
+	if itIs {
+		err, dataMenus = sysMenuDao.SelectMenuList(data)
+	} else {
+		err, dataMenus = sysMenuDao.SelectMenuListByUserId(data, userId)
+	}
+	err, menus = viewUtils.Data2ViewList(dataMenus)
+	return
 }
 
 // 递归函数，将SysMenuView转换为MenuNode

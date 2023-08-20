@@ -50,24 +50,30 @@ func (dao *SysMenuDao) Get(id string) (err error, sysMenu *SysMenu) {
 	return
 }
 
-// List 分页列表
+// List 分页获取SysMenu记录
 // Author
-func (dao *SysMenuDao) List(info *common.PageInfo) (err error, sysMenus *[]SysMenu, total int64) {
-	// 创建db
-	db := global.GOrmDao.Model(&SysMenu{})
+func (dao *SysMenuDao) List(param *SysMenu, page *common.PageInfo) (err error, datas *[]SysMenu, total int64) {
+	// 创建model
+	model := global.GOrmDao.Model(&SysMenu{})
 	// 如果有条件搜索 下方会自动创建搜索语句
-	//if info.Id != "" {
-	//	db = db.Where("ID = ?", info.Id)
+	//if param.Id != "" {
+	//	model = model.Where("ID = ?", info.Id)
 	//}
 
-	err = db.Count(&total).Error
+	err = model.Count(&total).Error
 	if err != nil {
 		return
 	}
+	// 计算分页信息
+	page.Calculate()
+	// 生成排序信息
+	if page.OrderByColumn != "" {
+		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	}
 	var tmp []SysMenu
-	err = db.Limit(info.Limit).Offset(info.Offset).Find(&tmp).Error
-	sysMenus = &tmp
-	return err, sysMenus, total
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
+	datas = &tmp
+	return err, datas, total
 }
 
 // SelectMenuNormalAll 获取全部数据
@@ -97,7 +103,7 @@ func (dao *SysMenuDao) GetMenuPermissionByUserId(userId string) (err error, perm
 	db.Joins("join sys_role_menu rm", "m.id = rm.menu_id")
 	db.Joins("join sys_user_role ur", "rm.role_id = ur.role_id")
 	db.Select("distinct m.perms")
-	db.Where("ur.role_id = ? and r.status = ? and m.status = ?", userId, common.STATUS_NORMAL, common.STATUS_NORMAL)
+	db.Where("ur.user_id = ? and r.status = ? and m.status = ?", userId, common.STATUS_NORMAL, common.STATUS_NORMAL)
 	err = db.Scan(&rows).Error
 	if err != nil {
 		return
@@ -126,11 +132,52 @@ func (dao *SysMenuDao) SelectMenuByUserId(userId string) (err error, menus *[]Sy
 	db.Joins("join sys_role_menu rm", "m.id = rm.menu_id")
 	db.Joins("join sys_user_role ur", "rm.role_id = ur.role_id")
 	db.Select("distinct m.perms")
-	db.Where("ur.role_id = ? and r.status = ? and m.status = ?", userId, common.STATUS_NORMAL, common.STATUS_NORMAL)
+	db.Where("ur.user_id = ? and r.status = ? and m.status = ?", userId, common.STATUS_NORMAL, common.STATUS_NORMAL)
 	err = db.Scan(&rows).Error
 	if err != nil {
 		return err, nil
 	}
+	menus = &rows
+	return err, menus
+}
+
+func (dao *SysMenuDao) SelectMenuList(data *SysMenu) (err error, menus *[]SysMenu) {
+	var rows []SysMenu
+	db := global.GOrmDao.Table(data.TableName())
+	db.Select("distinct id, parent_id, menu_name, path, component, `query`, visible, status, perms, is_frame, is_cache, menu_type, icon, order_num, create_time")
+	if data.MenuName != "" {
+		db.Where("menu_name like ?", "%"+data.MenuName+"%")
+	}
+	if data.Visible != "" {
+		db.Where("visible = ?", data.Visible)
+	}
+	if data.Status != "" {
+		db.Where("status = ?", data.Status)
+	}
+	db.Order("parent_id, order_num")
+	err = db.Scan(&rows).Error
+	menus = &rows
+	return err, menus
+}
+
+func (dao *SysMenuDao) SelectMenuListByUserId(data *SysMenu, userId string) (err error, menus *[]SysMenu) {
+	var rows []SysMenu
+	db := global.GOrmDao.Table("sys_menu m")
+	db.Joins("join sys_role_menu rm", "m.id = rm.menu_id")
+	db.Joins("join sys_user_role ur", "rm.role_id = ur.role_id")
+	db.Select("distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.status, m.perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time")
+	db.Where("ur.user_id = ? ", userId)
+	if data.MenuName != "" {
+		db.Where("menu_name like ?", "%"+data.MenuName+"%")
+	}
+	if data.Visible != "" {
+		db.Where("visible = ?", data.Visible)
+	}
+	if data.Status != "" {
+		db.Where("status = ?", data.Status)
+	}
+	db.Order("m.parent_id, m.oder_num")
+	err = db.Scan(&rows).Error
 	menus = &rows
 	return err, menus
 }

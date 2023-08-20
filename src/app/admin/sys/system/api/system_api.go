@@ -144,3 +144,8 @@ func VerifyCaptcha(id string, VerifyValue string) bool {
 		return false
 	}
 }
+
+// Logout 退出登录
+func (systemApi *SystemApi) Logout(c *gin.Context) {
+	response.OkWithMessage("success", c)
+}

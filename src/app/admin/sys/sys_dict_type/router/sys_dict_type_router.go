@@ -18,9 +18,8 @@ var sysDictTypeApi = api.SysDictTypeApiApp
 
 // InitSysDictTypeRouter 初始化 SysDictType 路由信息
 func (r *SysDictTypeRouter) InitSysDictTypeRouter(Router *gin.RouterGroup) {
-	sysDictTypeRouter := Router.Group("sysDictType")
-	sysDictTypeRouter.Use(middleware.JWTAuthFilter())
-	sysDictTypeRouterWithoutRecord := Router.Group("sysDictType")
+	sysDictTypeRouter := Router.Group("sysDictType").Use(middleware.JWTAuthFilter())
+	sysDictTypeRouterWithoutRecord := Router.Group("sysDictType").Use(middleware.JWTAuthFilter())
 	{
 		sysDictTypeRouter.POST("create", sysDictTypeApi.Create)        // 新建SysDictType
 		sysDictTypeRouter.DELETE("delete/:ids", sysDictTypeApi.Delete) // 删除SysDictType

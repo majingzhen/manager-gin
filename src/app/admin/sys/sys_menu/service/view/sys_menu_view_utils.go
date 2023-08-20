@@ -3,20 +3,21 @@
 // @author
 // @File: sys_menu
 // @version 1.0.0
-// @create 2023-08-18 13:41:26
+// @create 2023-08-20 21:21:34
 package view
 
 import (
 	"fmt"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_menu/model"
+	"manager-gin/src/common"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
 
 type SysMenuViewUtils struct{}
 
-func (sysMenuViewUtils *SysMenuViewUtils) Data2View(data *model.SysMenu) (err error, view *SysMenuView) {
+func (viewUtils *SysMenuViewUtils) Data2View(data *model.SysMenu) (err error, view *SysMenuView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysMenuViewUtils View2Data error: %v", e)
@@ -67,7 +68,7 @@ func (sysMenuViewUtils *SysMenuViewUtils) Data2View(data *model.SysMenu) (err er
 	view = &tmp
 	return
 }
-func (sysMenuViewUtils *SysMenuViewUtils) View2Data(view *SysMenuView) (err error, data *model.SysMenu) {
+func (viewUtils *SysMenuViewUtils) View2Data(view *SysMenuView) (err error, data *model.SysMenu) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysMenuViewUtils View2Data error: %v", e)
@@ -119,7 +120,62 @@ func (sysMenuViewUtils *SysMenuViewUtils) View2Data(view *SysMenuView) (err erro
 	return
 }
 
-func (sysMenuViewUtils *SysMenuViewUtils) View2DataList(viewList *[]SysMenuView) (err error, dataList *[]model.SysMenu) {
+func (viewUtils *SysMenuViewUtils) Page2Data(pageInfo *SysMenuPageView) (err error, data *model.SysMenu, page *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysMenuViewUtils View2Data error: %v", e)
+			global.Logger.Error("SysMenuViewUtils.View2Data:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	// TODO 按需修改
+	var tmp model.SysMenu
+
+	tmp.Id = pageInfo.Id
+
+	tmp.MenuName = pageInfo.MenuName
+
+	tmp.ParentId = pageInfo.ParentId
+
+	tmp.OrderNum = pageInfo.OrderNum
+
+	tmp.Path = pageInfo.Path
+
+	tmp.Component = pageInfo.Component
+
+	tmp.Query = pageInfo.Query
+
+	tmp.IsFrame = pageInfo.IsFrame
+
+	tmp.IsCache = pageInfo.IsCache
+
+	tmp.MenuType = pageInfo.MenuType
+
+	tmp.Visible = pageInfo.Visible
+
+	tmp.Status = pageInfo.Status
+
+	tmp.Perms = pageInfo.Perms
+
+	tmp.Icon = pageInfo.Icon
+
+	tmp.CreateBy = pageInfo.CreateBy
+
+	tmp.UpdateBy = pageInfo.UpdateBy
+
+	tmp.Remark = pageInfo.Remark
+
+	data = &tmp
+	page = &common.PageInfo{
+		PageSize:      pageInfo.PageSize,
+		PageNum:       pageInfo.PageNum,
+		OrderByColumn: pageInfo.OrderByColumn,
+		IsAsc:         pageInfo.IsAsc,
+	}
+	return
+}
+
+func (viewUtils *SysMenuViewUtils) View2DataList(viewList *[]SysMenuView) (err error, dataList *[]model.SysMenu) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysMenuViewUtils View2DataList error: %v", e)
@@ -131,7 +187,7 @@ func (sysMenuViewUtils *SysMenuViewUtils) View2DataList(viewList *[]SysMenuView)
 		var dataTmpList []model.SysMenu
 		for i := range *dataList {
 			view := (*viewList)[i]
-			err, data := sysMenuViewUtils.View2Data(&view)
+			err, data := viewUtils.View2Data(&view)
 			if err == nil {
 				dataTmpList = append(dataTmpList, *data)
 			}
@@ -141,7 +197,7 @@ func (sysMenuViewUtils *SysMenuViewUtils) View2DataList(viewList *[]SysMenuView)
 	return
 }
 
-func (sysMenuViewUtils *SysMenuViewUtils) Data2ViewList(dataList *[]model.SysMenu) (err error, viewList *[]SysMenuView) {
+func (viewUtils *SysMenuViewUtils) Data2ViewList(dataList *[]model.SysMenu) (err error, viewList *[]SysMenuView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysMenuViewUtils Data2ViewList error: %v", e)
@@ -153,7 +209,7 @@ func (sysMenuViewUtils *SysMenuViewUtils) Data2ViewList(dataList *[]model.SysMen
 		var viewTmpList []SysMenuView
 		for i := range *dataList {
 			data := (*dataList)[i]
-			err, view := sysMenuViewUtils.Data2View(&data)
+			err, view := viewUtils.Data2View(&data)
 			if err == nil {
 				viewTmpList = append(viewTmpList, *view)
 			}
