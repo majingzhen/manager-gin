@@ -7,7 +7,6 @@
 package view
 
 // SysRoleView 结构体
-
 type SysRoleView struct {
 	Id                string    `json:"id" form:"id"`
 	RoleName          string    `json:"roleName" form:"roleName"`

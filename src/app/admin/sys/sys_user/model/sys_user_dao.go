@@ -56,9 +56,21 @@ func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, d
 	// 创建model
 	model := global.GOrmDao.Model(&SysUser{})
 	// 如果有条件搜索 下方会自动创建搜索语句
-	//if param.Id != "" {
-	//	model = model.Where("ID = ?", info.Id)
-	//}
+	if param.Id != "" {
+		model = model.Where("ID = ?", param.Id)
+	}
+	if param.UserName != "" {
+		model = model.Where("user_name like ?", "%"+param.UserName+"%")
+	}
+	if param.PhoneNumber != "" {
+		model = model.Where("phone_number like ?", "%"+param.PhoneNumber+"%")
+	}
+	if param.Status != "" {
+		model = model.Where("status = ?", param.Status)
+	}
+	if param.DeptId != "" {
+		model = model.Where("dept_id = ?", param.DeptId)
+	}
 	if err = model.Count(&total).Error; err != nil {
 		return
 	}

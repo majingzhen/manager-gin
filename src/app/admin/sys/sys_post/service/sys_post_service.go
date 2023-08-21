@@ -30,7 +30,7 @@ func (service *SysPostService) Create(sysPostView *view.SysPostView) error {
 		return err
 	}
 	if err, sysPost := viewUtils.View2Data(sysPostView); err != nil {
-		return errors.New("数据解析失败")
+		return err
 	} else {
 		return sysPostDao.Create(*sysPost)
 	}

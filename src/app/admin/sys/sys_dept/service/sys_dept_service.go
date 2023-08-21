@@ -10,14 +10,14 @@ import (
 	"errors"
 	"manager-gin/src/app/admin/sys/sys_dept/model"
 	"manager-gin/src/app/admin/sys/sys_dept/service/view"
-	"manager-gin/src/app/admin/sys/sys_user/service"
+	"manager-gin/src/app/admin/sys/sys_user/service/extend"
 	"manager-gin/src/common"
 	"strings"
 )
 
 var sysDeptDao = model.SysDeptDaoApp
 var viewUtils = view.SysDeptViewUtilsApp
-var userService = service.SysUserServiceApp
+var userService = extend.SysUserExtendServiceApp
 
 type SysDeptService struct{}
 
@@ -31,7 +31,7 @@ func (service *SysDeptService) Create(sysDeptView *view.SysDeptView) (err error)
 	}
 	// 根据前端传入的数据创建model
 	if err1, sysDept := viewUtils.View2Data(sysDeptView); err1 != nil {
-		return errors.New("数据解析失败")
+		return err1
 	} else {
 		if err1, deptView := service.Get(sysDept.ParentId); err1 != nil {
 			return errors.New("父级部门不存在")
@@ -57,7 +57,6 @@ func (service *SysDeptService) Delete(id string) error {
 			return errors.New("存在子部门, 不允许删除")
 		}
 	}
-	//TODO 判断是否存在用户
 	if err, userView := userService.GetByDeptId(id); err != nil {
 		return err
 	} else {
@@ -87,7 +86,7 @@ func (service *SysDeptService) Update(id string, sysDeptView *view.SysDeptView) 
 	}
 	sysDeptView.Id = id
 	if err1, sysDept := viewUtils.View2Data(sysDeptView); err1 != nil {
-		return errors.New("数据解析失败")
+		return err1
 	} else {
 		if err1, newParentDept := service.Get(sysDept.ParentId); err1 != nil {
 			return errors.New("父级部门不存在")
@@ -172,7 +171,7 @@ func (service *SysDeptService) List(v *view.SysDeptView) (err error, views *[]vi
 }
 
 // SelectDeptTree 获取部门树
-func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView) (error, *[]view.SysDeptView) {
+func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView) (error, *[]view.SysDeptTreeView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
@@ -181,38 +180,43 @@ func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView) (error, *[]vi
 	if err, datas = sysDeptDao.List(data); err != nil {
 		return err, nil
 	} else {
-		var views *[]view.SysDeptView
-		if err, views = viewUtils.Data2ViewList(datas); err != nil {
+		var trees *[]view.SysDeptTreeView
+		if err, trees = viewUtils.Data2TreeList(datas); err != nil {
 			return err, nil
 		} else {
-			return buildDeptTree(views)
+			deptTrees := getDeptTree(*trees)
+			return nil, &deptTrees
 		}
 
 	}
 }
 
-func buildDeptTree(depts *[]view.SysDeptView) (error, *[]view.SysDeptView) {
-	var deptTree []view.SysDeptView
-	for _, dept := range *depts {
+func getDeptTree(departments []view.SysDeptTreeView) []view.SysDeptTreeView {
+	var rootDepts []view.SysDeptTreeView
+
+	// 遍历所有部门，找到根节点
+	for _, dept := range departments {
 		if dept.ParentId == "0" {
-			deptTree = append(deptTree, dept)
+			rootDepts = append(rootDepts, dept)
 		}
 	}
-	for _, dept := range deptTree {
-		dept.Children = getChildren(dept.Id, *depts)
+	// 递归获取每个根节点的子部门
+	for i := range rootDepts {
+		rootDepts[i].Children = getChildren(rootDepts[i].Id, departments)
 	}
-	return nil, &deptTree
+	return rootDepts
 }
 
-func getChildren(id string, views []view.SysDeptView) *[]view.SysDeptView {
-	var children []view.SysDeptView
-	for _, dept := range views {
-		if dept.ParentId == id {
+func getChildren(parentId string, departments []view.SysDeptTreeView) []view.SysDeptTreeView {
+	var children []view.SysDeptTreeView
+
+	// 遍历所有部门，找到指定父节点的子部门
+	for _, dept := range departments {
+		if dept.ParentId == parentId {
+			// 递归获取子部门的子部门
+			dept.Children = getChildren(dept.Id, departments)
 			children = append(children, dept)
 		}
 	}
-	for _, child := range children {
-		child.Children = getChildren(child.Id, views)
-	}
-	return &children
+	return children
 }

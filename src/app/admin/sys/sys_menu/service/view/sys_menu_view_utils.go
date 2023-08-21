@@ -185,7 +185,7 @@ func (viewUtils *SysMenuViewUtils) View2DataList(viewList *[]SysMenuView) (err e
 	}()
 	if viewList != nil {
 		var dataTmpList []model.SysMenu
-		for i := range *dataList {
+		for i := range *viewList {
 			view := (*viewList)[i]
 			err, data := viewUtils.View2Data(&view)
 			if err == nil {

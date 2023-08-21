@@ -7,6 +7,7 @@
 package service
 
 import (
+	"manager-gin/src/app/admin/sys/sys_dept/service"
 	"manager-gin/src/app/admin/sys/sys_user/model"
 	"manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
@@ -14,6 +15,7 @@ import (
 
 var sysUserDao = model.SysUserDaoApp
 var viewUtils = view.SysUserViewUtilsApp
+var deptService = service.SysDeptServiceApp
 
 type SysUserService struct{}
 
@@ -85,13 +87,21 @@ func (service *SysUserService) Page(pageInfo *view.SysUserPageView) (err error, 
 	if err2, viewList := viewUtils.Data2ViewList(datas); err2 != nil {
 		return err2, res
 	} else {
+		// 组装部门数据
+		for i := 0; i < len(*viewList); i++ {
+			deptId := (*viewList)[i].DeptId
+			if err3, deptView := deptService.Get(deptId); err3 != nil {
+				return err, nil
+			} else {
+				(*viewList)[i].Dept = deptView
+			}
+		}
 		res = &common.PageInfo{
 			Total: total,
 			Rows:  viewList,
 		}
 		return err, res
 	}
-
 }
 
 // List 获取SysUser记录
@@ -127,19 +137,6 @@ func (service *SysUserService) GetByUserName(userName string) (err error, sysUse
 func (service *SysUserService) IsAdmin(userId string) (itIs bool) {
 	if common.SYSTEM_ADMIN_ID == userId {
 		itIs = true
-	}
-	return
-}
-
-// GetByDeptId 根据部门id获取SysUser记录
-func (service *SysUserService) GetByDeptId(deptId string) (err error, sysUserView *[]view.SysUserView) {
-	err1, sysUser := sysUserDao.GetByDeptId(deptId)
-	if err1 != nil {
-		return err1, nil
-	}
-	err2, sysUserView := viewUtils.Data2ViewList(sysUser)
-	if err2 != nil {
-		return err2, nil
 	}
 	return
 }

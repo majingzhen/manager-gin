@@ -30,7 +30,7 @@ func (service *SysConfigService) Create(sysConfigView *view.SysConfigView) error
 		}
 	}
 	if err, sysConfig := viewUtils.View2Data(sysConfigView); err != nil {
-		return errors.New("数据解析失败")
+		return err
 	} else {
 		return sysConfigDao.Create(*sysConfig)
 	}

@@ -131,7 +131,7 @@ func (viewUtils *SysConfigViewUtils) View2DataList(viewList *[]SysConfigView) (e
 	}()
 	if viewList != nil {
 		var dataTmpList []model.SysConfig
-		for i := range *dataList {
+		for i := range *viewList {
 			view := (*viewList)[i]
 			err, data := viewUtils.View2Data(&view)
 			if err == nil {

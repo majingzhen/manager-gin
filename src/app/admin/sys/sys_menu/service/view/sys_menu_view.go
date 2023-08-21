@@ -30,15 +30,6 @@ type SysMenuView struct {
 	Remark     string `json:"remark" form:"remark"`
 }
 
-type TreeNode struct {
-	Id       string      `json:"id"`
-	MenuName string      `json:"menuName"`
-	Icon     string      `json:"icon"`
-	Path     string      `json:"path"`
-	Perms    string      `json:"perms"`
-	Children []*TreeNode `json:"children"`
-}
-
 type RouterView struct {
 	Name       string        `json:"name"`
 	Path       string        `json:"path"`

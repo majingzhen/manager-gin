@@ -48,3 +48,10 @@ type SysDeptPageView struct {
 	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
 	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
 }
+
+type SysDeptTreeView struct {
+	Id       string            `json:"id" form:"id"`
+	Label    string            `json:"label" form:"label"`
+	ParentId string            `json:"parentId" form:"parentId"`
+	Children []SysDeptTreeView `json:"children" form:"children"`
+}

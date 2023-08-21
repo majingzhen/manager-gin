@@ -6,32 +6,36 @@
 // @create 2023-08-21 14:20:37
 package view
 
-import "manager-gin/src/app/admin/sys/sys_role/service/view"
+import (
+	deptView "manager-gin/src/app/admin/sys/sys_dept/service/view"
+	roleView "manager-gin/src/app/admin/sys/sys_role/service/view"
+)
 
 // SysUserView 结构体
 
 type SysUserView struct {
-	Id          string              `json:"id" form:"id"`
-	DeptId      string              `json:"deptId" form:"deptId"`
-	UserName    string              `json:"userName" form:"userName"`
-	NickName    string              `json:"nickName" form:"nickName"`
-	UserType    string              `json:"userType" form:"userType"`
-	Email       string              `json:"email" form:"email"`
-	PhoneNumber string              `json:"phoneNumber" form:"phoneNumber"`
-	Sex         string              `json:"sex" form:"sex"`
-	Avatar      string              `json:"avatar" form:"avatar"`
-	Password    string              `json:"password" form:"password"`
-	Salt        string              `json:"salt" form:"salt"`
-	Status      string              `json:"status" form:"status"`
-	DeletedAt   string              `json:"deletedAt" form:"deletedAt"`
-	LoginIp     string              `json:"loginIp" form:"loginIp"`
-	LoginDate   string              `json:"loginDate" form:"loginDate"`
-	CreateBy    string              `json:"createBy" form:"createBy"`
-	CreateTime  string              `json:"createTime" form:"createTime"`
-	UpdateBy    string              `json:"updateBy" form:"updateBy"`
-	UpdateTime  string              `json:"updateTime" form:"updateTime"`
-	Remark      string              `json:"remark" form:"remark"`
-	Roles       *[]view.SysRoleView `json:"roles"`
+	Id          string                  `json:"id" form:"id"`
+	DeptId      string                  `json:"deptId" form:"deptId"`
+	UserName    string                  `json:"userName" form:"userName"`
+	NickName    string                  `json:"nickName" form:"nickName"`
+	UserType    string                  `json:"userType" form:"userType"`
+	Email       string                  `json:"email" form:"email"`
+	PhoneNumber string                  `json:"phoneNumber" form:"phoneNumber"`
+	Sex         string                  `json:"sex" form:"sex"`
+	Avatar      string                  `json:"avatar" form:"avatar"`
+	Password    string                  `json:"password" form:"password"`
+	Salt        string                  `json:"salt" form:"salt"`
+	Status      string                  `json:"status" form:"status"`
+	DeletedAt   string                  `json:"deletedAt" form:"deletedAt"`
+	LoginIp     string                  `json:"loginIp" form:"loginIp"`
+	LoginDate   string                  `json:"loginDate" form:"loginDate"`
+	CreateBy    string                  `json:"createBy" form:"createBy"`
+	CreateTime  string                  `json:"createTime" form:"createTime"`
+	UpdateBy    string                  `json:"updateBy" form:"updateBy"`
+	UpdateTime  string                  `json:"updateTime" form:"updateTime"`
+	Remark      string                  `json:"remark" form:"remark"`
+	Roles       *[]roleView.SysRoleView `json:"roles"`
+	Dept        *deptView.SysDeptView   `json:"dept"`
 }
 
 type SysUserPageView struct {

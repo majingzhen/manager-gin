@@ -131,7 +131,7 @@ func (viewUtils *SysPostViewUtils) View2DataList(viewList *[]SysPostView) (err e
 	}()
 	if viewList != nil {
 		var dataTmpList []model.SysPost
-		for i := range *dataList {
+		for i := range *viewList {
 			view := (*viewList)[i]
 			err, data := viewUtils.View2Data(&view)
 			if err == nil {

@@ -155,7 +155,7 @@ func (viewUtils *SysDictDataViewUtils) View2DataList(viewList *[]SysDictDataView
 	}()
 	if viewList != nil {
 		var dataTmpList []model.SysDictData
-		for i := range *dataList {
+		for i := range *viewList {
 			view := (*viewList)[i]
 			err, data := viewUtils.View2Data(&view)
 			if err == nil {

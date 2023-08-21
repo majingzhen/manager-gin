@@ -100,6 +100,44 @@ func (viewUtils *SysDeptViewUtils) View2Data(view *SysDeptView) (err error, data
 	return
 }
 
+func (viewUtils *SysDeptViewUtils) Data2Tree(data *model.SysDept) (err error, view *SysDeptTreeView) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysDeptViewUtils Data2Tree error: %v", e)
+			global.Logger.Error("SysDeptViewUtils.Data2Tree:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	var tmp SysDeptTreeView
+	tmp.Id = data.Id
+	tmp.Label = data.DeptName
+	tmp.ParentId = data.ParentId
+	view = &tmp
+	return
+}
+
+func (viewUtils *SysDeptViewUtils) Data2TreeList(dataList *[]model.SysDept) (err error, treeList *[]SysDeptTreeView) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysDeptViewUtils Data2TreeList error: %v", e)
+			global.Logger.Error("SysDeptViewUtils.Data2TreeList:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	if dataList != nil {
+		var tmpList []SysDeptTreeView
+		for i := range *dataList {
+			data := (*dataList)[i]
+			err, tree := viewUtils.Data2Tree(&data)
+			if err == nil {
+				tmpList = append(tmpList, *tree)
+			}
+		}
+		treeList = &tmpList
+	}
+	return
+}
+
 func (viewUtils *SysDeptViewUtils) Page2Data(pageInfo *SysDeptPageView) (err error, data *model.SysDept, page *common.PageInfo) {
 	defer func() {
 		if e := recover(); e != nil {
@@ -153,7 +191,7 @@ func (viewUtils *SysDeptViewUtils) View2DataList(viewList *[]SysDeptView) (err e
 	}()
 	if viewList != nil {
 		var dataTmpList []model.SysDept
-		for i := range *dataList {
+		for i := range *viewList {
 			view := (*viewList)[i]
 			err, data := viewUtils.View2Data(&view)
 			if err == nil {

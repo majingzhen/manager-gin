@@ -79,6 +79,12 @@ func (dao *SysDeptDao) List(data *SysDept) (err error, datas *[]SysDept) {
 	if data.Status != "" {
 		db.Where("status = ?", data.Status)
 	}
+	if data.ParentId != "" {
+		db.Where("parent_id = ?", data.ParentId)
+	}
+	if data.Id != "" {
+		db.Where("id = ?", data.Id)
+	}
 	db.Order("parent_id, order_num")
 	err = db.Find(&rows).Error
 	datas = &rows

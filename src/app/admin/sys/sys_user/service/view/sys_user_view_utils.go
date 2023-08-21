@@ -187,7 +187,7 @@ func (viewUtils *SysUserViewUtils) View2DataList(viewList *[]SysUserView) (err e
 	}()
 	if viewList != nil {
 		var dataTmpList []model.SysUser
-		for i := range *dataList {
+		for i := range *viewList {
 			view := (*viewList)[i]
 			err, data := viewUtils.View2Data(&view)
 			if err == nil {

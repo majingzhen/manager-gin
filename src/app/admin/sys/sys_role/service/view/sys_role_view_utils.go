@@ -153,7 +153,7 @@ func (viewUtils *SysRoleViewUtils) View2DataList(viewList *[]SysRoleView) (err e
 	}()
 	if viewList != nil {
 		var dataTmpList []model.SysRole
-		for i := range *dataList {
+		for i := range *viewList {
 			view := (*viewList)[i]
 			err, data := viewUtils.View2Data(&view)
 			if err == nil {
