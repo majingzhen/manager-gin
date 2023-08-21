@@ -50,24 +50,43 @@ func (dao *SysRoleDao) Get(id string) (err error, sysRole *SysRole) {
 	return
 }
 
-// List 分页获取SysRole记录
+// Page 分页获取SysRole记录
 // Author
-func (dao *SysRoleDao) List(info *common.PageInfo) (err error, sysRoles *[]SysRole, total int64) {
-	// 创建db
-	db := global.GOrmDao.Model(&SysRole{})
+func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, datas *[]SysRole, total int64) {
+	// 创建model
+	model := global.GOrmDao.Model(&SysRole{})
 	// 如果有条件搜索 下方会自动创建搜索语句
-	//if info.Id != "" {
-	//	db = db.Where("ID = ?", info.Id)
+	//if param.Id != "" {
+	//	model = model.Where("ID = ?", info.Id)
 	//}
-
-	err = db.Count(&total).Error
-	if err != nil {
+	if err = model.Count(&total).Error; err != nil {
 		return
 	}
+	// 计算分页信息
+	page.Calculate()
+	// 生成排序信息
+	if page.OrderByColumn != "" {
+		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	}
 	var tmp []SysRole
-	err = db.Limit(info.Limit).Offset(info.Offset).Find(&tmp).Error
-	sysRoles = &tmp
-	return err, sysRoles, total
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
+	datas = &tmp
+	return err, datas, total
+}
+
+// List 获取SysRole记录
+// Author
+func (dao *SysRoleDao) List(data *SysRole) (err error, datas *[]SysRole) {
+	var rows []SysRole
+	db := global.GOrmDao.Model(&SysRole{})
+	// TODO 输入查询条件
+	//if data.Id != "" {
+	//    db.Where("id = ?", data.Id)
+	//}
+	db.Order("create_time desc")
+	err = db.Find(&rows).Error
+	datas = &rows
+	return err, datas
 }
 
 // GetRoleByUserId 根据用户获取角色集合

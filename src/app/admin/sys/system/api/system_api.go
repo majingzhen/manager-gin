@@ -12,7 +12,6 @@ import (
 	roleSer "manager-gin/src/app/admin/sys/sys_role/service"
 	userSer "manager-gin/src/app/admin/sys/sys_user/service"
 	"manager-gin/src/app/admin/sys/system/api/view"
-	"manager-gin/src/common"
 	"manager-gin/src/common/response"
 	"manager-gin/src/framework"
 	"manager-gin/src/global"
@@ -108,12 +107,12 @@ func (systemApi *SystemApi) CaptchaImage(c *gin.Context) {
 	var driver base64Captcha.Driver
 	//创建一个字符串类型的验证码驱动DriverString, DriverChinese :中文驱动
 	driverString := base64Captcha.DriverString{
-		Height:          40,                                     //高度
-		Width:           100,                                    //宽度
-		NoiseCount:      0,                                      //干扰数
-		ShowLineOptions: 2 | 4,                                  //展示个数
-		Length:          4,                                      //长度
-		Source:          "1234567890qwertyuioplkjhgfdsazxcvbnm", //验证码随机字符串来源
+		Height:          40,                                    //高度
+		Width:           100,                                   //宽度
+		NoiseCount:      0,                                     //干扰数
+		ShowLineOptions: 2 | 4,                                 //展示个数
+		Length:          4,                                     //长度
+		Source:          "1234567890qwertyuiplkjhgfdsazxcvbnm", //验证码随机字符串来源
 		BgColor: &color.RGBA{ // 背景颜色
 			R: 3,
 			G: 102,
@@ -129,7 +128,7 @@ func (systemApi *SystemApi) CaptchaImage(c *gin.Context) {
 		// 处理生成验证码时的错误
 		response.FailWithMessage("登录失败", c)
 	}
-	response.OkWithData(common.Captcha{
+	response.OkWithData(&view.Captcha{
 		Key: id,
 		Img: b64s,
 	}, c)

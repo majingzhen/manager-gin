@@ -3,20 +3,21 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-18 14:00:53
+// @create 2023-08-21 17:37:56
 package view
 
 import (
 	"fmt"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_role/model"
+	"manager-gin/src/common"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
 
 type SysRoleViewUtils struct{}
 
-func (sysRoleViewUtils *SysRoleViewUtils) Data2View(data *model.SysRole) (err error, view *SysRoleView) {
+func (viewUtils *SysRoleViewUtils) Data2View(data *model.SysRole) (err error, view *SysRoleView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysRoleViewUtils View2Data error: %v", e)
@@ -57,7 +58,7 @@ func (sysRoleViewUtils *SysRoleViewUtils) Data2View(data *model.SysRole) (err er
 	view = &tmp
 	return
 }
-func (sysRoleViewUtils *SysRoleViewUtils) View2Data(view *SysRoleView) (err error, data *model.SysRole) {
+func (viewUtils *SysRoleViewUtils) View2Data(view *SysRoleView) (err error, data *model.SysRole) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysRoleViewUtils View2Data error: %v", e)
@@ -99,7 +100,50 @@ func (sysRoleViewUtils *SysRoleViewUtils) View2Data(view *SysRoleView) (err erro
 	return
 }
 
-func (sysRoleViewUtils *SysRoleViewUtils) View2DataList(viewList *[]SysRoleView) (err error, dataList *[]model.SysRole) {
+func (viewUtils *SysRoleViewUtils) Page2Data(pageInfo *SysRolePageView) (err error, data *model.SysRole, page *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysRoleViewUtils View2Data error: %v", e)
+			global.Logger.Error("SysRoleViewUtils.View2Data:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	// TODO 按需修改
+	var tmp model.SysRole
+
+	tmp.Id = pageInfo.Id
+
+	tmp.RoleName = pageInfo.RoleName
+
+	tmp.RoleKey = pageInfo.RoleKey
+
+	tmp.RoleSort = pageInfo.RoleSort
+
+	tmp.DataScope = pageInfo.DataScope
+
+	tmp.MenuCheckStrictly = pageInfo.MenuCheckStrictly
+
+	tmp.DeptCheckStrictly = pageInfo.DeptCheckStrictly
+
+	tmp.Status = pageInfo.Status
+
+	tmp.CreateBy = pageInfo.CreateBy
+
+	tmp.UpdateBy = pageInfo.UpdateBy
+
+	tmp.Remark = pageInfo.Remark
+
+	data = &tmp
+	page = &common.PageInfo{
+		PageSize:      pageInfo.PageSize,
+		PageNum:       pageInfo.PageNum,
+		OrderByColumn: pageInfo.OrderByColumn,
+		IsAsc:         pageInfo.IsAsc,
+	}
+	return
+}
+
+func (viewUtils *SysRoleViewUtils) View2DataList(viewList *[]SysRoleView) (err error, dataList *[]model.SysRole) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysRoleViewUtils View2DataList error: %v", e)
@@ -111,7 +155,7 @@ func (sysRoleViewUtils *SysRoleViewUtils) View2DataList(viewList *[]SysRoleView)
 		var dataTmpList []model.SysRole
 		for i := range *dataList {
 			view := (*viewList)[i]
-			err, data := sysRoleViewUtils.View2Data(&view)
+			err, data := viewUtils.View2Data(&view)
 			if err == nil {
 				dataTmpList = append(dataTmpList, *data)
 			}
@@ -121,7 +165,7 @@ func (sysRoleViewUtils *SysRoleViewUtils) View2DataList(viewList *[]SysRoleView)
 	return
 }
 
-func (sysRoleViewUtils *SysRoleViewUtils) Data2ViewList(dataList *[]model.SysRole) (err error, viewList *[]SysRoleView) {
+func (viewUtils *SysRoleViewUtils) Data2ViewList(dataList *[]model.SysRole) (err error, viewList *[]SysRoleView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysRoleViewUtils Data2ViewList error: %v", e)
@@ -133,7 +177,7 @@ func (sysRoleViewUtils *SysRoleViewUtils) Data2ViewList(dataList *[]model.SysRol
 		var viewTmpList []SysRoleView
 		for i := range *dataList {
 			data := (*dataList)[i]
-			err, view := sysRoleViewUtils.Data2View(&data)
+			err, view := viewUtils.Data2View(&data)
 			if err == nil {
 				viewTmpList = append(viewTmpList, *view)
 			}

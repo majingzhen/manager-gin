@@ -3,39 +3,48 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-18 14:00:53
+// @create 2023-08-21 17:37:56
 package view
 
 // SysRoleView 结构体
 
 type SysRoleView struct {
-	Id string `json:"id"`
+	Id                string    `json:"id" form:"id"`
+	RoleName          string    `json:"roleName" form:"roleName"`
+	RoleKey           string    `json:"roleKey" form:"roleKey"`
+	RoleSort          int       `json:"roleSort" form:"roleSort"`
+	DataScope         string    `json:"dataScope" form:"dataScope"`
+	MenuCheckStrictly string    `json:"menuCheckStrictly" form:"menuCheckStrictly"`
+	DeptCheckStrictly string    `json:"deptCheckStrictly" form:"deptCheckStrictly"`
+	Status            string    `json:"status" form:"status"`
+	DeletedAt         string    `json:"deletedAt" form:"deletedAt"`
+	CreateBy          string    `json:"createBy" form:"createBy"`
+	CreateTime        string    `json:"createTime" form:"createTime"`
+	UpdateBy          string    `json:"updateBy" form:"updateBy"`
+	UpdateTime        string    `json:"updateTime" form:"updateTime"`
+	Remark            string    `json:"remark" form:"remark"`
+	Permissions       *[]string `json:"permissions"`
+}
 
-	RoleName string `json:"roleName"`
+type SysRolePageView struct {
+	// TODO 按需修改
+	Id                string `json:"id" form:"id"`
+	RoleName          string `json:"roleName" form:"roleName"`
+	RoleKey           string `json:"roleKey" form:"roleKey"`
+	RoleSort          int    `json:"roleSort" form:"roleSort"`
+	DataScope         string `json:"dataScope" form:"dataScope"`
+	MenuCheckStrictly string `json:"menuCheckStrictly" form:"menuCheckStrictly"`
+	DeptCheckStrictly string `json:"deptCheckStrictly" form:"deptCheckStrictly"`
+	Status            string `json:"status" form:"status"`
+	DeletedAt         string `json:"deletedAt" form:"deletedAt"`
+	CreateBy          string `json:"createBy" form:"createBy"`
+	CreateTime        string `json:"createTime" form:"createTime"`
+	UpdateBy          string `json:"updateBy" form:"updateBy"`
+	UpdateTime        string `json:"updateTime" form:"updateTime"`
+	Remark            string `json:"remark" form:"remark"`
 
-	RoleKey string `json:"roleKey"`
-
-	RoleSort int `json:"roleSort"`
-
-	DataScope string `json:"dataScope"`
-
-	MenuCheckStrictly interface{} `json:"menuCheckStrictly"`
-
-	DeptCheckStrictly interface{} `json:"deptCheckStrictly"`
-
-	Status string `json:"status"`
-
-	DeletedAt string `json:"deletedAt"`
-
-	CreateBy string `json:"createBy"`
-
-	CreateTime string `json:"createTime"`
-
-	UpdateBy string `json:"updateBy"`
-
-	UpdateTime string `json:"updateTime"`
-
-	Remark string `json:"remark"`
-
-	Permissions *[]string `json:"permissions"`
+	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
+	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
+	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
+	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
 }

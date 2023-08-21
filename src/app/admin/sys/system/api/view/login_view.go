@@ -21,3 +21,9 @@ type LoginUserResView struct {
 	Roles       []string          `json:"roles"`
 	Permissions []string          `json:"permissions"`
 }
+
+// Captcha 验证码响应
+type Captcha struct {
+	Img interface{} `json:"img"` //数据内容
+	Key string      `json:"key"` //验证码ID
+}

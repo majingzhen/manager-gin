@@ -74,20 +74,43 @@ func (sysRoleService *SysRoleService) Get(id string) (err error, sysRoleView *vi
 	return
 }
 
-// List 分页获取SysRole记录
+// Page 分页获取SysRole记录
 // Author
-func (sysRoleService *SysRoleService) List(info *common.PageInfo) (err error) {
-	err1, sysRoles, total := sysRoleDao.List(info)
+func (service *SysRoleService) Page(pageInfo *view.SysRolePageView) (err error, res *common.PageInfo) {
+	err, param, page := viewUtils.Page2Data(pageInfo)
+	if err != nil {
+		return err, nil
+	}
+	err1, datas, total := sysRoleDao.Page(param, page)
 	if err1 != nil {
-		return err1
+		return err1, res
 	}
-	info.Total = total
-	err2, viewList := viewUtils.Data2ViewList(sysRoles)
-	if err2 != nil {
-		return err2
+	if err2, viewList := viewUtils.Data2ViewList(datas); err2 != nil {
+		return err2, res
+	} else {
+		res = &common.PageInfo{
+			Total: total,
+			Rows:  viewList,
+		}
+		return err, res
 	}
-	info.Rows = viewList
-	return err
+
+}
+
+// List 获取SysRole列表
+// Author
+func (service *SysRoleService) List(v *view.SysRoleView) (err error, views *[]view.SysRoleView) {
+	err, data := viewUtils.View2Data(v)
+	if err != nil {
+		return err, nil
+	}
+	var datas *[]model.SysRole
+	if err, datas = sysRoleDao.List(data); err != nil {
+		return err, nil
+	} else {
+		err, views = viewUtils.Data2ViewList(datas)
+		return
+	}
 }
 
 // GetRoleByUserId 根据用户获取角色集合

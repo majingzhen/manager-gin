@@ -6,13 +6,13 @@ import (
 	dept "manager-gin/src/app/admin/sys/sys_dept/router"
 	dictData "manager-gin/src/app/admin/sys/sys_dict_data/router"
 	dictType "manager-gin/src/app/admin/sys/sys_dict_type/router"
+	post "manager-gin/src/app/admin/sys/sys_post/router"
+
 	//job "manager-gin/src/app/admin/sys/sys_job/router"
 	//jobLog "manager-gin/src/app/admin/sys/sys_job_log/router"
 	//logininfor "manager-gin/src/app/admin/sys/sys_logininfor/router"
 	menu "manager-gin/src/app/admin/sys/sys_menu/router"
-	//notice "manager-gin/src/app/admin/sys/sys_notice/router"
-	//operLog "manager-gin/src/app/admin/sys/sys_oper_log/router"
-	//post "manager-gin/src/app/admin/sys/sys_post/router"
+
 	role "manager-gin/src/app/admin/sys/sys_role/router"
 	user "manager-gin/src/app/admin/sys/sys_user/router"
 )
@@ -25,7 +25,7 @@ var menuRouter menu.SysMenuRouter
 
 // var noticeRouter notice.SysNoticeRouter
 // var operLogRouter operLog.SysOperLogRouter
-// var postRouter post.SysPostRouter
+var postRouter post.SysPostRouter
 var configRouter config.SysConfigRouter
 var deptRouter dept.SysDeptRouter
 
@@ -47,7 +47,7 @@ func (r *SysRouter) InitSysRouter(Router *gin.RouterGroup) {
 		dictDataRouter.InitSysDictDataRouter(sys)
 		//noticeRouter.InitSysNoticeRouter(sys)
 		//operLogRouter.InitSysOperLogRouter(sys)
-		//postRouter.InitSysPostRouter(sys)
+		postRouter.InitSysPostRouter(sys)
 		configRouter.InitSysConfigRouter(sys)
 		deptRouter.InitSysDeptRouter(sys)
 		//jobRouter.InitSysJobRouter(sys)

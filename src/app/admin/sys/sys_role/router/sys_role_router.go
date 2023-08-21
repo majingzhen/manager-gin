@@ -3,7 +3,7 @@
 // @author
 // @File: sys_role
 // @version 1.0.0
-// @create 2023-08-18 14:00:54
+// @create 2023-08-21 17:37:56
 package router
 
 import (
@@ -21,13 +21,13 @@ func (r *SysRoleRouter) InitSysRoleRouter(Router *gin.RouterGroup) {
 	sysRoleRouter := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
 	sysRoleRouterWithoutRecord := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
 	{
-		sysRoleRouter.POST("create", sysRoleApi.Create)             // 新建SysRole
-		sysRoleRouter.DELETE("delete", sysRoleApi.Delete)           // 删除SysRole
-		sysRoleRouter.DELETE("deleteByIds", sysRoleApi.DeleteByIds) // 批量删除SysRole
-		sysRoleRouter.POST("update", sysRoleApi.Update)             // 更新SysRole
+		sysRoleRouter.POST("create", sysRoleApi.Create)        // 新建SysRole
+		sysRoleRouter.DELETE("delete/:ids", sysRoleApi.Delete) // 删除SysRole
+		sysRoleRouter.POST("update", sysRoleApi.Update)        // 更新SysRole
 	}
 	{
-		sysRoleRouterWithoutRecord.GET("get", sysRoleApi.Get)   // 根据ID获取SysRole
-		sysRoleRouterWithoutRecord.GET("list", sysRoleApi.List) // 获取SysRole列表
+		sysRoleRouterWithoutRecord.GET("get/:id", sysRoleApi.Get) // 根据ID获取SysRole
+		sysRoleRouterWithoutRecord.GET("page", sysRoleApi.Page)   // 分页获取SysRole列表
+		sysRoleRouterWithoutRecord.GET("list", sysRoleApi.List)   // 分页获取SysRole列表
 	}
 }
