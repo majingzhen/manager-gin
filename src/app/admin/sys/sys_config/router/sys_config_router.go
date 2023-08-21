@@ -26,8 +26,9 @@ func (r *SysConfigRouter) InitSysConfigRouter(Router *gin.RouterGroup) {
 		sysConfigRouter.POST("update", sysConfigApi.Update)        // 更新SysConfig
 	}
 	{
-		sysConfigRouterWithoutRecord.GET("get/:id", sysConfigApi.Get) // 根据ID获取SysConfig
-		sysConfigRouterWithoutRecord.GET("page", sysConfigApi.Page)   // 分页获取SysConfig列表
-		sysConfigRouterWithoutRecord.GET("list", sysConfigApi.List)   // 分页获取SysConfig列表
+		sysConfigRouterWithoutRecord.GET("get/:id", sysConfigApi.Get)                      // 根据ID获取SysConfig
+		sysConfigRouterWithoutRecord.GET("configKey/:key", sysConfigApi.SelectConfigByKey) // 根据ID获取SysConfig
+		sysConfigRouterWithoutRecord.GET("page", sysConfigApi.Page)                        // 分页获取SysConfig列表
+		sysConfigRouterWithoutRecord.GET("list", sysConfigApi.List)                        // 分页获取SysConfig列表
 	}
 }

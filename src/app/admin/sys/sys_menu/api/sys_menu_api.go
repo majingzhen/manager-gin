@@ -15,7 +15,6 @@ import (
 	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
-	"strings"
 )
 
 type SysMenuApi struct {
@@ -45,9 +44,8 @@ func (api *SysMenuApi) Create(c *gin.Context) {
 // @Summary 删除SysMenu
 // @Router /sysMenu/delete [delete]
 func (api *SysMenuApi) Delete(c *gin.Context) {
-	idStr := c.Param("ids")
-	ids := strings.Split(idStr, ",")
-	if err := sysMenuService.DeleteByIds(ids); err != nil {
+	id := c.Param("id")
+	if err := sysMenuService.Delete(id); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {

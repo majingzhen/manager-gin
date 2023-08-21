@@ -20,8 +20,16 @@ type SysConfigService struct{}
 
 // Create 创建SysConfig记录
 // Author
-func (service *SysConfigService) Create(sysConfigView *view.SysConfigView) (err error) {
-	if err1, sysConfig := viewUtils.View2Data(sysConfigView); err1 != nil {
+func (service *SysConfigService) Create(sysConfigView *view.SysConfigView) error {
+	// 判断是否重复
+	if err, value := sysConfigDao.SelectConfigByKey(sysConfigView.ConfigKey); err != nil {
+		return err
+	} else {
+		if value != nil {
+			return errors.New("配置键名已存在")
+		}
+	}
+	if err, sysConfig := viewUtils.View2Data(sysConfigView); err != nil {
 		return errors.New("数据解析失败")
 	} else {
 		return sysConfigDao.Create(*sysConfig)
@@ -31,6 +39,16 @@ func (service *SysConfigService) Create(sysConfigView *view.SysConfigView) (err 
 // DeleteByIds 批量删除SysConfig记录
 // Author
 func (service *SysConfigService) DeleteByIds(ids []string) (err error) {
+	// 判断是否为系统配置
+	for _, id := range ids {
+		if err1, sysConfig := sysConfigDao.Get(id); err1 != nil {
+			return err1
+		} else {
+			if sysConfig.ConfigType == common.YES {
+				return errors.New("系统内置，不可删除")
+			}
+		}
+	}
 	err = sysConfigDao.DeleteByIds(ids)
 	return err
 }
@@ -38,6 +56,14 @@ func (service *SysConfigService) DeleteByIds(ids []string) (err error) {
 // Update 更新SysConfig记录
 // Author
 func (service *SysConfigService) Update(id string, sysConfigView *view.SysConfigView) (err error) {
+	// 判断是否重复
+	if err, value := sysConfigDao.SelectConfigByKey(sysConfigView.ConfigKey); err != nil {
+		return err
+	} else {
+		if value != nil {
+			return errors.New("配置键名已存在")
+		}
+	}
 	sysConfigView.Id = id
 	if err1, sysConfig := viewUtils.View2Data(sysConfigView); err1 != nil {
 		return err1
@@ -91,5 +117,14 @@ func (service *SysConfigService) List(v *view.SysConfigView) (err error, views *
 	} else {
 		err, views = viewUtils.Data2ViewList(datas)
 		return
+	}
+}
+
+// SelectConfigByKey 根据key查询SysConfig记录
+func (service *SysConfigService) SelectConfigByKey(key string) (error, string) {
+	if err, sysConfig := sysConfigDao.SelectConfigByKey(key); err != nil {
+		return err, ""
+	} else {
+		return nil, sysConfig.ConfigValue
 	}
 }

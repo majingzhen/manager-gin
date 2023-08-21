@@ -7,6 +7,7 @@
 package service
 
 import (
+	"errors"
 	"manager-gin/src/app/admin/sys/sys_menu/model"
 	"manager-gin/src/app/admin/sys/sys_menu/service/view"
 	"manager-gin/src/app/admin/sys/sys_user/service"
@@ -24,30 +25,66 @@ type SysMenuService struct{}
 
 // Create 创建SysMenu记录
 // Author
-func (service *SysMenuService) Create(sysMenuView *view.SysMenuView) (err error) {
-	err1, sysMenu := viewUtils.View2Data(sysMenuView)
-	if err1 != nil {
+func (service *SysMenuService) Create(view *view.SysMenuView) error {
+	// 判断是否重复
+	if err, value := service.CheckMenuNameUniqueAll(view); err != nil {
+		return err
+	} else {
+		if !value {
+			return errors.New("菜单名称已存在")
+		}
+	}
+	if view.IsFrame == common.YES_FRAME && !utils.IsHttp(view.Path) {
+		return errors.New("外链必须以http://或者https://开头")
+	}
+	if err1, sysMenu := viewUtils.View2Data(view); err1 != nil {
 		return err1
+	} else {
+		return sysMenuDao.Create(*sysMenu)
 	}
-	err2 := sysMenuDao.Create(*sysMenu)
-	if err2 != nil {
-		return err2
-	}
-	return nil
 }
 
-// DeleteByIds 批量删除SysMenu记录
+// Delete 批量删除SysMenu记录
 // Author
-func (service *SysMenuService) DeleteByIds(ids []string) (err error) {
-	err = sysMenuDao.DeleteByIds(ids)
-	return err
+func (service *SysMenuService) Delete(id string) error {
+	// 判断是否存在子菜单
+	if err, children := sysMenuDao.SelectMenuByParentId(id); err != nil {
+		return err
+	} else {
+		if len(*children) > 0 {
+			return errors.New("存在子菜单,不允许删除")
+		}
+	}
+	// 判断菜单是否已分配
+	if err, is := sysMenuDao.CheckMenuExistRole(id); err != nil {
+		return err
+	} else {
+		if is {
+			return errors.New("菜单已分配,不允许删除")
+		}
+	}
+	return sysMenuDao.Delete(id)
 }
 
 // Update 更新SysMenu记录
 // Author
-func (service *SysMenuService) Update(id string, sysMenuView *view.SysMenuView) (err error) {
-	sysMenuView.Id = id
-	err1, sysMenu := viewUtils.View2Data(sysMenuView)
+func (service *SysMenuService) Update(id string, view *view.SysMenuView) (err error) {
+	// 判断是否重复
+	if err, value := service.CheckMenuNameUniqueAll(view); err != nil {
+		return err
+	} else {
+		if !value {
+			return errors.New("菜单名称已存在")
+		}
+	}
+	if view.IsFrame == common.YES_FRAME && !utils.IsHttp(view.Path) {
+		return errors.New("外链必须以http://或者https://开头")
+	}
+	if view.Id == view.ParentId {
+		return errors.New("上级菜单不能选择自己")
+	}
+	view.Id = id
+	err1, sysMenu := viewUtils.View2Data(view)
 	if err1 != nil {
 		return err1
 	}
@@ -57,12 +94,12 @@ func (service *SysMenuService) Update(id string, sysMenuView *view.SysMenuView) 
 
 // Get 根据id获取SysMenu记录
 // Author
-func (service *SysMenuService) Get(id string) (err error, sysMenuView *view.SysMenuView) {
+func (service *SysMenuService) Get(id string) (err error, view *view.SysMenuView) {
 	err1, sysMenu := sysMenuDao.Get(id)
 	if err1 != nil {
 		return err1, nil
 	}
-	err2, sysMenuView := viewUtils.Data2View(sysMenu)
+	err2, view := viewUtils.Data2View(sysMenu)
 	if err2 != nil {
 		return err2, nil
 	}
@@ -119,6 +156,7 @@ func (service *SysMenuService) GetMenuPermission(user *userView.SysUserView) (er
 	return err, perms
 }
 
+// GetMenuTreeByUserId 根据用户id获取菜单树
 func (service *SysMenuService) GetMenuTreeByUserId(userId string) (err error, menuTree []*view.RouterView) {
 	var menus *[]model.SysMenu
 	itIs := userService.IsAdmin(userId)
@@ -136,6 +174,7 @@ func (service *SysMenuService) GetMenuTreeByUserId(userId string) (err error, me
 	return err, tree
 }
 
+// SelectMenuList 查询菜单列表
 func (service *SysMenuService) SelectMenuList(v *view.SysMenuView, userId string) (err error, menus *[]view.SysMenuView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
@@ -289,6 +328,17 @@ func getRouterName(menu view.SysMenuView) string {
 	return routerName
 }
 
+// 是否为外链
 func isMenuFrame(menu view.SysMenuView) bool {
 	return menu.ParentId == "0" && common.MENU_TYPE_MENU == menu.MenuType && menu.IsFrame == common.YES_FRAME
+}
+
+// CheckMenuNameUniqueAll 判断名称是否重复
+func (service *SysMenuService) CheckMenuNameUniqueAll(menu *view.SysMenuView) (err error, isUnique bool) {
+	err, data := viewUtils.View2Data(menu)
+	if err != nil {
+		return err, false
+	}
+	err, isUnique = sysMenuDao.CheckMenuNameUniqueAll(data)
+	return
 }

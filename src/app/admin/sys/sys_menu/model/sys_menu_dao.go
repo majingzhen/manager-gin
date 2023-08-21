@@ -29,13 +29,6 @@ func (dao *SysMenuDao) Delete(id string) (err error) {
 	return err
 }
 
-// DeleteByIds 批量删除SysMenu记录
-// Author
-func (dao *SysMenuDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]SysMenu{}, "id in ?", ids).Error
-	return err
-}
-
 // Update 更新SysMenu记录
 // Author
 func (dao *SysMenuDao) Update(sysMenu SysMenu) (err error) {
@@ -180,4 +173,45 @@ func (dao *SysMenuDao) SelectMenuListByUserId(data *SysMenu, userId string) (err
 	err = db.Scan(&rows).Error
 	menus = &rows
 	return err, menus
+}
+
+// CheckMenuNameUniqueAll 判断名称是否唯一
+func (dao *SysMenuDao) CheckMenuNameUniqueAll(data *SysMenu) (error, bool) {
+	var menu SysMenu
+	db := global.GOrmDao.Model(&SysMenu{})
+	db.Where("menu_name = ?", data.MenuName)
+	if data.ParentId != "" {
+		db.Where("parent_id = ?", data.ParentId)
+	}
+	err := db.First(&menu).Error
+	if err != nil {
+		return err, false
+	}
+	return nil, true
+}
+
+// SelectMenuByParentId 根据父级id查询菜单
+func (dao *SysMenuDao) SelectMenuByParentId(id string) (error, *[]SysMenu) {
+	var rows []SysMenu
+	db := global.GOrmDao.Model(&SysMenu{})
+	db.Where("parent_id = ?", id)
+	err := db.Find(&rows).Error
+	if err != nil {
+		return err, nil
+	}
+	return nil, &rows
+}
+
+// CheckMenuExistRole 判断菜单是否存在角色
+func (dao *SysMenuDao) CheckMenuExistRole(roleId string) (error, bool) {
+	var count int64
+	db := global.GOrmDao.Table("sys_role_menu").Where("menu_id = ?", roleId)
+	err := db.Count(&count).Error
+	if err != nil {
+		return err, false
+	}
+	if count > 0 {
+		return nil, true
+	}
+	return nil, false
 }

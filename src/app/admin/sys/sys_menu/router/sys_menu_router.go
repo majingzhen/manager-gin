@@ -21,9 +21,9 @@ func (r *SysMenuRouter) InitSysMenuRouter(Router *gin.RouterGroup) {
 	sysMenuRouter := Router.Group("sysMenu").Use(middleware.JWTAuthFilter())
 	sysMenuRouterWithoutRecord := Router.Group("sysMenu").Use(middleware.JWTAuthFilter())
 	{
-		sysMenuRouter.POST("create", sysMenuApi.Create)        // 新建SysMenu
-		sysMenuRouter.DELETE("delete/:ids", sysMenuApi.Delete) // 删除SysMenu
-		sysMenuRouter.POST("update", sysMenuApi.Update)        // 更新SysMenu
+		sysMenuRouter.POST("create", sysMenuApi.Create)       // 新建SysMenu
+		sysMenuRouter.DELETE("delete/:id", sysMenuApi.Delete) // 删除SysMenu
+		sysMenuRouter.POST("update", sysMenuApi.Update)       // 更新SysMenu
 	}
 	{
 		sysMenuRouterWithoutRecord.GET("get/:id", sysMenuApi.Get) // 根据ID获取SysMenu

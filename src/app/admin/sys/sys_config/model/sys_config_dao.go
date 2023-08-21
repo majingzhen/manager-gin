@@ -87,3 +87,12 @@ func (dao *SysConfigDao) List(data *SysConfig) (err error, datas *[]SysConfig) {
 	datas = &rows
 	return err, datas
 }
+
+// SelectConfigByKey 根据key查询SysConfig记录
+func (dao *SysConfigDao) SelectConfigByKey(key string) (error, *SysConfig) {
+	var rows SysConfig
+	db := global.GOrmDao.Model(&SysConfig{})
+	db.Where("config_key = ?", key)
+	err := db.First(&rows).Error
+	return err, &rows
+}

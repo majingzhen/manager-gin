@@ -124,3 +124,16 @@ func (api *SysConfigApi) List(c *gin.Context) {
 		response.OkWithDetailed(res, "获取成功", c)
 	}
 }
+
+// SelectConfigByKey 根据key查询SysMenu
+// @Summary 根据key查询SysMenu
+// @Router /sysConfig/selectConfigByKey [get]
+func (api *SysConfigApi) SelectConfigByKey(c *gin.Context) {
+	key := c.Param("key")
+	if err, sysConfigView := sysConfigService.SelectConfigByKey(key); err != nil {
+		global.Logger.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		response.OkWithData(sysConfigView, c)
+	}
+}
