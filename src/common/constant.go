@@ -27,4 +27,10 @@ const (
 	PARENT_VIEW = "ParentView"
 
 	INNER_LINK = "InnerLink"
+
+	/** 部门正常状态 */
+	DEPT_NORMAL = "0"
+
+	/** 部门停用状态 */
+	DEPT_DISABLE = "1"
 )

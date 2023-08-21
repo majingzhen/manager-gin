@@ -27,7 +27,7 @@ func (r *SysDictTypeRouter) InitSysDictTypeRouter(Router *gin.RouterGroup) {
 	}
 	{
 		sysDictTypeRouterWithoutRecord.GET("get/:id", sysDictTypeApi.Get)                    // 根据ID获取SysDictType
-		sysDictTypeRouterWithoutRecord.GET("list", sysDictTypeApi.List)                      // 获取SysDictType列表
+		sysDictTypeRouterWithoutRecord.GET("page", sysDictTypeApi.Page)                      // 获取SysDictType列表
 		sysDictTypeRouterWithoutRecord.GET("optionSelect", sysDictTypeApi.SelectDictTypeAll) // 获取SysDictType列表
 	}
 }

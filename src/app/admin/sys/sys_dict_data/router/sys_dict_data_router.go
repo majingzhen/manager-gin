@@ -28,6 +28,6 @@ func (r *SysDictDataRouter) InitSysDictDataRouter(Router *gin.RouterGroup) {
 	{
 		sysDictDataRouterWithoutRecord.GET("get/:id", sysDictDataApi.Get)          // 根据ID获取SysDictData
 		sysDictDataRouterWithoutRecord.GET("type/:type", sysDictDataApi.GetByType) // 根据type获取SysDictData
-		sysDictDataRouterWithoutRecord.GET("list", sysDictDataApi.List)            // 获取SysDictData列表
+		sysDictDataRouterWithoutRecord.GET("page", sysDictDataApi.Page)            // 获取SysDictData列表
 	}
 }

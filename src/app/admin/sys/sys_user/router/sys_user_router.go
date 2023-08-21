@@ -21,13 +21,13 @@ func (r *SysUserRouter) InitSysUserRouter(Router *gin.RouterGroup) {
 	sysUserRouter := Router.Group("sysUser").Use(middleware.JWTAuthFilter())
 	sysUserRouterWithoutRecord := Router.Group("sysUser").Use(middleware.JWTAuthFilter())
 	{
-		sysUserRouter.POST("create", sysUserApi.Create)             // 新建SysUser
-		sysUserRouter.DELETE("delete", sysUserApi.Delete)           // 删除SysUser
-		sysUserRouter.DELETE("deleteByIds", sysUserApi.DeleteByIds) // 批量删除SysUser
-		sysUserRouter.POST("update", sysUserApi.Update)             // 更新SysUser
+		sysUserRouter.POST("create", sysUserApi.Create)        // 新建SysUser
+		sysUserRouter.DELETE("delete/:ids", sysUserApi.Delete) // 删除SysUser
+		sysUserRouter.POST("update", sysUserApi.Update)        // 更新SysUser
 	}
 	{
-		sysUserRouterWithoutRecord.GET("get", sysUserApi.Get)   // 根据ID获取SysUser
-		sysUserRouterWithoutRecord.GET("list", sysUserApi.List) // 获取SysUser列表
+		sysUserRouterWithoutRecord.GET("get/:id", sysUserApi.Get) // 根据ID获取SysUser
+		sysUserRouterWithoutRecord.GET("page", sysUserApi.Page)   // 分页获取SysUser列表
+		sysUserRouterWithoutRecord.GET("list", sysUserApi.List)   // 分页获取SysUser列表
 	}
 }

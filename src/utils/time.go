@@ -11,6 +11,11 @@ func GetCurTimeStr() string {
 	return formattedTime
 }
 
+func GetCurTime() time.Time {
+	parse, _ := time.Parse("2006-01-02 15:04:05", GetCurTimeStr())
+	return parse
+}
+
 func Time2Str(t time.Time) string {
 	return t.Format("2006-01-02 15:04:05")
 }

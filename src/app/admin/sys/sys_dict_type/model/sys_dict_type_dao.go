@@ -50,9 +50,9 @@ func (dao *SysDictTypeDao) Get(id string) (err error, sysDictType *SysDictType) 
 	return
 }
 
-// List 分页获取SysDictType记录
+// Page 分页获取SysDictType记录
 // Author
-func (dao *SysDictTypeDao) List(param *SysDictType, page *common.PageInfo) (err error, sysDictTypes *[]SysDictType, total int64) {
+func (dao *SysDictTypeDao) Page(param *SysDictType, page *common.PageInfo) (err error, sysDictTypes *[]SysDictType, total int64) {
 	// 创建db
 	db := global.GOrmDao.Model(&SysDictType{})
 	// 如果有条件搜索 下方会自动创建搜索语句

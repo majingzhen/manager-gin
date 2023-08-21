@@ -64,14 +64,14 @@ func (service *SysDictDataService) Get(id string) (err error, sysDictDataView *v
 	return
 }
 
-// List 分页获取SysDictData记录
+// Page 分页获取SysDictData记录
 // Author
-func (service *SysDictDataService) List(pageInfo *view.SysDictDataPageView) (err error, res *common.PageInfo) {
+func (service *SysDictDataService) Page(pageInfo *view.SysDictDataPageView) (err error, res *common.PageInfo) {
 	err, param, page := viewUtils.Page2Data(pageInfo)
 	if err != nil {
 		return err, nil
 	}
-	err1, datas, total := sysDictDataDao.List(param, page)
+	err1, datas, total := sysDictDataDao.Page(param, page)
 	if err1 != nil {
 		return err1, res
 	}

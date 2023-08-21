@@ -24,3 +24,8 @@ func GetLoginUserId(c *gin.Context) string {
 	userId := c.GetString("user_id")
 	return userId
 }
+
+func GetLoginUserName(c *gin.Context) string {
+	user := GetLoginUser(c)
+	return user.UserName
+}

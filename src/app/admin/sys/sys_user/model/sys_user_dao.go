@@ -50,27 +50,53 @@ func (dao *SysUserDao) Get(id string) (err error, sysUser *SysUser) {
 	return
 }
 
-// List 分页获取SysUser记录
+// Page 分页获取SysUser记录
 // Author
-func (dao *SysUserDao) List(info *common.PageInfo) (err error, sysUsers *[]SysUser, total int64) {
-	// 创建db
-	db := global.GOrmDao.Model(&SysUser{})
+func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, datas *[]SysUser, total int64) {
+	// 创建model
+	model := global.GOrmDao.Model(&SysUser{})
 	// 如果有条件搜索 下方会自动创建搜索语句
-	//if info.Id != "" {
-	//	db = db.Where("ID = ?", info.Id)
+	//if param.Id != "" {
+	//	model = model.Where("ID = ?", info.Id)
 	//}
-
-	err = db.Count(&total).Error
-	if err != nil {
+	if err = model.Count(&total).Error; err != nil {
 		return
 	}
+	// 计算分页信息
+	page.Calculate()
+	// 生成排序信息
+	if page.OrderByColumn != "" {
+		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	}
 	var tmp []SysUser
-	err = db.Limit(info.Limit).Offset(info.Offset).Find(&tmp).Error
-	sysUsers = &tmp
-	return err, sysUsers, total
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
+	datas = &tmp
+	return err, datas, total
 }
 
+// List 获取SysUser记录
+// Author
+func (dao *SysUserDao) List(data *SysUser) (err error, datas *[]SysUser) {
+	var rows []SysUser
+	db := global.GOrmDao.Model(&SysUser{})
+	// TODO 输入查询条件
+	//if data.Id != "" {
+	//    db.Where("id = ?", data.Id)
+	//}
+	db.Order("create_time desc")
+	err = db.Find(&rows).Error
+	datas = &rows
+	return err, datas
+}
+
+// GetByUserName 根据用户名获取SysUser记录
 func (dao *SysUserDao) GetByUserName(name string) (err error, sysUser *SysUser) {
 	err = global.GOrmDao.Where("user_name = ?", name).First(&sysUser).Error
+	return
+}
+
+// GetByDeptId 根据部门id获取SysUser记录
+func (dao *SysUserDao) GetByDeptId(deptId string) (err error, sysUser *[]SysUser) {
+	err = global.GOrmDao.Where("dept_id = ?", deptId).Find(&sysUser).Error
 	return
 }

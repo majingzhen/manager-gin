@@ -43,9 +43,9 @@ func (dao *SysDictDataDao) Get(id string) (err error, sysDictData *SysDictData) 
 	return
 }
 
-// List 分页获取SysDictData记录
+// Page 分页获取SysDictData记录
 // Author
-func (dao *SysDictDataDao) List(param *SysDictData, page *common.PageInfo) (err error, datas *[]SysDictData, total int64) {
+func (dao *SysDictDataDao) Page(param *SysDictData, page *common.PageInfo) (err error, datas *[]SysDictData, total int64) {
 	// 创建model
 	model := global.GOrmDao.Model(&SysDictData{})
 	// 如果有条件搜索 下方会自动创建搜索语句

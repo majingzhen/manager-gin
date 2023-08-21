@@ -2,6 +2,7 @@ package utils
 
 import (
 	"github.com/gogf/gf/crypto/gmd5"
+	uuid "github.com/satori/go.uuid"
 	"manager-gin/src/common"
 	"strings"
 )
@@ -52,4 +53,10 @@ func ReplaceEach(str string, searchList []string, replacementList []string) stri
 	}
 
 	return str
+}
+
+func GenUID() string {
+	uid := uuid.NewV4()
+	uidStr := strings.ReplaceAll(uid.String(), "-", "")
+	return uidStr
 }

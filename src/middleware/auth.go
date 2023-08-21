@@ -13,8 +13,8 @@ func JWTAuthFilter() gin.HandlerFunc {
 		authHeader := c.Request.Header.Get("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusOK, gin.H{
-				"code": 400,
-				"msg":  "无效的Token",
+				"code": 401,
+				"msg":  "账号未登录",
 			})
 			// 不进行下面的请求处理了！
 			c.Abort()
@@ -32,8 +32,8 @@ func JWTAuthFilter() gin.HandlerFunc {
 		mc, err := framework.ParseToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusOK, gin.H{
-				"code": 400,
-				"msg":  "无效的Token",
+				"code": 401,
+				"msg":  "账号未登录",
 			})
 			// 不进行下面的请求处理了！
 			c.Abort()

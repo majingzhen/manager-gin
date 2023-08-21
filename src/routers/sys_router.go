@@ -2,8 +2,8 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	//config "manager-gin/src/app/admin/sys/sys_config/router"
-	//dept "manager-gin/src/app/admin/sys/sys_dept/router"
+	config "manager-gin/src/app/admin/sys/sys_config/router"
+	dept "manager-gin/src/app/admin/sys/sys_dept/router"
 	dictData "manager-gin/src/app/admin/sys/sys_dict_data/router"
 	dictType "manager-gin/src/app/admin/sys/sys_dict_type/router"
 	//job "manager-gin/src/app/admin/sys/sys_job/router"
@@ -26,8 +26,9 @@ var menuRouter menu.SysMenuRouter
 // var noticeRouter notice.SysNoticeRouter
 // var operLogRouter operLog.SysOperLogRouter
 // var postRouter post.SysPostRouter
-// var configRouter config.SysConfigRouter
-// var deptRouter dept.SysDeptRouter
+var configRouter config.SysConfigRouter
+var deptRouter dept.SysDeptRouter
+
 // var jobRouter job.SysJobRouter
 // var jobLogRouter jobLog.SysJobLogRouter
 // var logininForRouter logininfor.SysLogininforRouter
@@ -47,8 +48,8 @@ func (r *SysRouter) InitSysRouter(Router *gin.RouterGroup) {
 		//noticeRouter.InitSysNoticeRouter(sys)
 		//operLogRouter.InitSysOperLogRouter(sys)
 		//postRouter.InitSysPostRouter(sys)
-		//configRouter.InitSysConfigRouter(sys)
-		//deptRouter.InitSysDeptRouter(sys)
+		configRouter.InitSysConfigRouter(sys)
+		deptRouter.InitSysDeptRouter(sys)
 		//jobRouter.InitSysJobRouter(sys)
 		//jobLogRouter.InitSysJobLogRouter(sys)
 		//logininForRouter.InitSysLogininforRouter(sys)

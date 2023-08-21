@@ -72,12 +72,11 @@ func (dao *SysRoleDao) List(info *common.PageInfo) (err error, sysRoles *[]SysRo
 
 // GetRoleByUserId 根据用户获取角色集合
 func (dao *SysRoleDao) GetRoleByUserId(userId string) (err error, roles *[]SysRole) {
-	db := global.GOrmDao.Model(&[]SysRole{}).Table("sys_role r")
+	var tmp []SysRole
+	db := global.GOrmDao.Table("sys_role r")
 	db.Joins("join sys_user_role ur", "r.id = ur.role_id")
 	db.Where("ur.user_id = ? and r.status = ?", userId, common.STATUS_NORMAL)
-	err = db.Find(&roles).Error
-	if err != nil {
-		return
-	}
+	err = db.Find(&tmp).Error
+	roles = &tmp
 	return err, roles
 }

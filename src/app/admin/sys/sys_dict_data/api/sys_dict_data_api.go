@@ -12,6 +12,7 @@ import (
 	"manager-gin/src/app/admin/sys/sys_dict_data/service"
 	"manager-gin/src/app/admin/sys/sys_dict_data/service/view"
 	response "manager-gin/src/common/response"
+	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
@@ -31,6 +32,7 @@ func (api *SysDictDataApi) Create(c *gin.Context) {
 	sysDictDataView.Id = utils.GenUID()
 	sysDictDataView.CreateTime = utils.GetCurTimeStr()
 	sysDictDataView.UpdateTime = utils.GetCurTimeStr()
+	sysDictDataView.CreateBy = framework.GetLoginUser(c).UserName
 	if err := sysDictDataService.Create(&sysDictDataView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -64,6 +66,7 @@ func (api *SysDictDataApi) Update(c *gin.Context) {
 		response.FailWithMessage("更新失败", c)
 	}
 	sysDictDataView.UpdateTime = utils.GetCurTimeStr()
+	sysDictDataView.UpdateBy = framework.GetLoginUser(c).UserName
 	if err := sysDictDataService.Update(id, &sysDictDataView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -98,17 +101,17 @@ func (api *SysDictDataApi) GetByType(c *gin.Context) {
 	}
 }
 
-// List 分页获取SysDictData列表
+// Page 分页获取SysDictData列表
 // @Summary 分页获取SysDictData列表
 // @Router /sysDictData/list [get]
-func (api *SysDictDataApi) List(c *gin.Context) {
+func (api *SysDictDataApi) Page(c *gin.Context) {
 	var pageInfo view.SysDictDataPageView
 	// 绑定查询参数到 pageInfo
 	if err := c.ShouldBindQuery(&pageInfo); err != nil {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 	}
 
-	if err, res := sysDictDataService.List(&pageInfo); err != nil {
+	if err, res := sysDictDataService.Page(&pageInfo); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

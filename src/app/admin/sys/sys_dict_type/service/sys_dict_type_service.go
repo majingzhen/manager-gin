@@ -71,14 +71,14 @@ func (service *SysDictTypeService) Get(id string) (err error, sysDictTypeView *v
 	return
 }
 
-// List 分页获取SysDictType记录
+// Page 分页获取SysDictType记录
 // Author
-func (service *SysDictTypeService) List(pageInfo *view.SysDictTypePageView) (err error, res *common.PageInfo) {
+func (service *SysDictTypeService) Page(pageInfo *view.SysDictTypePageView) (err error, res *common.PageInfo) {
 	err, param, page := viewUtils.Page2Data(pageInfo)
 	if err != nil {
 		return err, nil
 	}
-	err1, sysDictTypes, total := sysDictTypeDao.List(param, page)
+	err1, sysDictTypes, total := sysDictTypeDao.Page(param, page)
 	if err1 != nil {
 		return err1, nil
 	}

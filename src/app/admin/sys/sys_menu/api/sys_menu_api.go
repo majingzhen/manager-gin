@@ -32,6 +32,7 @@ func (api *SysMenuApi) Create(c *gin.Context) {
 	sysMenuView.Id = utils.GenUID()
 	sysMenuView.CreateTime = utils.GetCurTimeStr()
 	sysMenuView.UpdateTime = utils.GetCurTimeStr()
+	sysMenuView.CreateBy = framework.GetLoginUser(c).UserName
 	if err := sysMenuService.Create(&sysMenuView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -65,6 +66,7 @@ func (api *SysMenuApi) Update(c *gin.Context) {
 		response.FailWithMessage("更新失败", c)
 	}
 	sysMenuView.UpdateTime = utils.GetCurTimeStr()
+	sysMenuView.UpdateBy = framework.GetLoginUser(c).UserName
 	if err := sysMenuService.Update(id, &sysMenuView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -85,24 +87,6 @@ func (api *SysMenuApi) Get(c *gin.Context) {
 		response.OkWithData(sysMenuView, c)
 	}
 }
-
-//// List 分页获取SysMenu列表
-//// @Summary 分页获取SysMenu列表
-//// @Router /sysMenu/list [get]
-//func (api *SysMenuApi) List(c *gin.Context) {
-//	var pageInfo view.SysMenuView
-//	// 绑定查询参数到 pageInfo
-//	if err := c.ShouldBindQuery(&pageInfo); err != nil {
-//		response.FailWithMessage("获取分页数据解析失败!", c)
-//	}
-//
-//	if err, res := sysMenuService.List(&pageInfo); err != nil {
-//		global.Logger.Error("获取分页信息失败!", zap.Error(err))
-//		response.FailWithMessage("获取失败", c)
-//	} else {
-//		response.OkWithDetailed(res, "获取成功", c)
-//	}
-//}
 
 // List 获取SysMenu列表
 // @Summary 获取SysMenu列表

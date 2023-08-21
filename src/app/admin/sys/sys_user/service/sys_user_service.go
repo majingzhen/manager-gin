@@ -71,20 +71,42 @@ func (service *SysUserService) Get(id string) (err error, sysUserView *view.SysU
 	return
 }
 
-// List 分页获取SysUser记录
+// Page 分页获取SysUser记录
 // Author
-func (service *SysUserService) List(info *common.PageInfo) (err error) {
-	err1, sysUsers, total := sysUserDao.List(info)
+func (service *SysUserService) Page(pageInfo *view.SysUserPageView) (err error, res *common.PageInfo) {
+	err, param, page := viewUtils.Page2Data(pageInfo)
+	if err != nil {
+		return err, nil
+	}
+	err1, datas, total := sysUserDao.Page(param, page)
 	if err1 != nil {
-		return err1
+		return err1, res
 	}
-	info.Total = total
-	err2, viewList := viewUtils.Data2ViewList(sysUsers)
-	if err2 != nil {
-		return err2
+	if err2, viewList := viewUtils.Data2ViewList(datas); err2 != nil {
+		return err2, res
+	} else {
+		res = &common.PageInfo{
+			Total: total,
+			Rows:  viewList,
+		}
+		return err, res
 	}
-	info.Rows = viewList
-	return err
+
+}
+
+// List 获取SysUser记录
+func (service *SysUserService) List(v *view.SysUserView) (err error, views *[]view.SysUserView) {
+	err, data := viewUtils.View2Data(v)
+	if err != nil {
+		return err, nil
+	}
+	var datas *[]model.SysUser
+	if err, datas = sysUserDao.List(data); err != nil {
+		return err, nil
+	} else {
+		err, views = viewUtils.Data2ViewList(datas)
+		return
+	}
 }
 
 // GetByUserName 根据userName获取SysUser记录
@@ -105,6 +127,19 @@ func (service *SysUserService) GetByUserName(userName string) (err error, sysUse
 func (service *SysUserService) IsAdmin(userId string) (itIs bool) {
 	if common.SYSTEM_ADMIN_ID == userId {
 		itIs = true
+	}
+	return
+}
+
+// GetByDeptId 根据部门id获取SysUser记录
+func (service *SysUserService) GetByDeptId(deptId string) (err error, sysUserView *[]view.SysUserView) {
+	err1, sysUser := sysUserDao.GetByDeptId(deptId)
+	if err1 != nil {
+		return err1, nil
+	}
+	err2, sysUserView := viewUtils.Data2ViewList(sysUser)
+	if err2 != nil {
+		return err2, nil
 	}
 	return
 }

@@ -3,20 +3,21 @@
 // @author
 // @File: sys_user
 // @version 1.0.0
-// @create 2023-08-18 14:02:24
+// @create 2023-08-21 14:20:37
 package view
 
 import (
 	"fmt"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_user/model"
+	"manager-gin/src/common"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
 
 type SysUserViewUtils struct{}
 
-func (sysUserViewUtils *SysUserViewUtils) Data2View(data *model.SysUser) (err error, view *SysUserView) {
+func (viewUtils *SysUserViewUtils) Data2View(data *model.SysUser) (err error, view *SysUserView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysUserViewUtils View2Data error: %v", e)
@@ -25,31 +26,51 @@ func (sysUserViewUtils *SysUserViewUtils) Data2View(data *model.SysUser) (err er
 		}
 	}()
 	var tmp SysUserView
+
 	tmp.Id = data.Id
+
 	tmp.DeptId = data.DeptId
+
 	tmp.UserName = data.UserName
+
 	tmp.NickName = data.NickName
+
 	tmp.UserType = data.UserType
+
 	tmp.Email = data.Email
+
 	tmp.PhoneNumber = data.PhoneNumber
+
 	tmp.Sex = data.Sex
+
 	tmp.Avatar = data.Avatar
+
 	tmp.Password = data.Password
+
 	tmp.Salt = data.Salt
+
 	tmp.Status = data.Status
+
 	tmp.DeletedAt = utils.Time2Str(data.DeletedAt)
+
 	tmp.LoginIp = data.LoginIp
+
 	tmp.LoginDate = utils.Time2Str(data.LoginDate)
+
 	tmp.CreateBy = data.CreateBy
+
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
+
 	tmp.UpdateBy = data.UpdateBy
+
 	tmp.UpdateTime = utils.Time2Str(data.UpdateTime)
+
 	tmp.Remark = data.Remark
+
 	view = &tmp
 	return
 }
-
-func (sysUserViewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err error, data *model.SysUser) {
+func (viewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err error, data *model.SysUser) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysUserViewUtils View2Data error: %v", e)
@@ -58,13 +79,21 @@ func (sysUserViewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err erro
 		}
 	}()
 	var tmp model.SysUser
+
 	tmp.Id = view.Id
+
 	tmp.DeptId = view.DeptId
+
 	tmp.UserName = view.UserName
+
 	tmp.NickName = view.NickName
+
 	tmp.UserType = view.UserType
+
 	tmp.Email = view.Email
+
 	tmp.PhoneNumber = view.PhoneNumber
+
 	tmp.Sex = view.Sex
 
 	tmp.Avatar = view.Avatar
@@ -95,7 +124,60 @@ func (sysUserViewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err erro
 	return
 }
 
-func (sysUserViewUtils *SysUserViewUtils) View2DataList(viewList *[]SysUserView) (err error, dataList *[]model.SysUser) {
+func (viewUtils *SysUserViewUtils) Page2Data(pageInfo *SysUserPageView) (err error, data *model.SysUser, page *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysUserViewUtils View2Data error: %v", e)
+			global.Logger.Error("SysUserViewUtils.View2Data:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	// TODO 按需修改
+	var tmp model.SysUser
+
+	tmp.Id = pageInfo.Id
+
+	tmp.DeptId = pageInfo.DeptId
+
+	tmp.UserName = pageInfo.UserName
+
+	tmp.NickName = pageInfo.NickName
+
+	tmp.UserType = pageInfo.UserType
+
+	tmp.Email = pageInfo.Email
+
+	tmp.PhoneNumber = pageInfo.PhoneNumber
+
+	tmp.Sex = pageInfo.Sex
+
+	tmp.Avatar = pageInfo.Avatar
+
+	tmp.Password = pageInfo.Password
+
+	tmp.Salt = pageInfo.Salt
+
+	tmp.Status = pageInfo.Status
+
+	tmp.LoginIp = pageInfo.LoginIp
+
+	tmp.CreateBy = pageInfo.CreateBy
+
+	tmp.UpdateBy = pageInfo.UpdateBy
+
+	tmp.Remark = pageInfo.Remark
+
+	data = &tmp
+	page = &common.PageInfo{
+		PageSize:      pageInfo.PageSize,
+		PageNum:       pageInfo.PageNum,
+		OrderByColumn: pageInfo.OrderByColumn,
+		IsAsc:         pageInfo.IsAsc,
+	}
+	return
+}
+
+func (viewUtils *SysUserViewUtils) View2DataList(viewList *[]SysUserView) (err error, dataList *[]model.SysUser) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysUserViewUtils View2DataList error: %v", e)
@@ -107,7 +189,7 @@ func (sysUserViewUtils *SysUserViewUtils) View2DataList(viewList *[]SysUserView)
 		var dataTmpList []model.SysUser
 		for i := range *dataList {
 			view := (*viewList)[i]
-			err, data := sysUserViewUtils.View2Data(&view)
+			err, data := viewUtils.View2Data(&view)
 			if err == nil {
 				dataTmpList = append(dataTmpList, *data)
 			}
@@ -117,7 +199,7 @@ func (sysUserViewUtils *SysUserViewUtils) View2DataList(viewList *[]SysUserView)
 	return
 }
 
-func (sysUserViewUtils *SysUserViewUtils) Data2ViewList(dataList *[]model.SysUser) (err error, viewList *[]SysUserView) {
+func (viewUtils *SysUserViewUtils) Data2ViewList(dataList *[]model.SysUser) (err error, viewList *[]SysUserView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysUserViewUtils Data2ViewList error: %v", e)
@@ -129,7 +211,7 @@ func (sysUserViewUtils *SysUserViewUtils) Data2ViewList(dataList *[]model.SysUse
 		var viewTmpList []SysUserView
 		for i := range *dataList {
 			data := (*dataList)[i]
-			err, view := sysUserViewUtils.Data2View(&data)
+			err, view := viewUtils.Data2View(&data)
 			if err == nil {
 				viewTmpList = append(viewTmpList, *view)
 			}
