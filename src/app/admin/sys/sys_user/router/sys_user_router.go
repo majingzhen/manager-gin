@@ -26,6 +26,7 @@ func (r *SysUserRouter) InitSysUserRouter(Router *gin.RouterGroup) {
 		sysUserRouter.POST("update", sysUserApi.Update)        // 更新SysUser
 	}
 	{
+		sysUserRouterWithoutRecord.GET("get", sysUserApi.Get)
 		sysUserRouterWithoutRecord.GET("get/:id", sysUserApi.Get) // 根据ID获取SysUser
 		sysUserRouterWithoutRecord.GET("page", sysUserApi.Page)   // 分页获取SysUser列表
 		sysUserRouterWithoutRecord.GET("list", sysUserApi.List)   // 分页获取SysUser列表

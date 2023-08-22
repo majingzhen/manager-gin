@@ -7,3 +7,5 @@
 package model
 
 var SysUserDaoApp = new(SysUserDao)
+var SysUserRoleDaoApp = new(SysUserRoleDao)
+var SysUserPostDaoApp = new(SysUserPostDao)

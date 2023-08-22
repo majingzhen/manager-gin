@@ -64,6 +64,7 @@ func (api *SysPostApi) Update(c *gin.Context) {
 	id := sysPostView.Id
 	if id == "" {
 		response.FailWithMessage("更新失败", c)
+		return
 	}
 	sysPostView.UpdateTime = utils.GetCurTimeStr()
 	sysPostView.UpdateBy = framework.GetLoginUserName(c)
@@ -96,6 +97,7 @@ func (api *SysPostApi) Page(c *gin.Context) {
 	// 绑定查询参数到 pageInfo
 	if err := c.ShouldBindQuery(&pageInfo); err != nil {
 		response.FailWithMessage("获取分页数据解析失败!", c)
+		return
 	}
 
 	if err, res := sysPostService.Page(&pageInfo); err != nil {
@@ -114,6 +116,7 @@ func (api *SysPostApi) List(c *gin.Context) {
 	// 绑定查询参数到 view对象
 	if err := c.ShouldBindQuery(&view); err != nil {
 		response.FailWithMessage("获取参数解析失败!", c)
+		return
 	}
 	// 判断是否需要根据用户获取数据
 	// userId := framework.GetLoginUserId(c)

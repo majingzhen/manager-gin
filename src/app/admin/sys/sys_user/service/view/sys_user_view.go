@@ -8,6 +8,7 @@ package view
 
 import (
 	deptView "manager-gin/src/app/admin/sys/sys_dept/service/view"
+	postView "manager-gin/src/app/admin/sys/sys_post/service/view"
 	roleView "manager-gin/src/app/admin/sys/sys_role/service/view"
 )
 
@@ -36,6 +37,8 @@ type SysUserView struct {
 	Remark      string                  `json:"remark" form:"remark"`
 	Roles       *[]roleView.SysRoleView `json:"roles"`
 	Dept        *deptView.SysDeptView   `json:"dept"`
+	RoleIds     []string                `json:"roleIds" form:"roleIds"`
+	PostIds     []string                `json:"postIds" form:"postIds"`
 }
 
 type SysUserPageView struct {
@@ -65,4 +68,13 @@ type SysUserPageView struct {
 	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
 	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
 	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
+}
+
+// SysUserInfoView 结构体
+type SysUserInfoView struct {
+	SysUserView
+	RoleIds []string                `json:"roleIds" form:"roleIds"`
+	Roles   *[]roleView.SysRoleView `json:"roles" form:"roles"`
+	PostIds []string                `json:"postIds" form:"postIds"`
+	Posts   *[]postView.SysPostView `json:"posts" form:"posts"`
 }

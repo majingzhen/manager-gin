@@ -52,6 +52,8 @@ type SysUser struct {
 	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
 
 	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
+
+	DataScope string
 }
 
 // TableName SysUser 表名

@@ -54,22 +54,27 @@ func (dao *SysUserDao) Get(id string) (err error, sysUser *SysUser) {
 // Author
 func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, datas *[]SysUser, total int64) {
 	// 创建model
-	model := global.GOrmDao.Model(&SysUser{})
+	model := global.GOrmDao.Table("sys_user u")
+	model.Select("u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
+	model.Joins("left join sys_dept d on u.dept_id = d.id")
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.Id != "" {
 		model = model.Where("ID = ?", param.Id)
 	}
 	if param.UserName != "" {
-		model = model.Where("user_name like ?", "%"+param.UserName+"%")
+		model = model.Where("u.user_name like ?", "%"+param.UserName+"%")
 	}
 	if param.PhoneNumber != "" {
-		model = model.Where("phone_number like ?", "%"+param.PhoneNumber+"%")
+		model = model.Where("u.phone_number like ?", "%"+param.PhoneNumber+"%")
 	}
 	if param.Status != "" {
-		model = model.Where("status = ?", param.Status)
+		model = model.Where("u.status = ?", param.Status)
 	}
 	if param.DeptId != "" {
-		model = model.Where("dept_id = ?", param.DeptId)
+		model = model.Where("u.dept_id = ?", param.DeptId)
+	}
+	if param.DataScope != "" {
+		model = model.Where(param.DataScope)
 	}
 	if err = model.Count(&total).Error; err != nil {
 		return
@@ -90,13 +95,27 @@ func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, d
 // Author
 func (dao *SysUserDao) List(data *SysUser) (err error, datas *[]SysUser) {
 	var rows []SysUser
-	db := global.GOrmDao.Model(&SysUser{})
-	// TODO 输入查询条件
-	//if data.Id != "" {
-	//    db.Where("id = ?", data.Id)
-	//}
-	db.Order("create_time desc")
-	err = db.Find(&rows).Error
+	model := global.GOrmDao.Model(&SysUser{})
+	if data.Id != "" {
+		model = model.Where("ID = ?", data.Id)
+	}
+	if data.UserName != "" {
+		model = model.Where("user_name like ?", "%"+data.UserName+"%")
+	}
+	if data.PhoneNumber != "" {
+		model = model.Where("phone_number like ?", "%"+data.PhoneNumber+"%")
+	}
+	if data.Status != "" {
+		model = model.Where("status = ?", data.Status)
+	}
+	if data.DeptId != "" {
+		model = model.Where("dept_id = ?", data.DeptId)
+	}
+	if data.DataScope != "" {
+		model = model.Where(" ?", data.DataScope)
+	}
+	model.Order("create_time desc")
+	err = model.Find(&rows).Error
 	datas = &rows
 	return err, datas
 }
@@ -111,4 +130,10 @@ func (dao *SysUserDao) GetByUserName(name string) (err error, sysUser *SysUser) 
 func (dao *SysUserDao) GetByDeptId(deptId string) (err error, sysUser *[]SysUser) {
 	err = global.GOrmDao.Where("dept_id = ?", deptId).Find(&sysUser).Error
 	return
+}
+
+func (dao *SysUserDao) CheckFieldUnique(fieldName, value string) (error, int64) {
+	var count int64
+	err := global.GOrmDao.Model(&SysUser{}).Where(fieldName+" = ?", value).Count(&count).Error
+	return err, count
 }

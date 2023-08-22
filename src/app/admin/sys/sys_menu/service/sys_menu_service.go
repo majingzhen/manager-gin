@@ -10,7 +10,6 @@ import (
 	"errors"
 	"manager-gin/src/app/admin/sys/sys_menu/model"
 	"manager-gin/src/app/admin/sys/sys_menu/service/view"
-	"manager-gin/src/app/admin/sys/sys_user/service"
 	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
 	"manager-gin/src/utils"
@@ -19,7 +18,6 @@ import (
 
 var sysMenuDao = model.SysMenuDaoApp
 var viewUtils = view.SysMenuViewUtilsApp
-var userService = service.SysUserServiceApp
 
 type SysMenuService struct{}
 
@@ -130,7 +128,7 @@ func (service *SysMenuService) List(pageInfo *view.SysMenuPageView) (err error, 
 
 // GetMenuPermission 根据用户id获取菜单权限
 func (service *SysMenuService) GetMenuPermission(user *userView.SysUserView) (err error, perms []string) {
-	is := userService.IsAdmin(user.Id)
+	is := user.Id == common.SYSTEM_ADMIN_ID
 	// 管理员拥有所有权限
 	if is {
 		perms = append(perms, "*:*:*")
@@ -159,7 +157,7 @@ func (service *SysMenuService) GetMenuPermission(user *userView.SysUserView) (er
 // GetMenuTreeByUserId 根据用户id获取菜单树
 func (service *SysMenuService) GetMenuTreeByUserId(userId string) (err error, menuTree []*view.RouterView) {
 	var menus *[]model.SysMenu
-	itIs := userService.IsAdmin(userId)
+	itIs := userId == common.SYSTEM_ADMIN_ID
 	if itIs {
 		err, menus = sysMenuDao.SelectMenuAll()
 	} else {
@@ -181,7 +179,7 @@ func (service *SysMenuService) SelectMenuList(v *view.SysMenuView, userId string
 		return err, nil
 	}
 	var dataMenus *[]model.SysMenu
-	itIs := userService.IsAdmin(userId)
+	itIs := userId == common.SYSTEM_ADMIN_ID
 	if itIs {
 		err, dataMenus = sysMenuDao.SelectMenuList(data)
 	} else {

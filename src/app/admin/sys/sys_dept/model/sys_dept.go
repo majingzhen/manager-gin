@@ -40,6 +40,8 @@ type SysDept struct {
 	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:更新者;"`
 
 	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
+
+	DataScope string
 }
 
 // TableName SysDept 表名

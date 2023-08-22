@@ -64,6 +64,7 @@ func (api *SysDictDataApi) Update(c *gin.Context) {
 	id := sysDictDataView.Id
 	if id == "" {
 		response.FailWithMessage("更新失败", c)
+		return
 	}
 	sysDictDataView.UpdateTime = utils.GetCurTimeStr()
 	sysDictDataView.UpdateBy = framework.GetLoginUser(c).UserName
@@ -109,6 +110,7 @@ func (api *SysDictDataApi) Page(c *gin.Context) {
 	// 绑定查询参数到 pageInfo
 	if err := c.ShouldBindQuery(&pageInfo); err != nil {
 		response.FailWithMessage("获取分页数据解析失败!", c)
+		return
 	}
 
 	if err, res := sysDictDataService.Page(&pageInfo); err != nil {

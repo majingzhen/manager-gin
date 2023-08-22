@@ -62,6 +62,7 @@ func (api *SysMenuApi) Update(c *gin.Context) {
 	id := sysMenuView.Id
 	if id == "" {
 		response.FailWithMessage("更新失败", c)
+		return
 	}
 	sysMenuView.UpdateTime = utils.GetCurTimeStr()
 	sysMenuView.UpdateBy = framework.GetLoginUser(c).UserName
@@ -94,6 +95,7 @@ func (api *SysMenuApi) List(c *gin.Context) {
 	// 绑定查询参数到 pageInfo
 	if err := c.ShouldBindQuery(&menuView); err != nil {
 		response.FailWithMessage("获取参数解析失败!", c)
+		return
 	}
 	userId := framework.GetLoginUserId(c)
 	if err, res := sysMenuService.SelectMenuList(&menuView, userId); err != nil {

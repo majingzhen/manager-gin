@@ -51,8 +51,8 @@ func (systemApi *SystemApi) Login(c *gin.Context) {
 	}
 	err, userView := sysUserService.GetByUserName(loginUserView.UserName)
 	if err != nil || userView == nil {
-		global.Logger.Error("用户名不存在", zap.Error(err))
-		response.FailWithMessage("用户名不存在", c)
+		global.Logger.Error("用户不存在", zap.Error(err))
+		response.FailWithMessage("用户不存在", c)
 		return
 	}
 	// 取加密密码
@@ -62,12 +62,18 @@ func (systemApi *SystemApi) Login(c *gin.Context) {
 		response.FailWithMessage("登录失败", c)
 		return
 	} else {
+		// 判断是否分配角色
+		_, sysUserView := sysUserService.Get(userView.Id)
+		if sysUserView.Roles == nil || len(*sysUserView.Roles) == 0 {
+			global.Logger.Error("用户不存在", zap.Error(err))
+			response.FailWithMessage("用户不存在", c)
+			return
+		}
 		token, err := framework.GenerateToken(userView.Id)
 		if err != nil {
 			response.FailWithMessage("登录失败", c)
 			return
 		}
-
 		response.OkWithData(token, c)
 	}
 }

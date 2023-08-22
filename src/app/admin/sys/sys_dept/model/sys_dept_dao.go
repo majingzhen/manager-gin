@@ -71,21 +71,24 @@ func (dao *SysDeptDao) Page(param *SysDept, page *common.PageInfo) (err error, d
 // Author
 func (dao *SysDeptDao) List(data *SysDept) (err error, datas *[]SysDept) {
 	var rows []SysDept
-	db := global.GOrmDao.Model(&SysDept{})
+	db := global.GOrmDao.Model(&SysDept{}).Table("sys_dept d")
 	// TODO 输入查询条件
 	if data.DeptName != "" {
-		db.Where("dept_name like ?", "?"+data.DeptName+"?")
+		db.Where("d.dept_name like ?", "?"+data.DeptName+"?")
 	}
 	if data.Status != "" {
-		db.Where("status = ?", data.Status)
+		db.Where("d.status = ?", data.Status)
 	}
 	if data.ParentId != "" {
-		db.Where("parent_id = ?", data.ParentId)
+		db.Where("d.parent_id = ?", data.ParentId)
 	}
 	if data.Id != "" {
-		db.Where("id = ?", data.Id)
+		db.Where("d.id = ?", data.Id)
 	}
-	db.Order("parent_id, order_num")
+	if data.DataScope != "" {
+		db.Where(data.DataScope)
+	}
+	db.Order("d.parent_id, d.order_num")
 	err = db.Find(&rows).Error
 	datas = &rows
 	return err, datas
@@ -110,6 +113,7 @@ func (dao *SysDeptDao) SelectChildrenDeptById(id string) (err error, res *[]SysD
 	return
 }
 
+// Delete 删除SysDept记录
 func (dao *SysDeptDao) Delete(id string) error {
 	return global.GOrmDao.Delete(&SysDept{}, "id = ?", id).Error
 }

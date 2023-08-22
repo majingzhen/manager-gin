@@ -10,6 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"manager-gin/src/app/admin/sys/system/api"
 	"manager-gin/src/middleware"
+	"manager-gin/src/utils"
 )
 
 type SystemRouter struct{}
@@ -21,6 +22,9 @@ func (r *SystemRouter) InitSystemRouter(Router *gin.RouterGroup) {
 	Router.POST("login", systemApi.Login) // 登录
 	Router.GET("captchaImage", systemApi.CaptchaImage)
 	Router.POST("logout", systemApi.Logout)
+	Router.GET("/", func(c *gin.Context) {
+		c.String(200, utils.EncryptionPassword("123456", "651d9c0b4ca000b2ba14e472ee2b36dc"))
+	})
 	systemRouter := Router.Group("").Use(middleware.JWTAuthFilter())
 	{
 		systemRouter.GET("getInfo", systemApi.GetUserInfo)

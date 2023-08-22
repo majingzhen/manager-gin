@@ -10,7 +10,9 @@ const (
 	YES_FRAME = 0
 	NO_FRAME  = 1
 
-	SYSTEM_ADMIN_ID = "1"
+	// 管理员用户ID
+	SYSTEM_ADMIN_ID      = "1"
+	SYSTEM_ROLE_ADMIN_ID = "1"
 
 	MENU_TYPE_DIR    = "M"
 	MENU_TYPE_MENU   = "C"

@@ -107,3 +107,15 @@ func (dao *SysPostDao) CheckPostExistUser(postId string) (err error, count int64
 	err = global.GOrmDao.Table("sys_user_post").Where("post_id = ?", postId).Count(&count).Error
 	return
 }
+
+// SelectPostListByUserId 根据用户ID查询岗位
+func (dao *SysPostDao) SelectPostListByUserId(userId string) (error, []string) {
+	db := global.GOrmDao.Table("sys_post p")
+	db.Joins("left join sys_user_post up on p.id = up.post_id")
+	db.Joins("left join sys_user u on u.id = up.user_id")
+	db.Where("u.id = ?", userId)
+	db.Select("p.id")
+	var ids []string
+	err := db.Find(&ids).Error
+	return err, ids
+}

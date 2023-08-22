@@ -56,9 +56,18 @@ func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, d
 	// 创建model
 	model := global.GOrmDao.Model(&SysRole{})
 	// 如果有条件搜索 下方会自动创建搜索语句
-	//if param.Id != "" {
-	//	model = model.Where("ID = ?", info.Id)
-	//}
+	if param.Id != "" {
+		model = model.Where("ID = ?", param.Id)
+	}
+	if param.RoleName != "" {
+		model = model.Where("role_name = ?", "%"+param.RoleName+"%")
+	}
+	if param.RoleKey != "" {
+		model = model.Where("role_key = ?", "%"+param.RoleKey+"%")
+	}
+	if param.Status != "" {
+		model = model.Where("status = ?", param.Status)
+	}
 	if err = model.Count(&total).Error; err != nil {
 		return
 	}
@@ -93,7 +102,7 @@ func (dao *SysRoleDao) List(data *SysRole) (err error, datas *[]SysRole) {
 func (dao *SysRoleDao) GetRoleByUserId(userId string) (err error, roles *[]SysRole) {
 	var tmp []SysRole
 	db := global.GOrmDao.Table("sys_role r")
-	db.Joins("join sys_user_role ur", "r.id = ur.role_id")
+	db.Joins("left join sys_user_role ur on r.id = ur.role_id")
 	db.Where("ur.user_id = ? and r.status = ?", userId, common.STATUS_NORMAL)
 	err = db.Find(&tmp).Error
 	roles = &tmp

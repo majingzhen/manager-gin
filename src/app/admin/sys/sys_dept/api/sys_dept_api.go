@@ -63,6 +63,7 @@ func (api *SysDeptApi) Update(c *gin.Context) {
 	id := sysDeptView.Id
 	if id == "" {
 		response.FailWithMessage("更新失败", c)
+		return
 	}
 	sysDeptView.UpdateTime = utils.GetCurTimeStr()
 	sysDeptView.UpdateBy = framework.GetLoginUser(c).UserName
@@ -95,6 +96,7 @@ func (api *SysDeptApi) Page(c *gin.Context) {
 	// 绑定查询参数到 pageInfo
 	if err := c.ShouldBindQuery(&pageInfo); err != nil {
 		response.FailWithMessage("获取分页数据解析失败!", c)
+		return
 	}
 
 	if err, res := sysDeptService.Page(&pageInfo); err != nil {
@@ -113,10 +115,12 @@ func (api *SysDeptApi) List(c *gin.Context) {
 	// 绑定查询参数到 view对象
 	if err := c.ShouldBindQuery(&view); err != nil {
 		response.FailWithMessage("获取参数解析失败!", c)
+		return
 	}
 	// 判断是否需要根据用户获取数据
 	// userId := framework.GetLoginUserId(c)
-	if err, res := sysDeptService.List(&view); err != nil {
+	user := framework.GetLoginUser(c)
+	if err, res := sysDeptService.List(&view, user); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
@@ -129,9 +133,11 @@ func (api *SysDeptApi) List(c *gin.Context) {
 // @Router /sysDept/listExclude [get]
 func (api *SysDeptApi) ListExclude(c *gin.Context) {
 	id := c.Param("id")
-	if err, sysDeptView := sysDeptService.List(&view.SysDeptView{}); err != nil {
+	user := framework.GetLoginUser(c)
+	if err, sysDeptView := sysDeptService.List(&view.SysDeptView{}, user); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
+		return
 	} else {
 		var deleteIndexes []int // 用于记录要删除的元素索引
 		for i, deptView := range *sysDeptView {
@@ -157,8 +163,10 @@ func (api *SysDeptApi) SelectDeptTree(c *gin.Context) {
 	// 绑定查询参数到 view对象
 	if err := c.ShouldBindQuery(&view); err != nil {
 		response.FailWithMessage("获取参数解析失败!", c)
+		return
 	}
-	if err, sysDeptView := sysDeptService.SelectDeptTree(&view); err != nil {
+	user := framework.GetLoginUser(c)
+	if err, sysDeptView := sysDeptService.SelectDeptTree(&view, user); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 	} else {

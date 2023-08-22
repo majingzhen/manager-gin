@@ -9,20 +9,18 @@ package service
 import (
 	"manager-gin/src/app/admin/sys/sys_role/model"
 	"manager-gin/src/app/admin/sys/sys_role/service/view"
-	"manager-gin/src/app/admin/sys/sys_user/service"
 	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
 )
 
 var sysRoleDao = model.SysRoleDaoApp
 var viewUtils = view.SysRoleViewUtilsApp
-var userService = service.SysUserServiceApp
 
 type SysRoleService struct{}
 
 // Create 创建SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Create(sysRoleView *view.SysRoleView) (err error) {
+func (service *SysRoleService) Create(sysRoleView *view.SysRoleView) (err error) {
 	err1, sysRole := viewUtils.View2Data(sysRoleView)
 	if err1 != nil {
 		return err1
@@ -36,21 +34,21 @@ func (sysRoleService *SysRoleService) Create(sysRoleView *view.SysRoleView) (err
 
 // Delete 删除SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Delete(id string) (err error) {
+func (service *SysRoleService) Delete(id string) (err error) {
 	err = sysRoleDao.Delete(id)
 	return err
 }
 
 // DeleteByIds 批量删除SysRole记录
 // Author
-func (sysRoleService *SysRoleService) DeleteByIds(ids []string) (err error) {
+func (service *SysRoleService) DeleteByIds(ids []string) (err error) {
 	err = sysRoleDao.DeleteByIds(ids)
 	return err
 }
 
 // Update 更新SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Update(id string, sysRoleView *view.SysRoleView) (err error) {
+func (service *SysRoleService) Update(id string, sysRoleView *view.SysRoleView) (err error) {
 	sysRoleView.Id = id
 	err1, sysRole := viewUtils.View2Data(sysRoleView)
 	if err1 != nil {
@@ -62,7 +60,7 @@ func (sysRoleService *SysRoleService) Update(id string, sysRoleView *view.SysRol
 
 // Get 根据id获取SysRole记录
 // Author
-func (sysRoleService *SysRoleService) Get(id string) (err error, sysRoleView *view.SysRoleView) {
+func (service *SysRoleService) Get(id string) (err error, sysRoleView *view.SysRoleView) {
 	err1, sysRole := sysRoleDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -114,8 +112,8 @@ func (service *SysRoleService) List(v *view.SysRoleView) (err error, views *[]vi
 }
 
 // GetRoleByUserId 根据用户获取角色集合
-func (sysRoleService *SysRoleService) GetRoleByUserId(user *userView.SysUserView) (err error, roleNames []string) {
-	is := userService.IsAdmin(user.Id)
+func (service *SysRoleService) GetRoleByUserId(user *userView.SysUserView) (err error, roleNames []string) {
+	is := user.Id == common.SYSTEM_ADMIN_ID
 	if is {
 		roleNames = append(roleNames, "admin")
 	}
@@ -124,8 +122,23 @@ func (sysRoleService *SysRoleService) GetRoleByUserId(user *userView.SysUserView
 		return err1, nil
 	}
 	for _, role := range *roles {
-		roleNames = append(roleNames, role.RoleName)
+		roleNames = append(roleNames, role.RoleKey)
 	}
 	_, user.Roles = viewUtils.Data2ViewList(roles)
 	return nil, roleNames
+}
+
+func (service *SysRoleService) SelectRoleAll() (err error, roles *[]view.SysRoleView) {
+	err, roles = service.List(&view.SysRoleView{})
+	return
+}
+
+// SelectRolesByUserId 根据用户ID查询角色
+func (service *SysRoleService) SelectRolesByUserId(userId string) (err error, roles *[]view.SysRoleView) {
+	err1, datas := sysRoleDao.GetRoleByUserId(userId)
+	if err1 != nil {
+		return err1, nil
+	}
+	err, roles = viewUtils.Data2ViewList(datas)
+	return
 }

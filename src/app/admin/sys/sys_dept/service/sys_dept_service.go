@@ -11,7 +11,9 @@ import (
 	"manager-gin/src/app/admin/sys/sys_dept/model"
 	"manager-gin/src/app/admin/sys/sys_dept/service/view"
 	"manager-gin/src/app/admin/sys/sys_user/service/extend"
+	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
+	"manager-gin/src/framework/aspect"
 	"strings"
 )
 
@@ -156,11 +158,12 @@ func (service *SysDeptService) Page(pageInfo *view.SysDeptPageView) (err error, 
 }
 
 // List 获取SysDept列表
-func (service *SysDeptService) List(v *view.SysDeptView) (err error, views *[]view.SysDeptView) {
+func (service *SysDeptService) List(v *view.SysDeptView, userView *userView.SysUserView) (err error, views *[]view.SysDeptView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
+	data.DataScope = aspect.DataScopeFilter(userView, "d", "u", "")
 	var datas *[]model.SysDept
 	if err, datas = sysDeptDao.List(data); err != nil {
 		return err, nil
@@ -171,11 +174,12 @@ func (service *SysDeptService) List(v *view.SysDeptView) (err error, views *[]vi
 }
 
 // SelectDeptTree 获取部门树
-func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView) (error, *[]view.SysDeptTreeView) {
+func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView, sysUserView *userView.SysUserView) (error, *[]view.SysDeptTreeView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
+	data.DataScope = aspect.DataScopeFilter(sysUserView, "d", "u", "")
 	var datas *[]model.SysDept
 	if err, datas = sysDeptDao.List(data); err != nil {
 		return err, nil

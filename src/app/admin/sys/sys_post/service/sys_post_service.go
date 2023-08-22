@@ -148,3 +148,13 @@ func (service *SysPostService) CheckPostNameUnique(postName string) error {
 	}
 	return nil
 }
+
+func (service *SysPostService) SelectPostAll() (err error, views *[]view.SysPostView) {
+	err, views = service.List(&view.SysPostView{})
+	return
+}
+
+func (service *SysPostService) SelectPostListByUserId(userId string) (err error, ids []string) {
+	err, ids = sysPostDao.SelectPostListByUserId(userId)
+	return
+}
