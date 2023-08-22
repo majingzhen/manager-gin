@@ -85,8 +85,8 @@ func (dao *SysDeptDao) List(data *SysDept) (err error, datas *[]SysDept) {
 	if data.Id != "" {
 		db.Where("d.id = ?", data.Id)
 	}
-	if data.DataScope != "" {
-		db.Where(data.DataScope)
+	if data.DataScopeSql != "" {
+		db.Where(data.DataScopeSql)
 	}
 	db.Order("d.parent_id, d.order_num")
 	err = db.Find(&rows).Error

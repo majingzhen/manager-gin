@@ -11,6 +11,7 @@ import (
 	"manager-gin/src/app/admin/sys/sys_role/service/view"
 	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
+	"manager-gin/src/framework/aspect"
 )
 
 var sysRoleDao = model.SysRoleDaoApp
@@ -74,11 +75,12 @@ func (service *SysRoleService) Get(id string) (err error, sysRoleView *view.SysR
 
 // Page 分页获取SysRole记录
 // Author
-func (service *SysRoleService) Page(pageInfo *view.SysRolePageView) (err error, res *common.PageInfo) {
+func (service *SysRoleService) Page(pageInfo *view.SysRolePageView, sysUserView *userView.SysUserView) (err error, res *common.PageInfo) {
 	err, param, page := viewUtils.Page2Data(pageInfo)
 	if err != nil {
 		return err, nil
 	}
+	param.DataScopeSql = aspect.DataScopeFilter(sysUserView, "d", "u", "")
 	err1, datas, total := sysRoleDao.Page(param, page)
 	if err1 != nil {
 		return err1, res
@@ -128,6 +130,7 @@ func (service *SysRoleService) GetRoleByUserId(user *userView.SysUserView) (err 
 	return nil, roleNames
 }
 
+// SelectRoleAll
 func (service *SysRoleService) SelectRoleAll() (err error, roles *[]view.SysRoleView) {
 	err, roles = service.List(&view.SysRoleView{})
 	return

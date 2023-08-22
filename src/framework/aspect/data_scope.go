@@ -25,7 +25,7 @@ func DataScopeFilter(user *view.SysUserView, deptAlias string, userAlias string,
 
 	for _, role := range *user.Roles {
 		dataScope := role.DataScope
-		if dataScope != "2" && contains(conditions, dataScope) {
+		if dataScope != DATA_SCOPE_CUSTOM && contains(conditions, dataScope) {
 			continue
 		}
 		if permission != "" && role.Permissions != nil && !contains(*role.Permissions, permission) {

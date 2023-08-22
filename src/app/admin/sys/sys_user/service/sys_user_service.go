@@ -127,7 +127,7 @@ func (service *SysUserService) Page(pageInfo *view.SysUserPageView, user *view.S
 	if err != nil {
 		return err, nil
 	}
-	param.DataScope = aspect.DataScopeFilter(user, "d", "u", "")
+	param.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
 	err1, datas, total := sysUserDao.Page(param, page)
 	if err1 != nil {
 		return err1, res
@@ -206,7 +206,7 @@ func (service *SysUserService) CheckUserDataScope(userId string) error {
 			return err
 		}
 		filter := aspect.DataScopeFilter(userView, "d", "u", "")
-		data.DataScope = filter
+		data.DataScopeSql = filter
 		err, _ = sysUserDao.List(data)
 		if err != nil {
 			return err

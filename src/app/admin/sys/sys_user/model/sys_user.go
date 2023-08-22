@@ -53,7 +53,7 @@ type SysUser struct {
 
 	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
 
-	DataScope string
+	DataScopeSql string `json:"dataScopeSql" form:"dataScopeSql" gorm:"-"`
 }
 
 // TableName SysUser 表名

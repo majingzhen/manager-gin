@@ -54,7 +54,11 @@ func (dao *SysRoleDao) Get(id string) (err error, sysRole *SysRole) {
 // Author
 func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, datas *[]SysRole, total int64) {
 	// 创建model
-	model := global.GOrmDao.Model(&SysRole{})
+	model := global.GOrmDao.Table("sys_role r")
+	model.Select("r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
+	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
+	model.Joins("left join sys_user u on u.id = ur.user_id")
+	model.Joins("left join sys_dept d on u.dept_id = d.id")
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.Id != "" {
 		model = model.Where("ID = ?", param.Id)
@@ -67,6 +71,9 @@ func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, d
 	}
 	if param.Status != "" {
 		model = model.Where("status = ?", param.Status)
+	}
+	if param.DataScopeSql != "" {
+		model = model.Where(param.DataScopeSql)
 	}
 	if err = model.Count(&total).Error; err != nil {
 		return

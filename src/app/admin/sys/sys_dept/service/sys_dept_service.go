@@ -163,7 +163,7 @@ func (service *SysDeptService) List(v *view.SysDeptView, userView *userView.SysU
 	if err != nil {
 		return err, nil
 	}
-	data.DataScope = aspect.DataScopeFilter(userView, "d", "u", "")
+	data.DataScopeSql = aspect.DataScopeFilter(userView, "d", "u", "")
 	var datas *[]model.SysDept
 	if err, datas = sysDeptDao.List(data); err != nil {
 		return err, nil
@@ -179,7 +179,7 @@ func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView, sysUserView *
 	if err != nil {
 		return err, nil
 	}
-	data.DataScope = aspect.DataScopeFilter(sysUserView, "d", "u", "")
+	data.DataScopeSql = aspect.DataScopeFilter(sysUserView, "d", "u", "")
 	var datas *[]model.SysDept
 	if err, datas = sysDeptDao.List(data); err != nil {
 		return err, nil

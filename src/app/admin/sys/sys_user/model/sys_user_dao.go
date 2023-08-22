@@ -73,8 +73,8 @@ func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, d
 	if param.DeptId != "" {
 		model = model.Where("u.dept_id = ?", param.DeptId)
 	}
-	if param.DataScope != "" {
-		model = model.Where(param.DataScope)
+	if param.DataScopeSql != "" {
+		model = model.Where(param.DataScopeSql)
 	}
 	if err = model.Count(&total).Error; err != nil {
 		return
@@ -111,8 +111,8 @@ func (dao *SysUserDao) List(data *SysUser) (err error, datas *[]SysUser) {
 	if data.DeptId != "" {
 		model = model.Where("dept_id = ?", data.DeptId)
 	}
-	if data.DataScope != "" {
-		model = model.Where(" ?", data.DataScope)
+	if data.DataScopeSql != "" {
+		model = model.Where(" ?", data.DataScopeSql)
 	}
 	model.Order("create_time desc")
 	err = model.Find(&rows).Error

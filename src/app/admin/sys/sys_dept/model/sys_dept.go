@@ -41,7 +41,7 @@ type SysDept struct {
 
 	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
 
-	DataScope string
+	DataScopeSql string `json:"dataScopeSql" form:"dataScopeSql" gorm:"-"`
 }
 
 // TableName SysDept 表名

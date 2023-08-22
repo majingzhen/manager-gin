@@ -99,8 +99,8 @@ func (api *SysRoleApi) Page(c *gin.Context) {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 		return
 	}
-
-	if err, res := sysRoleService.Page(&pageInfo); err != nil {
+	user := framework.GetLoginUser(c)
+	if err, res := sysRoleService.Page(&pageInfo, user); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

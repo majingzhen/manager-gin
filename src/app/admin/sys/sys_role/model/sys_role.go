@@ -40,6 +40,8 @@ type SysRole struct {
 	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
 
 	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
+
+	DataScopeSql string `json:"dataScopeSql" form:"dataScopeSql" gorm:"-"`
 }
 
 // TableName SysRole 表名
