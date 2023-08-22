@@ -39,7 +39,7 @@ func (dao *SysUserDao) DeleteByIds(ids []string) (err error) {
 // Update 更新SysUser记录
 // Author
 func (dao *SysUserDao) Update(sysUser SysUser) (err error) {
-	err = global.GOrmDao.Save(&sysUser).Error
+	err = global.GOrmDao.Updates(&sysUser).Error
 	return err
 }
 
@@ -55,7 +55,7 @@ func (dao *SysUserDao) Get(id string) (err error, sysUser *SysUser) {
 func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, datas *[]SysUser, total int64) {
 	// 创建model
 	model := global.GOrmDao.Table("sys_user u")
-	model.Select("u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
+	model.Select("distinct u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
 	model.Joins("left join sys_dept d on u.dept_id = d.id")
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.Id != "" {
@@ -95,7 +95,9 @@ func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, d
 // Author
 func (dao *SysUserDao) List(data *SysUser) (err error, datas *[]SysUser) {
 	var rows []SysUser
-	model := global.GOrmDao.Model(&SysUser{})
+	model := global.GOrmDao.Table("sys_user u")
+	model.Select("distinct u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
+	model.Joins("left join sys_dept d on u.dept_id = d.id")
 	if data.Id != "" {
 		model = model.Where("ID = ?", data.Id)
 	}

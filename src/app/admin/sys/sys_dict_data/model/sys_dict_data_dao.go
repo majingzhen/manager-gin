@@ -32,7 +32,7 @@ func (dao *SysDictDataDao) DeleteByIds(ids []string) (err error) {
 // Update 更新SysDictData记录
 // Author
 func (dao *SysDictDataDao) Update(sysDictData SysDictData) (err error) {
-	err = global.GOrmDao.Save(&sysDictData).Error
+	err = global.GOrmDao.Updates(&sysDictData).Error
 	return err
 }
 

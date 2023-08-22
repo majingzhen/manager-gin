@@ -154,7 +154,23 @@ func (service *SysPostService) SelectPostAll() (err error, views *[]view.SysPost
 	return
 }
 
-func (service *SysPostService) SelectPostListByUserId(userId string) (err error, ids []string) {
-	err, ids = sysPostDao.SelectPostListByUserId(userId)
+func (service *SysPostService) SelectPostIdListByUserId(userId string) (err error, ids []string) {
+	err, dataList := sysPostDao.SelectPostListByUserId(userId)
+	if err != nil {
+		return err, nil
+	}
+	for _, data := range *dataList {
+		ids = append(ids, data.Id)
+	}
+	return
+}
+
+// SelectPostListByUserId 根据用户ID查询岗位
+func (service *SysPostService) SelectPostListByUserId(userId string) (err error, views *[]view.SysPostView) {
+	err, dataList := sysPostDao.SelectPostListByUserId(userId)
+	if err != nil {
+		return err, nil
+	}
+	err, views = viewUtils.Data2ViewList(dataList)
 	return
 }

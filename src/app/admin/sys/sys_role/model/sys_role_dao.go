@@ -39,7 +39,7 @@ func (dao *SysRoleDao) DeleteByIds(ids []string) (err error) {
 // Update 更新SysRole记录
 // Author
 func (dao *SysRoleDao) Update(sysRole SysRole) (err error) {
-	err = global.GOrmDao.Save(&sysRole).Error
+	err = global.GOrmDao.Updates(&sysRole).Error
 	return err
 }
 
@@ -55,7 +55,7 @@ func (dao *SysRoleDao) Get(id string) (err error, sysRole *SysRole) {
 func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, datas *[]SysRole, total int64) {
 	// 创建model
 	model := global.GOrmDao.Table("sys_role r")
-	model.Select("r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
+	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
 	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
 	model.Joins("left join sys_user u on u.id = ur.user_id")
 	model.Joins("left join sys_dept d on u.dept_id = d.id")
@@ -108,10 +108,11 @@ func (dao *SysRoleDao) List(data *SysRole) (err error, datas *[]SysRole) {
 // GetRoleByUserId 根据用户获取角色集合
 func (dao *SysRoleDao) GetRoleByUserId(userId string) (err error, roles *[]SysRole) {
 	var tmp []SysRole
-	db := global.GOrmDao.Table("sys_role r")
-	db.Joins("left join sys_user_role ur on r.id = ur.role_id")
-	db.Where("ur.user_id = ? and r.status = ?", userId, common.STATUS_NORMAL)
-	err = db.Find(&tmp).Error
+	model := global.GOrmDao.Table("sys_role r")
+	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
+	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
+	model.Where("ur.user_id = ? and r.status = ?", userId, common.STATUS_NORMAL)
+	err = model.Find(&tmp).Error
 	roles = &tmp
 	return err, roles
 }

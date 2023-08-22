@@ -118,19 +118,20 @@ func (service *SysRoleService) GetRoleByUserId(user *userView.SysUserView) (err 
 	is := user.Id == common.SYSTEM_ADMIN_ID
 	if is {
 		roleNames = append(roleNames, "admin")
+	} else {
+		err1, roles := sysRoleDao.GetRoleByUserId(user.Id)
+		if err1 != nil {
+			return err1, nil
+		}
+		for _, role := range *roles {
+			roleNames = append(roleNames, role.RoleKey)
+		}
+		_, user.Roles = viewUtils.Data2ViewList(roles)
 	}
-	err1, roles := sysRoleDao.GetRoleByUserId(user.Id)
-	if err1 != nil {
-		return err1, nil
-	}
-	for _, role := range *roles {
-		roleNames = append(roleNames, role.RoleKey)
-	}
-	_, user.Roles = viewUtils.Data2ViewList(roles)
 	return nil, roleNames
 }
 
-// SelectRoleAll
+// SelectRoleAll 查询所有角色
 func (service *SysRoleService) SelectRoleAll() (err error, roles *[]view.SysRoleView) {
 	err, roles = service.List(&view.SysRoleView{})
 	return
@@ -144,4 +145,23 @@ func (service *SysRoleService) SelectRolesByUserId(userId string) (err error, ro
 	}
 	err, roles = viewUtils.Data2ViewList(datas)
 	return
+}
+
+// AssembleRolesByUserId 根据用户ID查询授权角色
+func (service *SysRoleService) AssembleRolesByUserId(userId string) (error, *[]view.SysRoleView) {
+	if err, roles := service.SelectRoleAll(); err != nil {
+		return err, nil
+	} else {
+		if err1, userRoles := service.SelectRolesByUserId(userId); err1 != nil {
+			for i := 0; i < len(*roles); i++ {
+				for j := 0; j < len(*userRoles); j++ {
+					if (*roles)[i].Id == (*userRoles)[j].Id {
+						(*roles)[i].Flag = true
+						break
+					}
+				}
+			}
+		}
+		return nil, roles
+	}
 }

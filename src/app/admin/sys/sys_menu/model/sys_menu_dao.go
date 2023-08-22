@@ -32,7 +32,7 @@ func (dao *SysMenuDao) Delete(id string) (err error) {
 // Update 更新SysMenu记录
 // Author
 func (dao *SysMenuDao) Update(sysMenu SysMenu) (err error) {
-	err = global.GOrmDao.Save(&sysMenu).Error
+	err = global.GOrmDao.Updates(&sysMenu).Error
 	return err
 }
 

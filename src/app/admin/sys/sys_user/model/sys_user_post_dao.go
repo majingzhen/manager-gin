@@ -32,7 +32,7 @@ func (dao *SysUserPostDao) DeleteByIds(ids []string) (err error) {
 // Update 更新SysUserPost记录
 // Author
 func (dao *SysUserPostDao) Update(sysUserPost SysUserPost) (err error) {
-	err = global.GOrmDao.Save(&sysUserPost).Error
+	err = global.GOrmDao.Updates(&sysUserPost).Error
 	return err
 }
 
@@ -85,4 +85,9 @@ func (dao *SysUserPostDao) List(data *SysUserPost) (err error, datas *[]SysUserP
 // CreateBatch 批量创建SysUserPost记录
 func (dao *SysUserPostDao) CreateBatch(posts []SysUserPost) error {
 	return global.GOrmDao.Create(&posts).Error
+}
+
+// DeleteByUserIds 根据用户id批量删除SysUserPost记录
+func (dao *SysUserPostDao) DeleteByUserIds(ids []string) error {
+	return global.GOrmDao.Delete(&SysUserPost{}, "user_id in ?", ids).Error
 }

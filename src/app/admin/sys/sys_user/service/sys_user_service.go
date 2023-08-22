@@ -14,6 +14,7 @@ import (
 	"manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
 	"manager-gin/src/framework/aspect"
+	"manager-gin/src/utils"
 )
 
 var sysUserDao = model.SysUserDaoApp
@@ -79,6 +80,22 @@ func (service *SysUserService) Delete(id string) (err error) {
 // DeleteByIds 批量删除SysUser记录
 // Author
 func (service *SysUserService) DeleteByIds(ids []string) (err error) {
+	for _, id := range ids {
+		if common.SYSTEM_ADMIN_ID == id {
+			return errors.New("不允许操作超级管理员用户")
+		}
+		if err = service.CheckUserDataScope(id); err != nil {
+			return err
+		}
+	}
+	// 删除用户角色关联数据
+	if err = userRoleDao.DeleteByUserIds(ids); err != nil {
+		return err
+	}
+	// 删除用户岗位关联数据
+	if err = userPostDao.DeleteByUserIds(ids); err != nil {
+		return err
+	}
 	err = sysUserDao.DeleteByIds(ids)
 	return err
 }
@@ -111,7 +128,8 @@ func (service *SysUserService) Get(id string) (err error, sysUserView *view.SysU
 			sysUserView.Dept = deptView
 		}
 		// 组装角色信息
-		if err3, roles := roleService.SelectRolesByUserId(id); err3 != nil {
+
+		if err3, roles := roleService.AssembleRolesByUserId(id); err3 != nil {
 			return err3, nil
 		} else {
 			sysUserView.Roles = roles
@@ -194,6 +212,7 @@ func (service *SysUserService) CheckFieldUnique(fieldName, value string) error {
 	}
 }
 
+// CheckUserDataScope 校验数据权限
 func (service *SysUserService) CheckUserDataScope(userId string) error {
 	if common.SYSTEM_ADMIN_ID != userId {
 		err, userView := service.Get(userId)
@@ -206,11 +225,48 @@ func (service *SysUserService) CheckUserDataScope(userId string) error {
 			return err
 		}
 		filter := aspect.DataScopeFilter(userView, "d", "u", "")
+		param := &model.SysUser{
+			DataScopeSql: filter,
+			Id:           userId,
+		}
 		data.DataScopeSql = filter
-		err, _ = sysUserDao.List(data)
+		err, _ = sysUserDao.List(param)
 		if err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+// ResetPwd 重置密码
+func (service *SysUserService) ResetPwd(v *view.SysUserView) error {
+	err, sysUser := viewUtils.View2Data(v)
+	if err != nil {
+		return err
+	}
+	salt := utils.GenUID()
+	sysUser.Password = utils.EncryptionPassword(sysUser.Password, salt)
+	sysUser.Salt = salt
+	return sysUserDao.Update(*sysUser)
+}
+
+// ChangeStatus 更新状态
+func (service *SysUserService) ChangeStatus(v *view.SysUserView) error {
+	err, sysUser := viewUtils.View2Data(v)
+	if err != nil {
+		return err
+	}
+	return sysUserDao.Update(*sysUser)
+}
+
+func (service *SysUserService) AuthRole(v *view.SysUserView) error {
+	// 删除用户角色关联数据
+	if err := userRoleDao.DeleteByUserIds([]string{v.Id}); err != nil {
+		return err
+	}
+	// 插入用户角色关联数据
+	if err := insertUserRole(v.Id, v.RoleIds); err != nil {
+		return err
 	}
 	return nil
 }

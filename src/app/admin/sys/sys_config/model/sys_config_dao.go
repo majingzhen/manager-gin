@@ -32,7 +32,7 @@ func (dao *SysConfigDao) DeleteByIds(ids []string) (err error) {
 // Update 更新SysConfig记录
 // Author
 func (dao *SysConfigDao) Update(sysConfig SysConfig) (err error) {
-	err = global.GOrmDao.Save(&sysConfig).Error
+	err = global.GOrmDao.Updates(&sysConfig).Error
 	return err
 }
 

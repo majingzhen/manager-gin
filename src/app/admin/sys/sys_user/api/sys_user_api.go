@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	postSer "manager-gin/src/app/admin/sys/sys_post/service"
 	roleSer "manager-gin/src/app/admin/sys/sys_role/service"
+	roleView "manager-gin/src/app/admin/sys/sys_role/service/view"
 	"manager-gin/src/app/admin/sys/sys_user/service"
 	"manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
@@ -67,6 +68,9 @@ func (api *SysUserApi) Create(c *gin.Context) {
 func (api *SysUserApi) Delete(c *gin.Context) {
 	idStr := c.Param("ids")
 	ids := strings.Split(idStr, ",")
+	if utils.Contains(ids, framework.GetLoginUserId(c)) {
+		response.FailWithMessage("当前用户不能删除", c)
+	}
 	if err := sysUserService.DeleteByIds(ids); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
@@ -124,30 +128,31 @@ func (api *SysUserApi) Update(c *gin.Context) {
 // @Router /sysUser/get [get]
 func (api *SysUserApi) Get(c *gin.Context) {
 	var sysUserInfoView = new(view.SysUserInfoView)
-	err, roles := roleService.SelectRoleAll()
-	if err == nil {
-		// 剔除超级管理员角色
-		for i := 0; i < len(*roles); i++ {
-			if (*roles)[i].Id == common.SYSTEM_ROLE_ADMIN_ID {
-				*roles = append((*roles)[:i], (*roles)[i+1:]...)
-				break
-			}
-		}
-		sysUserInfoView.Roles = roles
-	}
-	err, views := postService.SelectPostAll()
-	if err == nil {
-		sysUserInfoView.Posts = views
-	}
 	id := c.Param("id")
 	if id != "" {
+		err, roles := roleService.SelectRolesByUserId(id)
+		if err == nil {
+			// 剔除超级管理员角色
+			//for i := 0; i < len(*roles); i++ {
+			//	if (*roles)[i].Id == common.SYSTEM_ROLE_ADMIN_ID {
+			//		*roles = append((*roles)[:i], (*roles)[i+1:]...)
+			//		break
+			//	}
+			//}
+			removeAdminRole(roles)
+			sysUserInfoView.Roles = roles
+		}
+		err, views := postService.SelectPostListByUserId(id)
+		if err == nil {
+			sysUserInfoView.Posts = views
+		}
 		if err1, sysUserView := sysUserService.Get(id); err1 != nil {
 			global.Logger.Error("查询失败!", zap.Error(err1))
 			response.OkWithMessage(err1.Error(), c)
 			return
 		} else {
 			sysUserInfoView.SysUserView = *sysUserView
-			err2, postIds := postService.SelectPostListByUserId(id)
+			err2, postIds := postService.SelectPostIdListByUserId(id)
 			if err2 != nil {
 				global.Logger.Error("查询失败!", zap.Error(err1))
 				response.OkWithMessage(err1.Error(), c)
@@ -202,5 +207,112 @@ func (api *SysUserApi) List(c *gin.Context) {
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(res, "获取成功", c)
+	}
+}
+
+// ResetPwd 重置密码
+// @Summary 重置密码
+// @Router /sysUser/resetPwd [put]
+func (api *SysUserApi) ResetPwd(c *gin.Context) {
+	var req view.SysUserView
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if common.SYSTEM_ADMIN_ID == req.Id {
+		response.FailWithMessage("超级管理员不允许修改", c)
+		return
+	}
+	if err := sysUserService.CheckUserDataScope(req.Id); err != nil {
+		response.FailWithMessage("没有权限访问用户数据", c)
+		return
+	}
+	req.UpdateTime = utils.GetCurTimeStr()
+	req.UpdateBy = framework.GetLoginUserName(c)
+	if err := sysUserService.ResetPwd(&req); err != nil {
+		response.FailWithMessage("重置密码失败", c)
+		return
+	}
+	response.OkWithMessage("重置密码成功", c)
+}
+
+// ChangeStatus 更新状态
+// @Summary 更新状态
+// @Router /sysUser/changeStatus [put]
+func (api *SysUserApi) ChangeStatus(c *gin.Context) {
+	var req view.SysUserView
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if common.SYSTEM_ADMIN_ID == req.Id {
+		response.FailWithMessage("超级管理员不允许修改", c)
+		return
+	}
+	if err := sysUserService.CheckUserDataScope(req.Id); err != nil {
+		response.FailWithMessage("没有权限访问用户数据", c)
+		return
+	}
+	req.UpdateTime = utils.GetCurTimeStr()
+	req.UpdateBy = framework.GetLoginUserName(c)
+	if err := sysUserService.ChangeStatus(&req); err != nil {
+		response.FailWithMessage("更新状态失败", c)
+		return
+	}
+	response.OkWithMessage("更新状态成功", c)
+}
+
+// GetAuthRole 根据用户id获取授权角色
+// @Summary 根据用户id获取授权角色
+// @Router /sysUser/getAuthRole/{userId} [get]
+func (api *SysUserApi) GetAuthRole(c *gin.Context) {
+	userId := c.Param("id")
+	err, userView := sysUserService.Get(userId)
+	if err != nil {
+		global.Logger.Error("获取数据失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	}
+	if err1, res := roleService.AssembleRolesByUserId(userId); err1 != nil {
+		global.Logger.Error("获取数据失败!", zap.Error(err1))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		removeAdminRole(res)
+		response.OkWithData(gin.H{
+			"user":  userView,
+			"roles": res,
+		}, c)
+	}
+}
+
+// AuthRole 批量给用户授权角色
+// @Summary 批量给用户授权角色
+// @Router /sysUser/authRole [put]
+func (api *SysUserApi) AuthRole(c *gin.Context) {
+	var req view.SysUserView
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := sysUserService.CheckUserDataScope(req.Id); err != nil {
+		response.FailWithMessage("没有权限访问用户数据", c)
+		return
+	}
+	req.UpdateTime = utils.GetCurTimeStr()
+	req.UpdateBy = framework.GetLoginUserName(c)
+	if err := sysUserService.AuthRole(&req); err != nil {
+		response.FailWithMessage("授权失败", c)
+		return
+	}
+	response.OkWithMessage("授权成功", c)
+}
+
+// 剔除超级管理员
+func removeAdminRole(roles *[]roleView.SysRoleView) {
+	for i := 0; i < len(*roles); i++ {
+		if (*roles)[i].Id == common.SYSTEM_ROLE_ADMIN_ID {
+			*roles = append((*roles)[:i], (*roles)[i+1:]...)
+			break
+		}
 	}
 }

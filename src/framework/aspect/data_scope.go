@@ -3,26 +3,30 @@ package aspect
 import (
 	"fmt"
 	"manager-gin/src/app/admin/sys/sys_user/service/view"
+	"manager-gin/src/common"
 	"strings"
 )
 
 const (
-	// 全部数据权限
+	// DATA_SCOPE_ALL 全部数据权限
 	DATA_SCOPE_ALL = "1"
-	// 自定数据权限
+	// DATA_SCOPE_CUSTOM 自定数据权限
 	DATA_SCOPE_CUSTOM = "2"
-	// 部门数据权限
+	// DATA_SCOPE_DEPT 部门数据权限
 	DATA_SCOPE_DEPT = "3"
-	// 部门及以下数据权限
+	// DATA_SCOPE_DEPT_AND_CHILD 部门及以下数据权限
 	DATA_SCOPE_DEPT_AND_CHILD = "4"
-	// 仅本人数据权限
+	// DATA_SCOPE_SELF 仅本人数据权限
 	DATA_SCOPE_SELF = "5"
 )
 
 func DataScopeFilter(user *view.SysUserView, deptAlias string, userAlias string, permission string) string {
+	// 如果是超级管理员，则不过滤数据
+	if user.Id == common.SYSTEM_ROLE_ADMIN_ID {
+		return ""
+	}
 	sqlString := strings.Builder{}
 	conditions := make([]string, 0)
-
 	for _, role := range *user.Roles {
 		dataScope := role.DataScope
 		if dataScope != DATA_SCOPE_CUSTOM && contains(conditions, dataScope) {

@@ -32,7 +32,7 @@ func (dao *SysPostDao) DeleteByIds(ids []string) (err error) {
 // Update 更新SysPost记录
 // Author
 func (dao *SysPostDao) Update(sysPost SysPost) (err error) {
-	err = global.GOrmDao.Save(&sysPost).Error
+	err = global.GOrmDao.Updates(&sysPost).Error
 	return err
 }
 
@@ -109,13 +109,13 @@ func (dao *SysPostDao) CheckPostExistUser(postId string) (err error, count int64
 }
 
 // SelectPostListByUserId 根据用户ID查询岗位
-func (dao *SysPostDao) SelectPostListByUserId(userId string) (error, []string) {
+func (dao *SysPostDao) SelectPostListByUserId(userId string) (error, *[]SysPost) {
 	db := global.GOrmDao.Table("sys_post p")
 	db.Joins("left join sys_user_post up on p.id = up.post_id")
 	db.Joins("left join sys_user u on u.id = up.user_id")
 	db.Where("u.id = ?", userId)
-	db.Select("p.id")
-	var ids []string
-	err := db.Find(&ids).Error
-	return err, ids
+	db.Select("distinct p.id, p.post_code, p.post_name, p.post_sort, p.status, p.create_by, p.create_time, p.remark ")
+	var res []SysPost
+	err := db.Find(&res).Error
+	return err, &res
 }

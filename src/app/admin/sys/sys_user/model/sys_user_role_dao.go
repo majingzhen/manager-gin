@@ -32,7 +32,7 @@ func (dao *SysUserRoleDao) DeleteByIds(ids []string) (err error) {
 // Update 更新SysUserRole记录
 // Author
 func (dao *SysUserRoleDao) Update(sysUserRole SysUserRole) (err error) {
-	err = global.GOrmDao.Save(&sysUserRole).Error
+	err = global.GOrmDao.Updates(&sysUserRole).Error
 	return err
 }
 
@@ -85,4 +85,8 @@ func (dao *SysUserRoleDao) List(data *SysUserRole) (err error, datas *[]SysUserR
 // CreateBatch 批量创建SysUserRole记录
 func (dao *SysUserRoleDao) CreateBatch(roles []SysUserRole) error {
 	return global.GOrmDao.Create(&roles).Error
+}
+
+func (dao *SysUserRoleDao) DeleteByUserIds(ids []string) error {
+	return global.GOrmDao.Delete(&[]SysUserRole{}, "user_id in ?", ids).Error
 }
