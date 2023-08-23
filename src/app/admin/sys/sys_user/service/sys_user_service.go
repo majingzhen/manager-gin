@@ -79,12 +79,12 @@ func (service *SysUserService) Delete(id string) (err error) {
 
 // DeleteByIds 批量删除SysUser记录
 // Author
-func (service *SysUserService) DeleteByIds(ids []string) (err error) {
+func (service *SysUserService) DeleteByIds(ids []string, loginUserId string) (err error) {
 	for _, id := range ids {
 		if common.SYSTEM_ADMIN_ID == id {
 			return errors.New("不允许操作超级管理员用户")
 		}
-		if err = service.CheckUserDataScope(id); err != nil {
+		if err = service.CheckUserDataScope(id, loginUserId); err != nil {
 			return err
 		}
 	}
@@ -213,8 +213,8 @@ func (service *SysUserService) CheckFieldUnique(fieldName, value string) error {
 }
 
 // CheckUserDataScope 校验数据权限
-func (service *SysUserService) CheckUserDataScope(userId string) error {
-	if common.SYSTEM_ADMIN_ID != userId {
+func (service *SysUserService) CheckUserDataScope(userId, loginUserId string) error {
+	if common.SYSTEM_ADMIN_ID != loginUserId {
 		err, userView := service.Get(userId)
 		if err != nil {
 			return err

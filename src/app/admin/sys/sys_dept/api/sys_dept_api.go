@@ -173,3 +173,29 @@ func (api *SysDeptApi) SelectDeptTree(c *gin.Context) {
 		response.OkWithData(sysDeptView, c)
 	}
 }
+
+// SelectDeptTreeByRole 查询部门树列表
+// @Summary 根据角色查询部门树列表
+// @Router /sysDept/selectDeptTreeByRole [get]
+func (api *SysDeptApi) SelectDeptTreeByRole(c *gin.Context) {
+	roleId := c.Param("roleId")
+	if roleId == "" {
+		response.FailWithMessage("获取参数解析失败!", c)
+		return
+	}
+	if err, checkedKeys := sysDeptService.SelectDeptTreeByRole(roleId); err != nil {
+		global.Logger.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
+	} else {
+		err1, deptTree := sysDeptService.SelectDeptTree(&view.SysDeptView{}, framework.GetLoginUser(c))
+		if err1 != nil {
+			global.Logger.Error("查询失败!", zap.Error(err))
+			response.FailWithMessage(err.Error(), c)
+			return
+		}
+		response.OkWithData(gin.H{
+			"checkedKeys": checkedKeys,
+			"depts":       deptTree,
+		}, c)
+	}
+}

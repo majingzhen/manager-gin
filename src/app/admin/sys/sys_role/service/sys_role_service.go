@@ -153,6 +153,8 @@ func (service *SysRoleService) AssembleRolesByUserId(userId string) (error, *[]v
 		return err, nil
 	} else {
 		if err1, userRoles := service.SelectRolesByUserId(userId); err1 != nil {
+			return err1, nil
+		} else {
 			for i := 0; i < len(*roles); i++ {
 				for j := 0; j < len(*userRoles); j++ {
 					if (*roles)[i].Id == (*userRoles)[j].Id {

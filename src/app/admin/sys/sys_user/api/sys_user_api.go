@@ -71,7 +71,7 @@ func (api *SysUserApi) Delete(c *gin.Context) {
 	if utils.Contains(ids, framework.GetLoginUserId(c)) {
 		response.FailWithMessage("当前用户不能删除", c)
 	}
-	if err := sysUserService.DeleteByIds(ids); err != nil {
+	if err := sysUserService.DeleteByIds(ids, framework.GetLoginUserId(c)); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -95,7 +95,7 @@ func (api *SysUserApi) Update(c *gin.Context) {
 		return
 	}
 	// 校验用户是否有数据权限
-	err := sysUserService.CheckUserDataScope(id)
+	err := sysUserService.CheckUserDataScope(id, framework.GetLoginUserId(c))
 	if err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
@@ -223,7 +223,7 @@ func (api *SysUserApi) ResetPwd(c *gin.Context) {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
-	if err := sysUserService.CheckUserDataScope(req.Id); err != nil {
+	if err := sysUserService.CheckUserDataScope(req.Id, framework.GetLoginUserId(c)); err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
 	}
@@ -249,7 +249,7 @@ func (api *SysUserApi) ChangeStatus(c *gin.Context) {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
-	if err := sysUserService.CheckUserDataScope(req.Id); err != nil {
+	if err := sysUserService.CheckUserDataScope(req.Id, framework.GetLoginUserId(c)); err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
 	}
@@ -289,18 +289,25 @@ func (api *SysUserApi) GetAuthRole(c *gin.Context) {
 // @Summary 批量给用户授权角色
 // @Router /sysUser/authRole [put]
 func (api *SysUserApi) AuthRole(c *gin.Context) {
-	var req view.SysUserView
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response.FailWithMessage(err.Error(), c)
+	userId := c.Query("userId")
+	roleIdStr := c.Query("roleIds")
+	if userId == "" || roleIdStr == "" {
+		response.FailWithMessage("参数错误", c)
 		return
 	}
-	if err := sysUserService.CheckUserDataScope(req.Id); err != nil {
+	roleIds := strings.Split(roleIdStr, ",")
+	if err := sysUserService.CheckUserDataScope(userId, framework.GetLoginUserId(c)); err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
 	}
-	req.UpdateTime = utils.GetCurTimeStr()
-	req.UpdateBy = framework.GetLoginUserName(c)
-	if err := sysUserService.AuthRole(&req); err != nil {
+	v := &view.SysUserView{
+		Id:         userId,
+		RoleIds:    roleIds,
+		UpdateTime: utils.GetCurTimeStr(),
+		UpdateBy:   framework.GetLoginUserName(c),
+	}
+
+	if err := sysUserService.AuthRole(v); err != nil {
 		response.FailWithMessage("授权失败", c)
 		return
 	}

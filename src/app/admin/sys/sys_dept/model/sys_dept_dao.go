@@ -117,3 +117,25 @@ func (dao *SysDeptDao) SelectChildrenDeptById(id string) (err error, res *[]SysD
 func (dao *SysDeptDao) Delete(id string) error {
 	return global.GOrmDao.Delete(&SysDept{}, "id = ?", id).Error
 }
+
+// SelectDeptListByRoleId 根据角色id查询部门id
+func (dao *SysDeptDao) SelectDeptListByRoleId(id string, strictly string) (error, []string) {
+	model := global.GOrmDao.Table("sys_dept d")
+	model.Joins("left join sys_role_dept rd on d.id = rd.dept_id")
+	model.Where("rd.role_id = ?", id)
+	if strictly != "" {
+		model.Where("d.id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.id = rd.dept_id and rd.role_id = ?)", strictly)
+	}
+	model.Order("d.parent_id, d.order_num")
+	var rows []SysDept
+	err := model.Find(&rows).Error
+	if err != nil {
+		return err, nil
+	} else {
+		var ids []string
+		for _, row := range rows {
+			ids = append(ids, row.Id)
+		}
+		return nil, ids
+	}
+}

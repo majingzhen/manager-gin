@@ -132,7 +132,7 @@ export default {
     };
   },
   created() {
-    const roleId = this.$route.params && this.$route.params.roleId;
+    const roleId = this.$route.params && this.$route.params.id;
     if (roleId) {
       this.queryParams.roleId = roleId;
       this.getList();

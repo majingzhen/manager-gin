@@ -388,7 +388,7 @@ export default {
     /** 根据角色ID查询部门树结构 */
     getDeptTree(roleId) {
       return deptTreeSelect(roleId).then(response => {
-        this.deptOptions = response.depts;
+        this.deptOptions = response.data.depts;
         return response;
       });
     },
@@ -513,7 +513,7 @@ export default {
         this.open = true;
         this.$nextTick(() => {
           roleMenu.then(res => {
-            let checkedKeys = res.checkedKeys
+            let checkedKeys = res.data.checkedKeys
             checkedKeys.forEach((v) => {
                 this.$nextTick(()=>{
                     this.$refs.menu.setChecked(v, true ,false);
@@ -539,7 +539,7 @@ export default {
         this.openDataScope = true;
         this.$nextTick(() => {
           deptTreeSelect.then(res => {
-            this.$refs.dept.setCheckedKeys(res.checkedKeys);
+            this.$refs.dept.setCheckedKeys(res.data.checkedKeys);
           });
         });
         this.title = "分配数据权限";

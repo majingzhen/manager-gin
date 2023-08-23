@@ -26,10 +26,11 @@ func (r *SysDeptRouter) InitSysDeptRouter(Router *gin.RouterGroup) {
 		sysDeptRouter.POST("update", sysDeptApi.Update)       // 更新SysDept
 	}
 	{
-		sysDeptRouterWithoutRecord.GET("get/:id", sysDeptApi.Get)                  // 根据ID获取SysDept
-		sysDeptRouterWithoutRecord.GET("page", sysDeptApi.Page)                    // 分页获取SysDept列表
-		sysDeptRouterWithoutRecord.GET("list", sysDeptApi.List)                    // 分页获取SysDept列表
-		sysDeptRouterWithoutRecord.GET("list/exclude/:id", sysDeptApi.ListExclude) // 分页获取SysDept列表
-		sysDeptRouterWithoutRecord.GET("tree", sysDeptApi.SelectDeptTree)          // 获取部门树
+		sysDeptRouterWithoutRecord.GET("get/:id", sysDeptApi.Get)                             // 根据ID获取SysDept
+		sysDeptRouterWithoutRecord.GET("page", sysDeptApi.Page)                               // 分页获取SysDept列表
+		sysDeptRouterWithoutRecord.GET("list", sysDeptApi.List)                               // 分页获取SysDept列表
+		sysDeptRouterWithoutRecord.GET("list/exclude/:id", sysDeptApi.ListExclude)            // 分页获取SysDept列表
+		sysDeptRouterWithoutRecord.GET("tree", sysDeptApi.SelectDeptTree)                     // 获取部门树
+		sysDeptRouterWithoutRecord.GET("treeByRole/:roleId", sysDeptApi.SelectDeptTreeByRole) // 根据角色ID获取部门树
 	}
 }

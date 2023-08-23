@@ -10,6 +10,7 @@ import (
 	"errors"
 	"manager-gin/src/app/admin/sys/sys_dept/model"
 	"manager-gin/src/app/admin/sys/sys_dept/service/view"
+	roleSer "manager-gin/src/app/admin/sys/sys_role/service"
 	"manager-gin/src/app/admin/sys/sys_user/service/extend"
 	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
@@ -20,6 +21,7 @@ import (
 var sysDeptDao = model.SysDeptDaoApp
 var viewUtils = view.SysDeptViewUtilsApp
 var userService = extend.SysUserExtendServiceApp
+var roleService = roleSer.SysRoleServiceApp
 
 type SysDeptService struct{}
 
@@ -195,6 +197,16 @@ func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView, sysUserView *
 	}
 }
 
+// SelectDeptTreeByRole 获取部门树（排除下级）
+func (service *SysDeptService) SelectDeptTreeByRole(id string) (error, []string) {
+	err, roleView := roleService.Get(id)
+	if err != nil {
+		return err, nil
+	}
+	return sysDeptDao.SelectDeptListByRoleId(id, roleView.DeptCheckStrictly)
+}
+
+// getDeptTree 获取部门树
 func getDeptTree(departments []view.SysDeptTreeView) []view.SysDeptTreeView {
 	var rootDepts []view.SysDeptTreeView
 
