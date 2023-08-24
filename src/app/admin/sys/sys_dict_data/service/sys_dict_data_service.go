@@ -89,7 +89,7 @@ func (service *SysDictDataService) Page(pageInfo *view.SysDictDataPageView) (err
 	return err, res
 }
 
-func (service *SysDictDataService) GetByType(dictType string) (err error, views *[]view.SysDictDataView) {
+func (service *SysDictDataService) GetByType(dictType string) (err error, views []*view.SysDictDataView) {
 	err1, datas := sysDictDataDao.GetByType(dictType)
 	if err1 != nil {
 		return err1, nil

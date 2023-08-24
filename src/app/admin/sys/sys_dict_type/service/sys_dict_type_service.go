@@ -97,7 +97,7 @@ func (service *SysDictTypeService) Page(pageInfo *view.SysDictTypePageView) (err
 }
 
 // SelectDictTypeAll 获取全部数据
-func (service *SysDictTypeService) SelectDictTypeAll() (err error, views *[]view.SysDictTypeView) {
+func (service *SysDictTypeService) SelectDictTypeAll() (err error, views []*view.SysDictTypeView) {
 	err, datas := sysDictTypeDao.SelectDictTypeAll()
 	if err != nil {
 		return err, nil

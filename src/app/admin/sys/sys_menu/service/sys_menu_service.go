@@ -51,7 +51,7 @@ func (service *SysMenuService) Delete(id string) error {
 	if err, children := sysMenuDao.SelectMenuByParentId(id); err != nil {
 		return err
 	} else {
-		if len(*children) > 0 {
+		if len(children) > 0 {
 			return errors.New("存在子菜单,不允许删除")
 		}
 	}
@@ -161,7 +161,7 @@ func (service *SysMenuService) GetMenuPermission(user *userView.SysUserView) (er
 
 // GetMenuTreeByUserId 根据用户id获取菜单树
 func (service *SysMenuService) GetMenuTreeByUserId(userId string) (err error, menuTree []*view.RouterView) {
-	var menus *[]model.SysMenu
+	var menus []*model.SysMenu
 	itIs := userId == common.SYSTEM_ADMIN_ID
 	if itIs {
 		err, menus = sysMenuDao.SelectMenuAll()
@@ -173,17 +173,17 @@ func (service *SysMenuService) GetMenuTreeByUserId(userId string) (err error, me
 	}
 	_, viewList := viewUtils.Data2ViewList(menus)
 
-	tree := buildTree(*viewList, "0")
+	tree := buildTree(viewList, "0")
 	return err, tree
 }
 
 // SelectMenuList 查询菜单列表
-func (service *SysMenuService) SelectMenuList(v *view.SysMenuView, userId string) (err error, menus *[]view.SysMenuView) {
+func (service *SysMenuService) SelectMenuList(v *view.SysMenuView, userId string) (err error, menus []*view.SysMenuView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
-	var dataMenus *[]model.SysMenu
+	var dataMenus []*model.SysMenu
 	itIs := userId == common.SYSTEM_ADMIN_ID
 	if itIs {
 		err, dataMenus = sysMenuDao.SelectMenuList(data)
@@ -195,7 +195,7 @@ func (service *SysMenuService) SelectMenuList(v *view.SysMenuView, userId string
 }
 
 // 递归函数，将SysMenuView转换为MenuNode
-func buildTree(menuList []view.SysMenuView, parentId string) []*view.RouterView {
+func buildTree(menuList []*view.SysMenuView, parentId string) []*view.RouterView {
 	var tree []*view.RouterView
 	for _, menu := range menuList {
 		if menu.ParentId == parentId {
@@ -210,9 +210,9 @@ func buildTree(menuList []view.SysMenuView, parentId string) []*view.RouterView 
 			}
 			node := &view.RouterView{
 				Hidden:    "1" == menu.Visible,
-				Name:      getRouterName(menu),
-				Path:      getRouterPath(menu),
-				Component: getComponent(menu),
+				Name:      getRouterName(*menu),
+				Path:      getRouterPath(*menu),
+				Component: getComponent(*menu),
 				Query:     menu.Query,
 				Meta:      meta,
 			}
@@ -221,7 +221,7 @@ func buildTree(menuList []view.SysMenuView, parentId string) []*view.RouterView 
 				node.AlwaysShow = true
 				node.Redirect = "noRedirect"
 				node.Children = views
-			} else if isMenuFrame(menu) {
+			} else if isMenuFrame(*menu) {
 				node.Meta = nil
 				tempMeta := &view.MetaView{
 					Title:   menu.MenuName,
@@ -242,7 +242,7 @@ func buildTree(menuList []view.SysMenuView, parentId string) []*view.RouterView 
 				}
 				childrenList = append(childrenList, children)
 				node.Children = childrenList
-			} else if menu.ParentId == "0" && isInnerLink(menu) {
+			} else if menu.ParentId == "0" && isInnerLink(*menu) {
 				tempMeta := &view.MetaView{
 					Title: menu.MenuName,
 					Icon:  menu.Icon,

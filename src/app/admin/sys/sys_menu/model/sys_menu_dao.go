@@ -45,7 +45,7 @@ func (dao *SysMenuDao) Get(id string) (err error, sysMenu *SysMenu) {
 
 // List 分页获取SysMenu记录
 // Author
-func (dao *SysMenuDao) List(param *SysMenu, page *common.PageInfo) (err error, datas *[]SysMenu, total int64) {
+func (dao *SysMenuDao) List(param *SysMenu, page *common.PageInfo) (err error, datas []*SysMenu, total int64) {
 	// 创建model
 	model := global.GOrmDao.Model(&SysMenu{})
 	// 如果有条件搜索 下方会自动创建搜索语句
@@ -63,9 +63,7 @@ func (dao *SysMenuDao) List(param *SysMenu, page *common.PageInfo) (err error, d
 	if page.OrderByColumn != "" {
 		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	var tmp []SysMenu
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = &tmp
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&datas).Error
 	return err, datas, total
 }
 
@@ -104,21 +102,18 @@ func (dao *SysMenuDao) GetMenuPermissionByUserId(userId string) (err error, perm
 }
 
 // SelectMenuAll 查询所有菜单
-func (dao *SysMenuDao) SelectMenuAll() (err error, menus *[]SysMenu) {
+func (dao *SysMenuDao) SelectMenuAll() (err error, menus []*SysMenu) {
 	db := global.GOrmDao.Model(&[]SysMenu{})
 	db.Where("status = ? and menu_type in (?, ?)", common.STATUS_NORMAL, common.MENU_TYPE_DIR, common.MENU_TYPE_MENU)
-	var tmp []SysMenu
-	err1 := db.Find(&tmp).Error
+	err1 := db.Find(&menus).Error
 	if err1 != nil {
 		return err1, nil
 	}
-	menus = &tmp
 	return err, menus
 }
 
 // SelectMenuByUserId 根据用户id查询菜单
-func (dao *SysMenuDao) SelectMenuByUserId(userId string) (err error, menus *[]SysMenu) {
-	var rows []SysMenu
+func (dao *SysMenuDao) SelectMenuByUserId(userId string) (err error, menus []*SysMenu) {
 	db := global.GOrmDao.Table("sys_menu m")
 	db.Joins("left join sys_role_menu rm on m.id = rm.menu_id")
 	db.Joins("left join sys_user_role ur on rm.role_id = ur.role_id")
@@ -126,16 +121,14 @@ func (dao *SysMenuDao) SelectMenuByUserId(userId string) (err error, menus *[]Sy
 	db.Select("distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.status, perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time")
 	db.Where("ur.user_id = ? and r.status = ? and m.status = ? and menu_type in (?, ?)", userId, common.STATUS_NORMAL, common.STATUS_NORMAL, common.MENU_TYPE_DIR, common.MENU_TYPE_MENU)
 	db.Order("m.parent_id, m.order_num")
-	err = db.Scan(&rows).Error
+	err = db.Scan(&menus).Error
 	if err != nil {
 		return err, nil
 	}
-	menus = &rows
 	return err, menus
 }
 
-func (dao *SysMenuDao) SelectMenuList(data *SysMenu) (err error, menus *[]SysMenu) {
-	var rows []SysMenu
+func (dao *SysMenuDao) SelectMenuList(data *SysMenu) (err error, menus []*SysMenu) {
 	db := global.GOrmDao.Table(data.TableName())
 	db.Select("distinct id, parent_id, menu_name, path, component, `query`, visible, status, perms, is_frame, is_cache, menu_type, icon, order_num, create_time")
 	if data.MenuName != "" {
@@ -148,14 +141,12 @@ func (dao *SysMenuDao) SelectMenuList(data *SysMenu) (err error, menus *[]SysMen
 		db.Where("status = ?", data.Status)
 	}
 	db.Order("parent_id, order_num")
-	err = db.Scan(&rows).Error
-	menus = &rows
+	err = db.Scan(&menus).Error
 	return err, menus
 }
 
 // SelectMenuListByUserId 根据用户id查询菜单
-func (dao *SysMenuDao) SelectMenuListByUserId(data *SysMenu, userId string) (err error, menus *[]SysMenu) {
-	var rows []SysMenu
+func (dao *SysMenuDao) SelectMenuListByUserId(data *SysMenu, userId string) (err error, menus []*SysMenu) {
 	db := global.GOrmDao.Table("sys_menu m")
 	db.Joins("left join sys_role_menu rm on m.id = rm.menu_id")
 	db.Joins("left join sys_user_role ur on rm.role_id = ur.role_id")
@@ -171,8 +162,7 @@ func (dao *SysMenuDao) SelectMenuListByUserId(data *SysMenu, userId string) (err
 		db.Where("status = ?", data.Status)
 	}
 	db.Order("m.parent_id, m.order_num")
-	err = db.Scan(&rows).Error
-	menus = &rows
+	err = db.Scan(&menus).Error
 	return err, menus
 }
 
@@ -192,15 +182,14 @@ func (dao *SysMenuDao) CheckMenuNameUniqueAll(data *SysMenu) (error, bool) {
 }
 
 // SelectMenuByParentId 根据父级id查询菜单
-func (dao *SysMenuDao) SelectMenuByParentId(id string) (error, *[]SysMenu) {
-	var rows []SysMenu
+func (dao *SysMenuDao) SelectMenuByParentId(id string) (err error, rows []*SysMenu) {
 	db := global.GOrmDao.Model(&SysMenu{})
 	db.Where("parent_id = ?", id)
-	err := db.Find(&rows).Error
+	err = db.Find(&rows).Error
 	if err != nil {
 		return err, nil
 	}
-	return nil, &rows
+	return nil, rows
 }
 
 // CheckMenuExistRole 判断菜单是否存在角色

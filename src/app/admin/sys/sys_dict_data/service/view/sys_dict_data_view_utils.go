@@ -145,7 +145,7 @@ func (viewUtils *SysDictDataViewUtils) Page2Data(pageInfo *SysDictDataPageView) 
 	return
 }
 
-func (viewUtils *SysDictDataViewUtils) View2DataList(viewList *[]SysDictDataView) (err error, dataList *[]model.SysDictData) {
+func (viewUtils *SysDictDataViewUtils) View2DataList(viewList []*SysDictDataView) (err error, dataList []*model.SysDictData) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictDataViewUtils View2DataList error: %v", e)
@@ -154,20 +154,20 @@ func (viewUtils *SysDictDataViewUtils) View2DataList(viewList *[]SysDictDataView
 		}
 	}()
 	if viewList != nil {
-		var dataTmpList []model.SysDictData
-		for i := range *viewList {
-			view := (*viewList)[i]
-			err, data := viewUtils.View2Data(&view)
+		var dataTmpList []*model.SysDictData
+		for i := range viewList {
+			view := viewList[i]
+			err, data := viewUtils.View2Data(view)
 			if err == nil {
-				dataTmpList = append(dataTmpList, *data)
+				dataTmpList = append(dataTmpList, data)
 			}
 		}
-		dataList = &dataTmpList
+		dataList = dataTmpList
 	}
 	return
 }
 
-func (viewUtils *SysDictDataViewUtils) Data2ViewList(dataList *[]model.SysDictData) (err error, viewList *[]SysDictDataView) {
+func (viewUtils *SysDictDataViewUtils) Data2ViewList(dataList []*model.SysDictData) (err error, viewList []*SysDictDataView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictDataViewUtils Data2ViewList error: %v", e)
@@ -176,15 +176,15 @@ func (viewUtils *SysDictDataViewUtils) Data2ViewList(dataList *[]model.SysDictDa
 		}
 	}()
 	if dataList != nil {
-		var viewTmpList []SysDictDataView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, view := viewUtils.Data2View(&data)
+		var viewTmpList []*SysDictDataView
+		for i := range dataList {
+			data := (dataList)[i]
+			err, view := viewUtils.Data2View(data)
 			if err == nil {
-				viewTmpList = append(viewTmpList, *view)
+				viewTmpList = append(viewTmpList, view)
 			}
 		}
-		viewList = &viewTmpList
+		viewList = viewTmpList
 	}
 	return
 }

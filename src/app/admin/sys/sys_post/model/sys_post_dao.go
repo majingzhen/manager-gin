@@ -61,7 +61,7 @@ func (dao *SysPostDao) Page(param *SysPost, page *common.PageInfo) (err error, d
 	if page.OrderByColumn != "" {
 		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(datas).Error
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&datas).Error
 	return err, datas, total
 }
 

@@ -84,7 +84,7 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2Data(view *SysDictTypeVie
 	return
 }
 
-func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2DataList(viewList *[]SysDictTypeView) (err error, dataList *[]model.SysDictType) {
+func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2DataList(viewList []*SysDictTypeView) (err error, dataList []*model.SysDictType) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictTypeViewUtils View2DataList error: %v", e)
@@ -93,20 +93,20 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2DataList(viewList *[]SysD
 		}
 	}()
 	if viewList != nil {
-		var dataTmpList []model.SysDictType
-		for i := range *viewList {
-			view := (*viewList)[i]
-			err, data := sysDictTypeViewUtils.View2Data(&view)
+		var dataTmpList []*model.SysDictType
+		for i := range viewList {
+			view := viewList[i]
+			err, data := sysDictTypeViewUtils.View2Data(view)
 			if err == nil {
-				dataTmpList = append(dataTmpList, *data)
+				dataTmpList = append(dataTmpList, data)
 			}
 		}
-		dataList = &dataTmpList
+		dataList = dataTmpList
 	}
 	return
 }
 
-func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2ViewList(dataList *[]model.SysDictType) (err error, viewList *[]SysDictTypeView) {
+func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2ViewList(dataList []*model.SysDictType) (err error, viewList []*SysDictTypeView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictTypeViewUtils Data2ViewList error: %v", e)
@@ -115,15 +115,15 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2ViewList(dataList *[]mode
 		}
 	}()
 	if dataList != nil {
-		var viewTmpList []SysDictTypeView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, view := sysDictTypeViewUtils.Data2View(&data)
+		var viewTmpList []*SysDictTypeView
+		for i := range dataList {
+			data := (dataList)[i]
+			err, view := sysDictTypeViewUtils.Data2View(data)
 			if err == nil {
-				viewTmpList = append(viewTmpList, *view)
+				viewTmpList = append(viewTmpList, view)
 			}
 		}
-		viewList = &viewTmpList
+		viewList = viewTmpList
 	}
 	return
 }

@@ -175,7 +175,7 @@ func (viewUtils *SysMenuViewUtils) Page2Data(pageInfo *SysMenuPageView) (err err
 	return
 }
 
-func (viewUtils *SysMenuViewUtils) View2DataList(viewList *[]SysMenuView) (err error, dataList *[]model.SysMenu) {
+func (viewUtils *SysMenuViewUtils) View2DataList(viewList []*SysMenuView) (err error, dataList []*model.SysMenu) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysMenuViewUtils View2DataList error: %v", e)
@@ -184,20 +184,20 @@ func (viewUtils *SysMenuViewUtils) View2DataList(viewList *[]SysMenuView) (err e
 		}
 	}()
 	if viewList != nil {
-		var dataTmpList []model.SysMenu
-		for i := range *viewList {
-			view := (*viewList)[i]
-			err, data := viewUtils.View2Data(&view)
+		var dataTmpList []*model.SysMenu
+		for i := range viewList {
+			view := (viewList)[i]
+			err, data := viewUtils.View2Data(view)
 			if err == nil {
-				dataTmpList = append(dataTmpList, *data)
+				dataTmpList = append(dataTmpList, data)
 			}
 		}
-		dataList = &dataTmpList
+		dataList = dataTmpList
 	}
 	return
 }
 
-func (viewUtils *SysMenuViewUtils) Data2ViewList(dataList *[]model.SysMenu) (err error, viewList *[]SysMenuView) {
+func (viewUtils *SysMenuViewUtils) Data2ViewList(dataList []*model.SysMenu) (err error, viewList []*SysMenuView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysMenuViewUtils Data2ViewList error: %v", e)
@@ -206,15 +206,15 @@ func (viewUtils *SysMenuViewUtils) Data2ViewList(dataList *[]model.SysMenu) (err
 		}
 	}()
 	if dataList != nil {
-		var viewTmpList []SysMenuView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, view := viewUtils.Data2View(&data)
+		var viewTmpList []*SysMenuView
+		for i := range dataList {
+			data := dataList[i]
+			err, view := viewUtils.Data2View(data)
 			if err == nil {
-				viewTmpList = append(viewTmpList, *view)
+				viewTmpList = append(viewTmpList, view)
 			}
 		}
-		viewList = &viewTmpList
+		viewList = viewTmpList
 	}
 	return
 }

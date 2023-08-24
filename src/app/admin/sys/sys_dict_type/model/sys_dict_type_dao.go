@@ -52,7 +52,7 @@ func (dao *SysDictTypeDao) Get(id string) (err error, sysDictType *SysDictType) 
 
 // Page 分页获取SysDictType记录
 // Author
-func (dao *SysDictTypeDao) Page(param *SysDictType, page *common.PageInfo) (err error, sysDictTypes *[]SysDictType, total int64) {
+func (dao *SysDictTypeDao) Page(param *SysDictType, page *common.PageInfo) (err error, sysDictTypes []*SysDictType, total int64) {
 	// 创建db
 	db := global.GOrmDao.Model(&SysDictType{})
 	// 如果有条件搜索 下方会自动创建搜索语句
@@ -74,13 +74,11 @@ func (dao *SysDictTypeDao) Page(param *SysDictType, page *common.PageInfo) (err 
 	if page.OrderByColumn != "" {
 		db.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	var tmp []SysDictType
-	err = db.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	sysDictTypes = &tmp
+	err = db.Limit(page.Limit).Offset(page.Offset).Find(&sysDictTypes).Error
 	return err, sysDictTypes, total
 }
 
-func (dao *SysDictTypeDao) SelectDictTypeAll() (err error, datas *[]SysDictType) {
+func (dao *SysDictTypeDao) SelectDictTypeAll() (err error, datas []*SysDictType) {
 	err = global.GOrmDao.Find(&datas).Error
 	return
 }
