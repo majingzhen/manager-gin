@@ -29,12 +29,16 @@ var sysRoleService = service.SysRoleServiceApp
 // @Router /sysRole/create [post]
 func (api *SysRoleApi) Create(c *gin.Context) {
 	var sysRoleView view.SysRoleView
-	_ = c.ShouldBindJSON(&sysRoleView)
-	if err := sysRoleService.CheckRoleNameUnique(sysRoleView.RoleName); err == nil {
+	if err := c.ShouldBindJSON(&sysRoleView); err != nil {
+		global.Logger.Error("参数解析失败!", zap.Error(err))
+		response.FailWithMessage("参数解析失败", c)
+		return
+	}
+	if err := sysRoleService.CheckRoleNameUnique(sysRoleView.RoleName, ""); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := sysRoleService.CheckRoleKeyUnique(sysRoleView.RoleKey); err == nil {
+	if err := sysRoleService.CheckRoleKeyUnique(sysRoleView.RoleKey, ""); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -85,11 +89,11 @@ func (api *SysRoleApi) Update(c *gin.Context) {
 		response.FailWithMessage("没有权限访问角色数据", c)
 		return
 	}
-	if err := sysRoleService.CheckRoleNameUnique(sysRoleView.RoleName); err == nil {
+	if err := sysRoleService.CheckRoleNameUnique(sysRoleView.RoleName, sysRoleView.Id); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if err := sysRoleService.CheckRoleKeyUnique(sysRoleView.RoleKey); err == nil {
+	if err := sysRoleService.CheckRoleKeyUnique(sysRoleView.RoleKey, sysRoleView.Id); err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
@@ -152,5 +156,29 @@ func (api *SysRoleApi) List(c *gin.Context) {
 		response.FailWithMessage("获取失败", c)
 	} else {
 		response.OkWithDetailed(res, "获取成功", c)
+	}
+}
+
+// ChangeStatus 更新SysRole状态
+// @Summary 更新SysRole状态
+// @Router /sysRole/changeStatus [put]
+func (api *SysRoleApi) ChangeStatus(c *gin.Context) {
+	var view view.SysRoleView
+	_ = c.ShouldBindJSON(&view)
+	if view.Id == common.SYSTEM_ROLE_ADMIN_ID {
+		response.FailWithMessage("超级管理员不允许修改", c)
+		return
+	}
+	if err := sysRoleService.CheckRoleDataScope(view.Id, framework.GetLoginUser(c)); err != nil {
+		response.FailWithMessage("没有权限访问角色数据", c)
+		return
+	}
+	view.UpdateTime = utils.GetCurTimeStr()
+	view.UpdateBy = framework.GetLoginUserName(c)
+	if err := sysRoleService.UpdateStatus(&view); err != nil {
+		global.Logger.Error("更新失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+	} else {
+		response.OkWithMessage("更新成功", c)
 	}
 }

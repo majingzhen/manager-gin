@@ -21,9 +21,10 @@ func (r *SysRoleRouter) InitSysRoleRouter(Router *gin.RouterGroup) {
 	sysRoleRouter := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
 	sysRoleRouterWithoutRecord := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
 	{
-		sysRoleRouter.POST("create", sysRoleApi.Create)        // 新建SysRole
-		sysRoleRouter.DELETE("delete/:ids", sysRoleApi.Delete) // 删除SysRole
-		sysRoleRouter.POST("update", sysRoleApi.Update)        // 更新SysRole
+		sysRoleRouter.POST("create", sysRoleApi.Create)            // 新建SysRole
+		sysRoleRouter.DELETE("delete/:ids", sysRoleApi.Delete)     // 删除SysRole
+		sysRoleRouter.POST("update", sysRoleApi.Update)            // 更新SysRole
+		sysRoleRouter.PUT("changeStatus", sysRoleApi.ChangeStatus) // 更新SysRole状态
 	}
 	{
 		sysRoleRouterWithoutRecord.GET("get/:id", sysRoleApi.Get) // 根据ID获取SysRole

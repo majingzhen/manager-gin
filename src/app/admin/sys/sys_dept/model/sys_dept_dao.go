@@ -115,11 +115,11 @@ func (dao *SysDeptDao) Delete(id string) error {
 }
 
 // SelectDeptListByRoleId 根据角色id查询部门id
-func (dao *SysDeptDao) SelectDeptListByRoleId(id string, strictly string) (error, []string) {
+func (dao *SysDeptDao) SelectDeptListByRoleId(id string, strictly bool) (error, []string) {
 	model := global.GOrmDao.Table("sys_dept d")
 	model.Joins("left join sys_role_dept rd on d.id = rd.dept_id")
 	model.Where("rd.role_id = ?", id)
-	if strictly != "" {
+	if strictly {
 		model.Where("d.id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.id = rd.dept_id and rd.role_id = ?)", strictly)
 	}
 	model.Order("d.parent_id, d.order_num")

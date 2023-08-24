@@ -133,15 +133,29 @@ func (dao *SysRoleDao) GetRoleByUserId(userId string) (err error, roles []*SysRo
 }
 
 // CheckRoleNameUnique 校验角色名称是否唯一
-func (dao *SysRoleDao) CheckRoleNameUnique(name string) (error, int64) {
-	var count int64
-	err := global.GOrmDao.Table("sys_role").Where("role_name = ?", name).Count(&count).Error
-	return err, count
+func (dao *SysRoleDao) CheckRoleNameUnique(name string) (error, *SysRole) {
+	var data []*SysRole
+	if err := global.GOrmDao.Table("sys_role").Where("role_name = ?", name).Find(&data).Error; err != nil {
+		return err, nil
+	} else {
+		if data != nil && len(data) > 0 {
+			return nil, data[0]
+		} else {
+			return nil, nil
+		}
+	}
 }
 
 // CheckRoleKeyUnique 校验角色权限是否唯一
-func (dao *SysRoleDao) CheckRoleKeyUnique(key string) (error, int64) {
-	var count int64
-	err := global.GOrmDao.Table("sys_role").Where("role_key = ?", key).Count(&count).Error
-	return err, count
+func (dao *SysRoleDao) CheckRoleKeyUnique(key string) (error, *SysRole) {
+	var data []*SysRole
+	if err := global.GOrmDao.Table("sys_role").Where("role_key = ?", key).Find(&data).Error; err != nil {
+		return err, nil
+	} else {
+		if data != nil && len(data) > 0 {
+			return nil, data[0]
+		} else {
+			return nil, nil
+		}
+	}
 }

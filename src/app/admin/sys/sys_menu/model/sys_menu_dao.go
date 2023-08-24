@@ -206,13 +206,13 @@ func (dao *SysMenuDao) CheckMenuExistRole(roleId string) (error, bool) {
 	return nil, false
 }
 
-func (dao *SysMenuDao) SelectMenuListByRoleId(id string, strictly string) (error, []string) {
+func (dao *SysMenuDao) SelectMenuListByRoleId(id string, strictly bool) (error, []string) {
 	var rows []SysMenu
 	db := global.GOrmDao.Table("sys_menu m")
 	db.Joins("left join sys_role_menu rm on m.id = rm.menu_id")
 	db.Select("m.id")
 	db.Where("rm.role_id = ?", id)
-	if strictly == "1" {
+	if strictly {
 		db.Where("m.id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.id = rm.menu_id and rm.role_id = ?)", id)
 	}
 	db.Order(" m.parent_id, m.order_num")

@@ -13,8 +13,8 @@ type SysRoleView struct {
 	RoleKey           string   `json:"roleKey" form:"roleKey"`
 	RoleSort          int      `json:"roleSort" form:"roleSort"`
 	DataScope         string   `json:"dataScope" form:"dataScope"`
-	MenuCheckStrictly string   `json:"menuCheckStrictly" form:"menuCheckStrictly"`
-	DeptCheckStrictly string   `json:"deptCheckStrictly" form:"deptCheckStrictly"`
+	MenuCheckStrictly bool     `json:"menuCheckStrictly" form:"menuCheckStrictly"`
+	DeptCheckStrictly bool     `json:"deptCheckStrictly" form:"deptCheckStrictly"`
 	Status            string   `json:"status" form:"status"`
 	CreateBy          string   `json:"createBy" form:"createBy"`
 	CreateTime        string   `json:"createTime" form:"createTime"`
@@ -29,19 +29,17 @@ type SysRoleView struct {
 
 type SysRolePageView struct {
 	// TODO 按需修改
-	Id                string `json:"id" form:"id"`
-	RoleName          string `json:"roleName" form:"roleName"`
-	RoleKey           string `json:"roleKey" form:"roleKey"`
-	RoleSort          int    `json:"roleSort" form:"roleSort"`
-	DataScope         string `json:"dataScope" form:"dataScope"`
-	MenuCheckStrictly string `json:"menuCheckStrictly" form:"menuCheckStrictly"`
-	DeptCheckStrictly string `json:"deptCheckStrictly" form:"deptCheckStrictly"`
-	Status            string `json:"status" form:"status"`
-	CreateBy          string `json:"createBy" form:"createBy"`
-	CreateTime        string `json:"createTime" form:"createTime"`
-	UpdateBy          string `json:"updateBy" form:"updateBy"`
-	UpdateTime        string `json:"updateTime" form:"updateTime"`
-	Remark            string `json:"remark" form:"remark"`
+	Id         string `json:"id" form:"id"`
+	RoleName   string `json:"roleName" form:"roleName"`
+	RoleKey    string `json:"roleKey" form:"roleKey"`
+	RoleSort   int    `json:"roleSort" form:"roleSort"`
+	DataScope  string `json:"dataScope" form:"dataScope"`
+	Status     string `json:"status" form:"status"`
+	CreateBy   string `json:"createBy" form:"createBy"`
+	CreateTime string `json:"createTime" form:"createTime"`
+	UpdateBy   string `json:"updateBy" form:"updateBy"`
+	UpdateTime string `json:"updateTime" form:"updateTime"`
+	Remark     string `json:"remark" form:"remark"`
 
 	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
 	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式

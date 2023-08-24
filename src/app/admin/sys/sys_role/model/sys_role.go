@@ -23,9 +23,9 @@ type SysRole struct {
 
 	DataScope string `json:"dataScope" form:"dataScope" gorm:"column:data_scope;comment:数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限）;"`
 
-	MenuCheckStrictly string `json:"menuCheckStrictly" form:"menuCheckStrictly" gorm:"column:menu_check_strictly;comment:菜单树选择项是否关联显示;"`
+	MenuCheckStrictly int8 `json:"menuCheckStrictly" form:"menuCheckStrictly" gorm:"column:menu_check_strictly;comment:菜单树选择项是否关联显示;"`
 
-	DeptCheckStrictly string `json:"deptCheckStrictly" form:"deptCheckStrictly" gorm:"column:dept_check_strictly;comment:部门树选择项是否关联显示;"`
+	DeptCheckStrictly int8 `json:"deptCheckStrictly" form:"deptCheckStrictly" gorm:"column:dept_check_strictly;comment:部门树选择项是否关联显示;"`
 
 	Status string `json:"status" form:"status" gorm:"column:status;comment:角色状态（0正常 1停用）;"`
 

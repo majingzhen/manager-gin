@@ -37,6 +37,10 @@ func (service *SysRoleService) Create(sysRoleView *view.SysRoleView) (err error)
 	if err2 != nil {
 		return err2
 	}
+	// 插入角色与菜单关联
+	if err = insertRoleMenu(sysRole.Id, sysRoleView.MenuIds); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -230,11 +234,11 @@ func (service *SysRoleService) AssembleRolesByUserId(userId string) (error, []*v
 }
 
 // CheckRoleNameUnique 校验角色名称是否唯一
-func (service *SysRoleService) CheckRoleNameUnique(roleName string) error {
-	if err, count := sysRoleDao.CheckRoleNameUnique(roleName); err != nil {
+func (service *SysRoleService) CheckRoleNameUnique(roleName, id string) error {
+	if err, data := sysRoleDao.CheckRoleNameUnique(roleName); err != nil {
 		return err
 	} else {
-		if count > 0 {
+		if data != nil && data.Id != id {
 			return errors.New("角色名称已存在")
 		}
 		return nil
@@ -242,17 +246,18 @@ func (service *SysRoleService) CheckRoleNameUnique(roleName string) error {
 }
 
 // CheckRoleKeyUnique 校验角色权限是否唯一
-func (service *SysRoleService) CheckRoleKeyUnique(roleKey string) error {
-	if err, count := sysRoleDao.CheckRoleKeyUnique(roleKey); err != nil {
+func (service *SysRoleService) CheckRoleKeyUnique(roleKey string, id string) error {
+	if err, data := sysRoleDao.CheckRoleKeyUnique(roleKey); err != nil {
 		return err
 	} else {
-		if count > 0 {
+		if data != nil && data.Id != id {
 			return errors.New("角色权限已存在")
 		}
 		return nil
 	}
 }
 
+// CheckRoleDataScope 校验角色是否允许操作
 func (service *SysRoleService) CheckRoleDataScope(id string, loginUser *userView.SysUserView) error {
 	if loginUser.Id != common.SYSTEM_ADMIN_ID {
 		role := &model.SysRole{
@@ -265,4 +270,13 @@ func (service *SysRoleService) CheckRoleDataScope(id string, loginUser *userView
 		}
 	}
 	return nil
+}
+
+// UpdateStatus 更新状态
+func (service *SysRoleService) UpdateStatus(view *view.SysRoleView) error {
+	if err, data := viewUtils.View2Data(view); err != nil {
+		return err
+	} else {
+		return sysRoleDao.Update(*data)
+	}
 }

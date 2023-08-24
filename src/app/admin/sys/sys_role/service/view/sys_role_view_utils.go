@@ -37,9 +37,16 @@ func (viewUtils *SysRoleViewUtils) Data2View(data *model.SysRole) (err error, vi
 
 	tmp.DataScope = data.DataScope
 
-	tmp.MenuCheckStrictly = data.MenuCheckStrictly
-
-	tmp.DeptCheckStrictly = data.DeptCheckStrictly
+	if data.MenuCheckStrictly == 1 {
+		tmp.MenuCheckStrictly = true
+	} else {
+		tmp.MenuCheckStrictly = false
+	}
+	if data.DeptCheckStrictly == 1 {
+		tmp.DeptCheckStrictly = true
+	} else {
+		tmp.DeptCheckStrictly = false
+	}
 
 	tmp.Status = data.Status
 
@@ -76,10 +83,17 @@ func (viewUtils *SysRoleViewUtils) View2Data(view *SysRoleView) (err error, data
 
 	tmp.DataScope = view.DataScope
 
-	tmp.MenuCheckStrictly = view.MenuCheckStrictly
+	if view.MenuCheckStrictly {
+		tmp.MenuCheckStrictly = 1
+	} else {
+		tmp.MenuCheckStrictly = 0
+	}
 
-	tmp.DeptCheckStrictly = view.DeptCheckStrictly
-
+	if view.DeptCheckStrictly {
+		tmp.DeptCheckStrictly = 1
+	} else {
+		tmp.DeptCheckStrictly = 0
+	}
 	tmp.Status = view.Status
 
 	tmp.CreateBy = view.CreateBy
@@ -116,10 +130,6 @@ func (viewUtils *SysRoleViewUtils) Page2Data(pageInfo *SysRolePageView) (err err
 	tmp.RoleSort = pageInfo.RoleSort
 
 	tmp.DataScope = pageInfo.DataScope
-
-	tmp.MenuCheckStrictly = pageInfo.MenuCheckStrictly
-
-	tmp.DeptCheckStrictly = pageInfo.DeptCheckStrictly
 
 	tmp.Status = pageInfo.Status
 

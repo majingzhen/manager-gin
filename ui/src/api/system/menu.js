@@ -20,7 +20,7 @@ export function getMenu(id) {
 // 查询菜单下拉树结构
 export function treeselect() {
   return request({
-    url: '/sys/sysMenu/treeselect',
+    url: '/sys/sysMenu/treeSelect',
     method: 'get'
   })
 }

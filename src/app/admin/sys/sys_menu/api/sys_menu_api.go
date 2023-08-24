@@ -128,3 +128,21 @@ func (api *SysMenuApi) SelectMenuTreeByRoleId(c *gin.Context) {
 		}
 	}
 }
+
+// SelectMenuTree 加载菜单列表树
+// @Summary 加载菜单列表树
+// @Router /sysMenu/selectMenuTree [get]
+func (api *SysMenuApi) SelectMenuTree(c *gin.Context) {
+	var menuView view.SysMenuView
+	if err := c.ShouldBindQuery(&menuView); err != nil {
+		response.FailWithMessage("获取参数解析失败!", c)
+		return
+	}
+	if err, menuList := sysMenuService.SelectMenuList(&menuView, framework.GetLoginUserId(c)); err != nil {
+		global.Logger.Error("获取数据失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		menuTree := sysMenuService.BuildMenuTreeSelect(menuList)
+		response.OkWithData(menuTree, c)
+	}
+}
