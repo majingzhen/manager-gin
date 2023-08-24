@@ -94,13 +94,28 @@ func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, d
 // Author
 func (dao *SysRoleDao) List(data *SysRole) (err error, datas *[]SysRole) {
 	var rows []SysRole
-	db := global.GOrmDao.Model(&SysRole{})
-	// TODO 输入查询条件
-	//if data.Id != "" {
-	//    db.Where("id = ?", data.Id)
-	//}
-	db.Order("create_time desc")
-	err = db.Find(&rows).Error
+	model := global.GOrmDao.Table("sys_role r")
+	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
+	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
+	model.Joins("left join sys_user u on u.id = ur.user_id")
+	model.Joins("left join sys_dept d on u.dept_id = d.id")
+	if data.Id != "" {
+		model = model.Where("ID = ?", data.Id)
+	}
+	if data.RoleName != "" {
+		model = model.Where("role_name = ?", "%"+data.RoleName+"%")
+	}
+	if data.RoleKey != "" {
+		model = model.Where("role_key = ?", "%"+data.RoleKey+"%")
+	}
+	if data.Status != "" {
+		model = model.Where("status = ?", data.Status)
+	}
+	if data.DataScopeSql != "" {
+		model = model.Where(data.DataScopeSql)
+	}
+	model.Order("create_time desc")
+	err = model.Find(&rows).Error
 	datas = &rows
 	return err, datas
 }
@@ -115,4 +130,18 @@ func (dao *SysRoleDao) GetRoleByUserId(userId string) (err error, roles *[]SysRo
 	err = model.Find(&tmp).Error
 	roles = &tmp
 	return err, roles
+}
+
+// CheckRoleNameUnique 校验角色名称是否唯一
+func (dao *SysRoleDao) CheckRoleNameUnique(name string) (error, int64) {
+	var count int64
+	err := global.GOrmDao.Table("sys_role").Where("role_name = ?", name).Count(&count).Error
+	return err, count
+}
+
+// CheckRoleKeyUnique 校验角色权限是否唯一
+func (dao *SysRoleDao) CheckRoleKeyUnique(key string) (error, int64) {
+	var count int64
+	err := global.GOrmDao.Table("sys_role").Where("role_key = ?", key).Count(&count).Error
+	return err, count
 }

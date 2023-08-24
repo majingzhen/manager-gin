@@ -23,6 +23,8 @@ type SysRoleView struct {
 	UpdateTime        string    `json:"updateTime" form:"updateTime"`
 	Remark            string    `json:"remark" form:"remark"`
 	Permissions       *[]string `json:"permissions"`
+	MenuIds           *[]string `json:"menuIds"`
+	DeptIds           *[]string `json:"deptIds"`
 	Flag              bool      `json:"flag"`
 }
 

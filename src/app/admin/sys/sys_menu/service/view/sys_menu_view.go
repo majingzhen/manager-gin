@@ -9,25 +9,26 @@ package view
 // SysMenuView 结构体
 
 type SysMenuView struct {
-	Id         string `json:"id" form:"id"`
-	MenuName   string `json:"menuName" form:"menuName"`
-	ParentId   string `json:"parentId" form:"parentId"`
-	OrderNum   int    `json:"orderNum" form:"orderNum"`
-	Path       string `json:"path" form:"path"`
-	Component  string `json:"component" form:"component"`
-	Query      string `json:"query" form:"query"`
-	IsFrame    int    `json:"isFrame" form:"isFrame"`
-	IsCache    int    `json:"isCache" form:"isCache"`
-	MenuType   string `json:"menuType" form:"menuType"`
-	Visible    string `json:"visible" form:"visible"`
-	Status     string `json:"status" form:"status"`
-	Perms      string `json:"perms" form:"perms"`
-	Icon       string `json:"icon" form:"icon"`
-	CreateBy   string `json:"createBy" form:"createBy"`
-	CreateTime string `json:"createTime" form:"createTime"`
-	UpdateBy   string `json:"updateBy" form:"updateBy"`
-	UpdateTime string `json:"updateTime" form:"updateTime"`
-	Remark     string `json:"remark" form:"remark"`
+	Id         string         `json:"id" form:"id"`
+	MenuName   string         `json:"menuName" form:"menuName"`
+	ParentId   string         `json:"parentId" form:"parentId"`
+	OrderNum   int            `json:"orderNum" form:"orderNum"`
+	Path       string         `json:"path" form:"path"`
+	Component  string         `json:"component" form:"component"`
+	Query      string         `json:"query" form:"query"`
+	IsFrame    int            `json:"isFrame" form:"isFrame"`
+	IsCache    int            `json:"isCache" form:"isCache"`
+	MenuType   string         `json:"menuType" form:"menuType"`
+	Visible    string         `json:"visible" form:"visible"`
+	Status     string         `json:"status" form:"status"`
+	Perms      string         `json:"perms" form:"perms"`
+	Icon       string         `json:"icon" form:"icon"`
+	CreateBy   string         `json:"createBy" form:"createBy"`
+	CreateTime string         `json:"createTime" form:"createTime"`
+	UpdateBy   string         `json:"updateBy" form:"updateBy"`
+	UpdateTime string         `json:"updateTime" form:"updateTime"`
+	Remark     string         `json:"remark" form:"remark"`
+	Children   []*SysMenuView `json:"children" form:"children"`
 }
 
 type RouterView struct {

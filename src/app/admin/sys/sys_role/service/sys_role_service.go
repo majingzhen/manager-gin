@@ -7,8 +7,11 @@
 package service
 
 import (
+	"errors"
+	"fmt"
 	"manager-gin/src/app/admin/sys/sys_role/model"
 	"manager-gin/src/app/admin/sys/sys_role/service/view"
+	userModel "manager-gin/src/app/admin/sys/sys_user/model"
 	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
 	"manager-gin/src/framework/aspect"
@@ -16,12 +19,16 @@ import (
 
 var sysRoleDao = model.SysRoleDaoApp
 var viewUtils = view.SysRoleViewUtilsApp
+var roleMenuDao = model.SysRoleMenuDaoApp
+var roleDeptDao = model.SysRoleDeptDaoApp
+var userRoleDao = userModel.SysUserRoleDaoApp
 
 type SysRoleService struct{}
 
 // Create 创建SysRole记录
 // Author
 func (service *SysRoleService) Create(sysRoleView *view.SysRoleView) (err error) {
+
 	err1, sysRole := viewUtils.View2Data(sysRoleView)
 	if err1 != nil {
 		return err1
@@ -42,7 +49,33 @@ func (service *SysRoleService) Delete(id string) (err error) {
 
 // DeleteByIds 批量删除SysRole记录
 // Author
-func (service *SysRoleService) DeleteByIds(ids []string) (err error) {
+func (service *SysRoleService) DeleteByIds(ids []string, loginUser *userView.SysUserView) (err error) {
+	for _, id := range ids {
+		if id == common.SYSTEM_ROLE_ADMIN_ID {
+			return errors.New("不允许删除超级管理员角色")
+		}
+		if err := service.CheckRoleDataScope(id, loginUser); err != nil {
+			return errors.New("角色数据权限不足，不能删除")
+		}
+		// 根据角色获取用户
+		if err, total := userRoleDao.CountUserRoleByRoleId(id); err != nil {
+			return err
+		} else if total > 0 {
+			if err1, roleView := service.Get(id); err != nil {
+				return err1
+			} else {
+				return errors.New(fmt.Sprintf("%s已分配,不能删除", roleView.RoleName))
+			}
+		}
+	}
+	// 删除角色与菜单关联
+	if err = roleMenuDao.DeleteRoleMenuByRoleIds(ids); err != nil {
+		return err
+	}
+	// 删除角色与部门关联
+	if err = roleDeptDao.DeleteRoleDeptByRoleIds(ids); err != nil {
+		return err
+	}
 	err = sysRoleDao.DeleteByIds(ids)
 	return err
 }
@@ -55,8 +88,32 @@ func (service *SysRoleService) Update(id string, sysRoleView *view.SysRoleView) 
 	if err1 != nil {
 		return err1
 	}
-	err = sysRoleDao.Update(*sysRole)
+	if err = sysRoleDao.Update(*sysRole); err != nil {
+
+		return err
+	} else {
+		// 删除角色与菜单关联
+		if err = roleMenuDao.DeleteRoleMenuByRoleId(id); err != nil {
+			return err
+		}
+		// 插入角色与菜单关联
+		if err = insertRoleMenu(id, sysRoleView.MenuIds); err != nil {
+			return err
+		}
+	}
 	return err
+}
+
+// insertRoleMenu 新增角色菜单信息
+func insertRoleMenu(id string, ids *[]string) error {
+	var roleMenus []model.SysRoleMenu
+	for _, menuId := range *ids {
+		roleMenus = append(roleMenus, model.SysRoleMenu{
+			RoleId: id,
+			MenuId: menuId,
+		})
+	}
+	return roleMenuDao.CreateBatch(roleMenus)
 }
 
 // Get 根据id获取SysRole记录
@@ -166,4 +223,42 @@ func (service *SysRoleService) AssembleRolesByUserId(userId string) (error, *[]v
 		}
 		return nil, roles
 	}
+}
+
+// CheckRoleNameUnique 校验角色名称是否唯一
+func (service *SysRoleService) CheckRoleNameUnique(roleName string) error {
+	if err, count := sysRoleDao.CheckRoleNameUnique(roleName); err != nil {
+		return err
+	} else {
+		if count > 0 {
+			return errors.New("角色名称已存在")
+		}
+		return nil
+	}
+}
+
+// CheckRoleKeyUnique 校验角色权限是否唯一
+func (service *SysRoleService) CheckRoleKeyUnique(roleKey string) error {
+	if err, count := sysRoleDao.CheckRoleKeyUnique(roleKey); err != nil {
+		return err
+	} else {
+		if count > 0 {
+			return errors.New("角色权限已存在")
+		}
+		return nil
+	}
+}
+
+func (service *SysRoleService) CheckRoleDataScope(id string, loginUser *userView.SysUserView) error {
+	if loginUser.Id != common.SYSTEM_ADMIN_ID {
+		role := &model.SysRole{
+			Id:           id,
+			DataScopeSql: aspect.DataScopeFilter(loginUser, "d", "u", ""),
+		}
+		err, _ := sysRoleDao.List(role)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

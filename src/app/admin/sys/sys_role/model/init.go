@@ -7,3 +7,5 @@
 package model
 
 var SysRoleDaoApp = new(SysRoleDao)
+var SysRoleMenuDaoApp = new(SysRoleMenuDao)
+var SysRoleDeptDaoApp = new(SysRoleDeptDao)

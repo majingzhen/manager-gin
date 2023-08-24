@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/sys_role/service"
 	"manager-gin/src/app/admin/sys/sys_role/service/view"
+	"manager-gin/src/common"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/framework"
 	"manager-gin/src/global"
@@ -29,6 +30,14 @@ var sysRoleService = service.SysRoleServiceApp
 func (api *SysRoleApi) Create(c *gin.Context) {
 	var sysRoleView view.SysRoleView
 	_ = c.ShouldBindJSON(&sysRoleView)
+	if err := sysRoleService.CheckRoleNameUnique(sysRoleView.RoleName); err == nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := sysRoleService.CheckRoleKeyUnique(sysRoleView.RoleKey); err == nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
 	sysRoleView.Id = utils.GenUID()
 	sysRoleView.CreateTime = utils.GetCurTimeStr()
 	sysRoleView.UpdateTime = utils.GetCurTimeStr()
@@ -47,7 +56,7 @@ func (api *SysRoleApi) Create(c *gin.Context) {
 func (api *SysRoleApi) Delete(c *gin.Context) {
 	idStr := c.Param("ids")
 	ids := strings.Split(idStr, ",")
-	if err := sysRoleService.DeleteByIds(ids); err != nil {
+	if err := sysRoleService.DeleteByIds(ids, framework.GetLoginUser(c)); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -64,6 +73,24 @@ func (api *SysRoleApi) Update(c *gin.Context) {
 	id := sysRoleView.Id
 	if id == "" {
 		response.FailWithMessage("更新失败", c)
+		return
+	}
+	// 校验参数
+	if id == common.SYSTEM_ROLE_ADMIN_ID {
+		response.FailWithMessage("超级管理员不允许修改", c)
+		return
+	}
+	// 校验数据权限
+	if err := sysRoleService.CheckRoleDataScope(id, framework.GetLoginUser(c)); err != nil {
+		response.FailWithMessage("没有权限访问角色数据", c)
+		return
+	}
+	if err := sysRoleService.CheckRoleNameUnique(sysRoleView.RoleName); err == nil {
+		response.FailWithMessage(err.Error(), c)
+		return
+	}
+	if err := sysRoleService.CheckRoleKeyUnique(sysRoleView.RoleKey); err == nil {
+		response.FailWithMessage(err.Error(), c)
 		return
 	}
 	sysRoleView.UpdateTime = utils.GetCurTimeStr()

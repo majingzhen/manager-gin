@@ -105,3 +105,27 @@ func (api *SysMenuApi) List(c *gin.Context) {
 		response.OkWithDetailed(res, "获取成功", c)
 	}
 }
+
+// SelectMenuTreeByRoleId 加载对应角色菜单列表树
+// @Summary 根据角色id查询菜单树信息
+// @Router /sysMenu/selectMenuTreeByRoleId/{roleId} [get]
+func (api *SysMenuApi) SelectMenuTreeByRoleId(c *gin.Context) {
+	roleId := c.Param("roleId")
+	if err, menuList := sysMenuService.SelectMenuList(&view.SysMenuView{}, framework.GetLoginUserId(c)); err != nil {
+		global.Logger.Error("获取数据失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+		return
+	} else {
+		// menuTree := sysMenuService.BuildMenuTreeSelect(menuList)
+		if err, menuListByRoleId := sysMenuService.SelectMenuListByRoleId(roleId); err != nil {
+			global.Logger.Error("获取数据失败!", zap.Error(err))
+			response.FailWithMessage("获取失败", c)
+		} else {
+			response.OkWithData(gin.H{
+				"checkedKeys": menuListByRoleId,
+				"menus":       menuList,
+			}, c)
+		}
+	}
+
+}

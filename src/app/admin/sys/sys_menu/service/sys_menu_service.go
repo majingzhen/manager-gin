@@ -10,6 +10,7 @@ import (
 	"errors"
 	"manager-gin/src/app/admin/sys/sys_menu/model"
 	"manager-gin/src/app/admin/sys/sys_menu/service/view"
+	roleSer "manager-gin/src/app/admin/sys/sys_role/service"
 	userView "manager-gin/src/app/admin/sys/sys_user/service/view"
 	"manager-gin/src/common"
 	"manager-gin/src/utils"
@@ -18,6 +19,7 @@ import (
 
 var sysMenuDao = model.SysMenuDaoApp
 var viewUtils = view.SysMenuViewUtilsApp
+var roleService = roleSer.SysRoleServiceApp
 
 type SysMenuService struct{}
 
@@ -340,3 +342,35 @@ func (service *SysMenuService) CheckMenuNameUniqueAll(menu *view.SysMenuView) (e
 	err, isUnique = sysMenuDao.CheckMenuNameUniqueAll(data)
 	return
 }
+
+// SelectMenuListByRoleId 根据角色id查询菜单
+func (service *SysMenuService) SelectMenuListByRoleId(id string) (error, []string) {
+	if err, roleView := roleService.Get(id); err != nil {
+		return err, nil
+	} else {
+		if roleView != nil {
+			err, menuList := sysMenuDao.SelectMenuListByRoleId(id, roleView.MenuCheckStrictly)
+			if err != nil {
+				return err, nil
+			}
+			return nil, menuList
+		} else {
+			return nil, nil
+		}
+	}
+}
+
+//// BuildMenuTreeSelect 构建菜单树
+//func (service *SysMenuService) BuildMenuTreeSelect(menus []*view.SysMenuView) []*view.SysMenuView {
+//	var tree []*view.SysMenuView
+//	for _, menu := range menus {
+//		if len(menu.Children) == 0 {
+//			tree = append(tree, menu)
+//		} else {
+//			subTree := service.BuildMenuTreeSelect(menu.Children)
+//			menu.Children = subTree
+//			tree = append(tree, menu)
+//		}
+//	}
+//	return tree
+//}

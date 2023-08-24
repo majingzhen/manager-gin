@@ -216,3 +216,24 @@ func (dao *SysMenuDao) CheckMenuExistRole(roleId string) (error, bool) {
 	}
 	return nil, false
 }
+
+func (dao *SysMenuDao) SelectMenuListByRoleId(id string, strictly string) (error, []string) {
+	var rows []SysMenu
+	db := global.GOrmDao.Table("sys_menu m")
+	db.Joins("left join sys_role_menu rm on m.id = rm.menu_id")
+	db.Select("m.id")
+	db.Where("rm.role_id = ?", id, common.STATUS_NORMAL, common.STATUS_NORMAL)
+	if strictly == "1" {
+		db.Where("m.id not in (select m.parent_id from sys_menu m inner join sys_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})", id)
+	}
+	db.Order(" m.parent_id, m.order_num")
+	err := db.Scan(&rows).Error
+	if err != nil {
+		return err, nil
+	}
+	var perms []string
+	for _, menu := range rows {
+		perms = append(perms, menu.Perms)
+	}
+	return nil, perms
+}
