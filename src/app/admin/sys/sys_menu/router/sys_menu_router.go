@@ -26,7 +26,8 @@ func (r *SysMenuRouter) InitSysMenuRouter(Router *gin.RouterGroup) {
 		sysMenuRouter.POST("update", sysMenuApi.Update)       // 更新SysMenu
 	}
 	{
-		sysMenuRouterWithoutRecord.GET("get/:id", sysMenuApi.Get) // 根据ID获取SysMenu
-		sysMenuRouterWithoutRecord.GET("list", sysMenuApi.List)   // 获取SysMenu列表
+		sysMenuRouterWithoutRecord.GET("get/:id", sysMenuApi.Get)                                       // 根据ID获取SysMenu
+		sysMenuRouterWithoutRecord.GET("roleMenuTreeSelect/:roleId", sysMenuApi.SelectMenuTreeByRoleId) // 根据ID获取SysMenu
+		sysMenuRouterWithoutRecord.GET("list", sysMenuApi.List)                                         // 获取SysMenu列表
 	}
 }

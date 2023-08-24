@@ -116,16 +116,15 @@ func (api *SysMenuApi) SelectMenuTreeByRoleId(c *gin.Context) {
 		response.FailWithMessage("获取失败", c)
 		return
 	} else {
-		// menuTree := sysMenuService.BuildMenuTreeSelect(menuList)
+		menuTree := sysMenuService.BuildMenuTreeSelect(menuList)
 		if err, menuListByRoleId := sysMenuService.SelectMenuListByRoleId(roleId); err != nil {
 			global.Logger.Error("获取数据失败!", zap.Error(err))
 			response.FailWithMessage("获取失败", c)
 		} else {
 			response.OkWithData(gin.H{
 				"checkedKeys": menuListByRoleId,
-				"menus":       menuList,
+				"menus":       menuTree,
 			}, c)
 		}
 	}
-
 }

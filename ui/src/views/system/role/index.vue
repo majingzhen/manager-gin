@@ -118,7 +118,7 @@
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
-        <template slot-scope="scope" v-if="scope.row.id !== 1">
+        <template slot-scope="scope" v-if="scope.row.id !== '1'">
           <el-button
             size="mini"
             type="text"
@@ -381,7 +381,7 @@ export default {
     /** 根据角色ID查询菜单树结构 */
     getRoleMenuTreeselect(roleId) {
       return roleMenuTreeselect(roleId).then(response => {
-        this.menuOptions = response.menus;
+        this.menuOptions = response.data.menus;
         return response;
       });
     },

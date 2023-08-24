@@ -363,17 +363,28 @@ func (service *SysMenuService) SelectMenuListByRoleId(id string) (error, []strin
 	}
 }
 
-//// BuildMenuTreeSelect 构建菜单树
-//func (service *SysMenuService) BuildMenuTreeSelect(menus []*view.SysMenuView) []*view.SysMenuView {
-//	var tree []*view.SysMenuView
-//	for _, menu := range menus {
-//		if len(menu.Children) == 0 {
-//			tree = append(tree, menu)
-//		} else {
-//			subTree := service.BuildMenuTreeSelect(menu.Children)
-//			menu.Children = subTree
-//			tree = append(tree, menu)
-//		}
-//	}
-//	return tree
-//}
+// BuildMenuTreeSelect 构建菜单树
+func (service *SysMenuService) BuildMenuTreeSelect(menuViews []*view.SysMenuView) []*view.MenuTree {
+	menuMap := make(map[string]*view.MenuTree)
+
+	// 先创建所有的节点
+	for _, menuView := range menuViews {
+		menuMap[menuView.Id] = &view.MenuTree{
+			Id:    menuView.Id,
+			Label: menuView.MenuName,
+		}
+	}
+
+	// 构建树结构
+	var rootNodes []*view.MenuTree
+	for _, menuView := range menuViews {
+		menu := menuMap[menuView.Id]
+		if menuView.ParentId == "0" {
+			rootNodes = append(rootNodes, menu)
+		} else {
+			parent := menuMap[menuView.ParentId]
+			parent.Children = append(parent.Children, menu)
+		}
+	}
+	return rootNodes
+}
