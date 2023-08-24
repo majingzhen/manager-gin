@@ -121,7 +121,7 @@ func (viewUtils *SysConfigViewUtils) Page2Data(pageInfo *SysConfigPageView) (err
 	return
 }
 
-func (viewUtils *SysConfigViewUtils) View2DataList(viewList *[]SysConfigView) (err error, dataList *[]model.SysConfig) {
+func (viewUtils *SysConfigViewUtils) View2DataList(viewList []*SysConfigView) (err error, dataList []*model.SysConfig) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysConfigViewUtils View2DataList error: %v", e)
@@ -130,20 +130,20 @@ func (viewUtils *SysConfigViewUtils) View2DataList(viewList *[]SysConfigView) (e
 		}
 	}()
 	if viewList != nil {
-		var dataTmpList []model.SysConfig
-		for i := range *viewList {
-			view := (*viewList)[i]
-			err, data := viewUtils.View2Data(&view)
+		var dataTmpList []*model.SysConfig
+		for i := range viewList {
+			view := (viewList)[i]
+			err, data := viewUtils.View2Data(view)
 			if err == nil {
-				dataTmpList = append(dataTmpList, *data)
+				dataTmpList = append(dataTmpList, data)
 			}
 		}
-		dataList = &dataTmpList
+		dataList = dataTmpList
 	}
 	return
 }
 
-func (viewUtils *SysConfigViewUtils) Data2ViewList(dataList *[]model.SysConfig) (err error, viewList *[]SysConfigView) {
+func (viewUtils *SysConfigViewUtils) Data2ViewList(dataList []*model.SysConfig) (err error, viewList []*SysConfigView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysConfigViewUtils Data2ViewList error: %v", e)
@@ -152,15 +152,15 @@ func (viewUtils *SysConfigViewUtils) Data2ViewList(dataList *[]model.SysConfig) 
 		}
 	}()
 	if dataList != nil {
-		var viewTmpList []SysConfigView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, view := viewUtils.Data2View(&data)
+		var viewTmpList []*SysConfigView
+		for i := range dataList {
+			data := (dataList)[i]
+			err, view := viewUtils.Data2View(data)
 			if err == nil {
-				viewTmpList = append(viewTmpList, *view)
+				viewTmpList = append(viewTmpList, view)
 			}
 		}
-		viewList = &viewTmpList
+		viewList = viewTmpList
 	}
 	return
 }

@@ -21,14 +21,6 @@ type SysConfigService struct{}
 // Create 创建SysConfig记录
 // Author
 func (service *SysConfigService) Create(sysConfigView *view.SysConfigView) error {
-	// 判断是否重复
-	if err, value := sysConfigDao.SelectConfigByKey(sysConfigView.ConfigKey); err != nil {
-		return err
-	} else {
-		if value != nil {
-			return errors.New("配置键名已存在")
-		}
-	}
 	if err, sysConfig := viewUtils.View2Data(sysConfigView); err != nil {
 		return err
 	} else {
@@ -56,14 +48,6 @@ func (service *SysConfigService) DeleteByIds(ids []string) (err error) {
 // Update 更新SysConfig记录
 // Author
 func (service *SysConfigService) Update(id string, sysConfigView *view.SysConfigView) (err error) {
-	// 判断是否重复
-	if err, value := sysConfigDao.SelectConfigByKey(sysConfigView.ConfigKey); err != nil {
-		return err
-	} else {
-		if value != nil {
-			return errors.New("配置键名已存在")
-		}
-	}
 	sysConfigView.Id = id
 	if err1, sysConfig := viewUtils.View2Data(sysConfigView); err1 != nil {
 		return err1
@@ -106,12 +90,12 @@ func (service *SysConfigService) Page(pageInfo *view.SysConfigPageView) (err err
 
 }
 
-func (service *SysConfigService) List(v *view.SysConfigView) (err error, views *[]view.SysConfigView) {
+func (service *SysConfigService) List(v *view.SysConfigView) (err error, views []*view.SysConfigView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
-	var datas *[]model.SysConfig
+	var datas []*model.SysConfig
 	if err, datas = sysConfigDao.List(data); err != nil {
 		return err, nil
 	} else {
@@ -121,10 +105,14 @@ func (service *SysConfigService) List(v *view.SysConfigView) (err error, views *
 }
 
 // SelectConfigByKey 根据key查询SysConfig记录
-func (service *SysConfigService) SelectConfigByKey(key string) (error, string) {
+func (service *SysConfigService) SelectConfigByKey(key string) (error, *view.SysConfigView) {
 	if err, sysConfig := sysConfigDao.SelectConfigByKey(key); err != nil {
-		return err, ""
+		return err, nil
 	} else {
-		return nil, sysConfig.ConfigValue
+		if err, configView := viewUtils.Data2View(sysConfig); err != nil {
+			return err, nil
+		} else {
+			return nil, configView
+		}
 	}
 }

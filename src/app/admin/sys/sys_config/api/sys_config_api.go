@@ -29,13 +29,23 @@ var sysConfigService = service.SysConfigServiceApp
 func (api *SysConfigApi) Create(c *gin.Context) {
 	var sysConfigView view.SysConfigView
 	_ = c.ShouldBindJSON(&sysConfigView)
+	// 判断是否重复
+	if err, value := sysConfigService.SelectConfigByKey(sysConfigView.ConfigKey); err != nil {
+		response.FailWithMessage("更新失败", c)
+		return
+	} else {
+		if value != nil {
+			response.FailWithMessage("配置键名已存在", c)
+			return
+		}
+	}
 	sysConfigView.Id = utils.GenUID()
 	sysConfigView.CreateTime = utils.GetCurTimeStr()
 	sysConfigView.UpdateTime = utils.GetCurTimeStr()
 	sysConfigView.CreateBy = framework.GetLoginUserName(c)
 	if err := sysConfigService.Create(&sysConfigView); err != nil {
-		global.Logger.Error("创建失败!", zap.Error(err))
-		response.FailWithMessage("创建失败", c)
+		global.Logger.Error(err.Error(), zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
 	} else {
 		response.OkWithMessage("创建成功", c)
 	}
@@ -66,11 +76,21 @@ func (api *SysConfigApi) Update(c *gin.Context) {
 		response.FailWithMessage("更新失败", c)
 		return
 	}
+	// 判断是否重复
+	if err, value := sysConfigService.SelectConfigByKey(sysConfigView.ConfigKey); err != nil {
+		response.FailWithMessage("更新失败", c)
+		return
+	} else {
+		if value != nil && value.Id != sysConfigView.Id {
+			response.FailWithMessage("配置键名已存在", c)
+			return
+		}
+	}
 	sysConfigView.UpdateTime = utils.GetCurTimeStr()
 	sysConfigView.UpdateBy = framework.GetLoginUserName(c)
 	if err := sysConfigService.Update(id, &sysConfigView); err != nil {
-		global.Logger.Error("更新持久化失败!", zap.Error(err))
-		response.FailWithMessage("更新失败", c)
+		global.Logger.Error(err.Error(), zap.Error(err))
+		response.FailWithMessage(err.Error(), c)
 	} else {
 		response.OkWithMessage("更新成功", c)
 	}

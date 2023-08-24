@@ -45,7 +45,7 @@ func (dao *SysConfigDao) Get(id string) (err error, sysConfig *SysConfig) {
 
 // Page 分页获取SysConfig记录
 // Author
-func (dao *SysConfigDao) Page(param *SysConfig, page *common.PageInfo) (err error, datas *[]SysConfig, total int64) {
+func (dao *SysConfigDao) Page(param *SysConfig, page *common.PageInfo) (err error, datas []*SysConfig, total int64) {
 	// 创建model
 	model := global.GOrmDao.Model(&SysConfig{})
 	// 如果有条件搜索 下方会自动创建搜索语句
@@ -67,16 +67,16 @@ func (dao *SysConfigDao) Page(param *SysConfig, page *common.PageInfo) (err erro
 	if page.OrderByColumn != "" {
 		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	var tmp []SysConfig
+	var tmp []*SysConfig
 	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = &tmp
+	datas = tmp
 	return err, datas, total
 }
 
 // List 获取SysConfig记录
 // Author
-func (dao *SysConfigDao) List(data *SysConfig) (err error, datas *[]SysConfig) {
-	var rows []SysConfig
+func (dao *SysConfigDao) List(data *SysConfig) (err error, datas []*SysConfig) {
+	var rows []*SysConfig
 	db := global.GOrmDao.Model(&SysConfig{})
 	// TODO 输入查询条件
 	//if data.Id != "" {
@@ -84,15 +84,18 @@ func (dao *SysConfigDao) List(data *SysConfig) (err error, datas *[]SysConfig) {
 	//}
 	db.Order("create_time desc")
 	err = db.Find(&rows).Error
-	datas = &rows
+	datas = rows
 	return err, datas
 }
 
 // SelectConfigByKey 根据key查询SysConfig记录
 func (dao *SysConfigDao) SelectConfigByKey(key string) (error, *SysConfig) {
-	var rows SysConfig
+	var rows []*SysConfig
 	db := global.GOrmDao.Model(&SysConfig{})
 	db.Where("config_key = ?", key)
-	err := db.First(&rows).Error
-	return err, &rows
+	err := db.Find(&rows).Error
+	if rows != nil && len(rows) > 0 {
+		return err, rows[0]
+	}
+	return err, nil
 }

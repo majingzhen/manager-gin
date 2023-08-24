@@ -6,10 +6,6 @@
 // @create 2023-08-18 14:02:24
 package model
 
-import (
-	"time"
-)
-
 // SysRoleMenu 结构体
 
 type SysRoleMenu struct {
