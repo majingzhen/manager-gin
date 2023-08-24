@@ -92,17 +92,18 @@ func (service *SysRoleService) Update(id string, sysRoleView *view.SysRoleView) 
 	if err1 != nil {
 		return err1
 	}
-	if err = sysRoleDao.Update(*sysRole); err != nil {
-
+	if err = sysRoleDao.Update(sysRole); err != nil {
 		return err
 	} else {
 		// 删除角色与菜单关联
 		if err = roleMenuDao.DeleteRoleMenuByRoleId(id); err != nil {
 			return err
 		}
-		// 插入角色与菜单关联
-		if err = insertRoleMenu(id, sysRoleView.MenuIds); err != nil {
-			return err
+		if sysRoleView.MenuIds == nil && len(sysRoleView.MenuIds) > 0 {
+			// 插入角色与菜单关联
+			if err = insertRoleMenu(id, sysRoleView.MenuIds); err != nil {
+				return err
+			}
 		}
 	}
 	return err
@@ -277,6 +278,41 @@ func (service *SysRoleService) UpdateStatus(view *view.SysRoleView) error {
 	if err, data := viewUtils.View2Data(view); err != nil {
 		return err
 	} else {
-		return sysRoleDao.Update(*data)
+		return sysRoleDao.Update(data)
 	}
+}
+
+// AuthDataScope 数据权限
+func (service *SysRoleService) AuthDataScope(v *view.SysRoleView) error {
+	if err, data := viewUtils.View2Data(v); err != nil {
+		return err
+	} else {
+		if err := sysRoleDao.Update(data); err != nil {
+			return err
+		} else {
+			// 删除角色与部门关联
+			if err = roleDeptDao.DeleteRoleDeptByRoleId(v.Id); err != nil {
+				return err
+			}
+			if v.DeptIds != nil && len(v.DeptIds) > 0 {
+				// 插入角色与部门关联
+				if err = insertRoleDept(v.Id, v.DeptIds); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}
+}
+
+// insertRoleDept 新增角色部门信息
+func insertRoleDept(id string, ids []string) error {
+	var roleDepts []model.SysRoleDept
+	for _, deptId := range ids {
+		roleDepts = append(roleDepts, model.SysRoleDept{
+			RoleId: id,
+			DeptId: deptId,
+		})
+	}
+	return roleDeptDao.CreateBatch(roleDepts)
 }

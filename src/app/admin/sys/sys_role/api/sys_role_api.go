@@ -182,3 +182,27 @@ func (api *SysRoleApi) ChangeStatus(c *gin.Context) {
 		response.OkWithMessage("更新成功", c)
 	}
 }
+
+// DataScope 修改保存数据权限
+// @Summary 修改保存数据权限
+// @Router /sysRole/dataScope [put]
+func (api *SysRoleApi) DataScope(c *gin.Context) {
+	var view view.SysRoleView
+	_ = c.ShouldBindJSON(&view)
+	if view.Id == common.SYSTEM_ROLE_ADMIN_ID {
+		response.FailWithMessage("超级管理员不允许修改", c)
+		return
+	}
+	if err := sysRoleService.CheckRoleDataScope(view.Id, framework.GetLoginUser(c)); err != nil {
+		response.FailWithMessage("没有权限访问角色数据", c)
+		return
+	}
+	view.UpdateTime = utils.GetCurTimeStr()
+	view.UpdateBy = framework.GetLoginUserName(c)
+	if err := sysRoleService.AuthDataScope(&view); err != nil {
+		global.Logger.Error("更新失败!", zap.Error(err))
+		response.FailWithMessage("更新失败", c)
+	} else {
+		response.OkWithMessage("更新成功", c)
+	}
+}

@@ -25,6 +25,7 @@ func (r *SysRoleRouter) InitSysRoleRouter(Router *gin.RouterGroup) {
 		sysRoleRouter.DELETE("delete/:ids", sysRoleApi.Delete)     // 删除SysRole
 		sysRoleRouter.POST("update", sysRoleApi.Update)            // 更新SysRole
 		sysRoleRouter.PUT("changeStatus", sysRoleApi.ChangeStatus) // 更新SysRole状态
+		sysRoleRouter.PUT("dataScope", sysRoleApi.DataScope)       // 更新SysRole状态
 	}
 	{
 		sysRoleRouterWithoutRecord.GET("get/:id", sysRoleApi.Get) // 根据ID获取SysRole

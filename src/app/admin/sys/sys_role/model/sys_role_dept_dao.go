@@ -16,3 +16,14 @@ type SysRoleDeptDao struct{}
 func (dao *SysRoleDeptDao) DeleteRoleDeptByRoleIds(ids []string) error {
 	return global.GOrmDao.Delete(&[]SysRoleDept{}, "role_id in ?", ids).Error
 }
+
+// DeleteRoleDeptByDeptIds 根据角色id集合删除角色部门关联数据
+func (dao *SysRoleDeptDao) DeleteRoleDeptByRoleId(id string) error {
+	return global.GOrmDao.Delete(&[]SysRoleDept{}, "role_id = ?", id).Error
+
+}
+
+// CreateBatch 批量创建SysRoleDept记录
+func (dao *SysRoleDeptDao) CreateBatch(depts []SysRoleDept) error {
+	return global.GOrmDao.Create(&depts).Error
+}

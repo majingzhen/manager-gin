@@ -38,8 +38,8 @@ func (dao *SysRoleDao) DeleteByIds(ids []string) (err error) {
 
 // Update 更新SysRole记录
 // Author
-func (dao *SysRoleDao) Update(sysRole SysRole) (err error) {
-	err = global.GOrmDao.Updates(&sysRole).Error
+func (dao *SysRoleDao) Update(sysRole *SysRole) (err error) {
+	err = global.GOrmDao.Updates(sysRole).Error
 	return err
 }
 
