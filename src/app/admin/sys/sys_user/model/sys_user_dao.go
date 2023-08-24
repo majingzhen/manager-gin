@@ -152,3 +152,70 @@ func (dao *SysUserDao) SelectByField(fieldName string, value string) (error, *Sy
 	}
 
 }
+
+func (dao *SysUserDao) SelectAllocatedList(param *SysUser, page *common.PageInfo, roleId string) (err error, datas []*SysUser, total int64) {
+	// 创建model
+	model := global.GOrmDao.Table("sys_user u")
+	model.Select("distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time")
+	model.Joins("left join sys_dept d on u.dept_id = d.id")
+	model.Joins("left join sys_user_role ur on u.id = ur.user_id")
+	model.Joins("left join sys_role r on ur.role_id = r.id")
+	model.Where("r.id = ?", roleId)
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if param.UserName != "" {
+		model = model.Where("u.user_name like ?", "%"+param.UserName+"%")
+	}
+	if param.PhoneNumber != "" {
+		model = model.Where("u.phone_number like ?", "%"+param.PhoneNumber+"%")
+	}
+	if param.DataScopeSql != "" {
+		model = model.Where(param.DataScopeSql)
+	}
+	if err = model.Count(&total).Error; err != nil {
+		return
+	}
+	// 计算分页信息
+	page.Calculate()
+	// 生成排序信息
+	if page.OrderByColumn != "" {
+		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	}
+	var tmp []*SysUser
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
+	datas = tmp
+	return err, datas, total
+}
+
+func (dao *SysUserDao) SelectUnallocatedList(param *SysUser, page *common.PageInfo, roleId string) (err error, datas []*SysUser, total int64) {
+	// 创建model
+	model := global.GOrmDao.Table("sys_user u")
+	model.Select("distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time")
+	model.Joins("left join sys_dept d on u.dept_id = d.id")
+	model.Joins("left join sys_user_role ur on u.id = ur.user_id")
+	model.Joins("left join sys_role r on ur.role_id = r.id")
+	model.Where("(r.id != ? or r.id is null)", roleId)
+	model.Where("u.id not in (select u.id from sys_user u inner join sys_user_role ur on u.id = ur.user_id and ur.role_id = ?)", roleId)
+	// 如果有条件搜索 下方会自动创建搜索语句
+	if param.UserName != "" {
+		model = model.Where("u.user_name like ?", "%"+param.UserName+"%")
+	}
+	if param.PhoneNumber != "" {
+		model = model.Where("u.phone_number like ?", "%"+param.PhoneNumber+"%")
+	}
+	if param.DataScopeSql != "" {
+		model = model.Where(param.DataScopeSql)
+	}
+	if err = model.Count(&total).Error; err != nil {
+		return
+	}
+	// 计算分页信息
+	page.Calculate()
+	// 生成排序信息
+	if page.OrderByColumn != "" {
+		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	}
+	var tmp []*SysUser
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
+	datas = tmp
+	return err, datas, total
+}

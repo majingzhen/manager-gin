@@ -68,7 +68,7 @@ export function delRole(roleId) {
 // 查询角色已授权用户列表
 export function allocatedUserList(query) {
   return request({
-    url: '/sys/sysRole/authUser/allocatedList',
+    url: '/sys/sysUser/allocatedList',
     method: 'get',
     params: query
   })
@@ -77,7 +77,7 @@ export function allocatedUserList(query) {
 // 查询角色未授权用户列表
 export function unallocatedUserList(query) {
   return request({
-    url: '/sys/sysRole/authUser/unallocatedList',
+    url: '/sys/sysUser/unallocatedList',
     method: 'get',
     params: query
   })

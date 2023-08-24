@@ -50,17 +50,9 @@ type SysUserPageView struct {
 	Email       string `json:"email" form:"email"`
 	PhoneNumber string `json:"phoneNumber" form:"phoneNumber"`
 	Sex         string `json:"sex" form:"sex"`
-	Avatar      string `json:"avatar" form:"avatar"`
-	Password    string `json:"password" form:"password"`
-	Salt        string `json:"salt" form:"salt"`
 	Status      string `json:"status" form:"status"`
-	LoginIp     string `json:"loginIp" form:"loginIp"`
-	LoginDate   string `json:"loginDate" form:"loginDate"`
-	CreateBy    string `json:"createBy" form:"createBy"`
 	CreateTime  string `json:"createTime" form:"createTime"`
-	UpdateBy    string `json:"updateBy" form:"updateBy"`
-	UpdateTime  string `json:"updateTime" form:"updateTime"`
-	Remark      string `json:"remark" form:"remark"`
+	RoleId      string `json:"roleId" form:"roleId"`
 
 	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
 	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式

@@ -147,21 +147,7 @@ func (viewUtils *SysUserViewUtils) Page2Data(pageInfo *SysUserPageView) (err err
 
 	tmp.Sex = pageInfo.Sex
 
-	tmp.Avatar = pageInfo.Avatar
-
-	tmp.Password = pageInfo.Password
-
-	tmp.Salt = pageInfo.Salt
-
 	tmp.Status = pageInfo.Status
-
-	tmp.LoginIp = pageInfo.LoginIp
-
-	tmp.CreateBy = pageInfo.CreateBy
-
-	tmp.UpdateBy = pageInfo.UpdateBy
-
-	tmp.Remark = pageInfo.Remark
 
 	data = &tmp
 	page = &common.PageInfo{

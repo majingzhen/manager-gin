@@ -30,9 +30,11 @@ func (r *SysUserRouter) InitSysUserRouter(Router *gin.RouterGroup) {
 	}
 	{
 		sysUserRouterWithoutRecord.GET("get", sysUserApi.Get)
-		sysUserRouterWithoutRecord.GET("get/:id", sysUserApi.Get)              // 根据ID获取SysUser
-		sysUserRouterWithoutRecord.GET("authRole/:id", sysUserApi.GetAuthRole) // 根据ID获取授权集合
-		sysUserRouterWithoutRecord.GET("page", sysUserApi.Page)                // 分页获取SysUser列表
-		sysUserRouterWithoutRecord.GET("list", sysUserApi.List)                // 分页获取SysUser列表
+		sysUserRouterWithoutRecord.GET("get/:id", sysUserApi.Get)                           // 根据ID获取SysUser
+		sysUserRouterWithoutRecord.GET("authRole/:id", sysUserApi.GetAuthRole)              // 根据ID获取授权集合
+		sysUserRouterWithoutRecord.GET("page", sysUserApi.Page)                             // 分页获取SysUser列表
+		sysUserRouterWithoutRecord.GET("list", sysUserApi.List)                             // 分页获取SysUser列表
+		sysUserRouterWithoutRecord.GET("allocatedList", sysUserApi.SelectAllocatedList)     // 分页获取角色已授权用户列表
+		sysUserRouterWithoutRecord.GET("unallocatedList", sysUserApi.SelectUnallocatedList) // 分页获取角色未授权用户列表
 	}
 }

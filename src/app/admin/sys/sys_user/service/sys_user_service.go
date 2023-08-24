@@ -278,3 +278,66 @@ func (service *SysUserService) AuthRole(v *view.SysUserView) error {
 	}
 	return nil
 }
+
+func (service *SysUserService) SelectAllocatedList(pageInfo *view.SysUserPageView, user *view.SysUserView) (error, *common.PageInfo) {
+	err, param, page := viewUtils.Page2Data(pageInfo)
+	if err != nil {
+		return err, nil
+	}
+	roleId := pageInfo.RoleId
+	param.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
+	err1, datas, total := sysUserDao.SelectAllocatedList(param, page, roleId)
+	if err1 != nil {
+		return err1, nil
+	}
+	if err2, viewList := viewUtils.Data2ViewList(datas); err2 != nil {
+		return err2, nil
+	} else {
+		// 组装部门数据
+		for i := 0; i < len(viewList); i++ {
+			deptId := viewList[i].DeptId
+			if err3, deptView := deptService.Get(deptId); err3 != nil {
+				return err3, nil
+			} else {
+				viewList[i].Dept = deptView
+			}
+		}
+		res := &common.PageInfo{
+			Total: total,
+			Rows:  viewList,
+		}
+		return err, res
+	}
+}
+
+// SelectUnallocatedList 获取未分配用户角色的用户列表
+func (service *SysUserService) SelectUnallocatedList(pageInfo *view.SysUserPageView, user *view.SysUserView) (error, *common.PageInfo) {
+	err, param, page := viewUtils.Page2Data(pageInfo)
+	if err != nil {
+		return err, nil
+	}
+	roleId := pageInfo.RoleId
+	param.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
+	err1, datas, total := sysUserDao.SelectUnallocatedList(param, page, roleId)
+	if err1 != nil {
+		return err1, nil
+	}
+	if err2, viewList := viewUtils.Data2ViewList(datas); err2 != nil {
+		return err2, nil
+	} else {
+		// 组装部门数据
+		for i := 0; i < len(viewList); i++ {
+			deptId := viewList[i].DeptId
+			if err3, deptView := deptService.Get(deptId); err3 != nil {
+				return err3, nil
+			} else {
+				viewList[i].Dept = deptView
+			}
+		}
+		res := &common.PageInfo{
+			Total: total,
+			Rows:  viewList,
+		}
+		return err, res
+	}
+}

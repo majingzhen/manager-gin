@@ -132,7 +132,7 @@ export default {
     };
   },
   created() {
-    const roleId = this.$route.params && this.$route.params.id;
+    const roleId = this.$route.params && this.$route.params.roleId;
     if (roleId) {
       this.queryParams.roleId = roleId;
       this.getList();
@@ -143,8 +143,8 @@ export default {
     getList() {
       this.loading = true;
       allocatedUserList(this.queryParams).then(response => {
-          this.userList = response.rows;
-          this.total = response.total;
+          this.userList = response.data.rows;
+          this.total = response.data.total;
           this.loading = false;
         }
       );

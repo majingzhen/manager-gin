@@ -316,3 +316,41 @@ func removeAdminRole(roles *[]*roleView.SysRoleView) {
 		}
 	}
 }
+
+// SelectAllocatedList 查询已分配用户角色列表
+// @Summary 查询已分配用户角色列表
+// @Router /sysUser/selectAllocatedList [get]
+func (api *SysUserApi) SelectAllocatedList(c *gin.Context) {
+	var pageInfo view.SysUserPageView
+	// 绑定查询参数到 pageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage("获取分页数据解析失败!", c)
+		return
+	}
+	user := framework.GetLoginUser(c)
+	if err, res := sysUserService.SelectAllocatedList(&pageInfo, user); err != nil {
+		global.Logger.Error("获取分页信息失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(res, "获取成功", c)
+	}
+}
+
+// SelectUnallocatedList 查询未分配用户角色列表
+// @Summary 查询未分配用户角色列表
+// @Router /sysUser/selectUnallocatedList [get]
+func (api *SysUserApi) SelectUnallocatedList(c *gin.Context) {
+	var pageInfo view.SysUserPageView
+	// 绑定查询参数到 pageInfo
+	if err := c.ShouldBindQuery(&pageInfo); err != nil {
+		response.FailWithMessage("获取分页数据解析失败!", c)
+		return
+	}
+	user := framework.GetLoginUser(c)
+	if err, res := sysUserService.SelectUnallocatedList(&pageInfo, user); err != nil {
+		global.Logger.Error("获取分页信息失败!", zap.Error(err))
+		response.FailWithMessage("获取失败", c)
+	} else {
+		response.OkWithDetailed(res, "获取成功", c)
+	}
+}
