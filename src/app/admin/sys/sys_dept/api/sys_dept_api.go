@@ -140,7 +140,7 @@ func (api *SysDeptApi) ListExclude(c *gin.Context) {
 		return
 	} else {
 		var deleteIndexes []int // 用于记录要删除的元素索引
-		for i, deptView := range *sysDeptView {
+		for i, deptView := range sysDeptView {
 			parentIds := strings.Split(deptView.Ancestors, ",")
 			// 要把查询的这个节点排除掉
 			if deptView.Id == id || utils.Contains(parentIds, id) {
@@ -149,7 +149,7 @@ func (api *SysDeptApi) ListExclude(c *gin.Context) {
 		}
 		// 根据记录的索引删除元素
 		for i := len(deleteIndexes) - 1; i >= 0; i-- {
-			*sysDeptView = append((*sysDeptView)[:deleteIndexes[i]], (*sysDeptView)[deleteIndexes[i]+1:]...)
+			sysDeptView = append(sysDeptView[:deleteIndexes[i]], sysDeptView[deleteIndexes[i]+1:]...)
 		}
 		response.OkWithData(sysDeptView, c)
 	}

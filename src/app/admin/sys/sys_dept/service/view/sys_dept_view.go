@@ -48,8 +48,8 @@ type SysDeptPageView struct {
 }
 
 type SysDeptTreeView struct {
-	Id       string            `json:"id" form:"id"`
-	Label    string            `json:"label" form:"label"`
-	ParentId string            `json:"parentId" form:"parentId"`
-	Children []SysDeptTreeView `json:"children" form:"children"`
+	Id       string             `json:"id" form:"id"`
+	Label    string             `json:"label" form:"label"`
+	ParentId string             `json:"parentId" form:"parentId"`
+	Children []*SysDeptTreeView `json:"children" form:"children"`
 }

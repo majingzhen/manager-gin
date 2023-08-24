@@ -112,7 +112,7 @@ func (viewUtils *SysDeptViewUtils) Data2Tree(data *model.SysDept) (err error, vi
 	return
 }
 
-func (viewUtils *SysDeptViewUtils) Data2TreeList(dataList *[]model.SysDept) (err error, treeList *[]SysDeptTreeView) {
+func (viewUtils *SysDeptViewUtils) Data2TreeList(dataList []*model.SysDept) (err error, treeList []*SysDeptTreeView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDeptViewUtils Data2TreeList error: %v", e)
@@ -121,15 +121,15 @@ func (viewUtils *SysDeptViewUtils) Data2TreeList(dataList *[]model.SysDept) (err
 		}
 	}()
 	if dataList != nil {
-		var tmpList []SysDeptTreeView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, tree := viewUtils.Data2Tree(&data)
+		var tmpList []*SysDeptTreeView
+		for i := range dataList {
+			data := (dataList)[i]
+			err, tree := viewUtils.Data2Tree(data)
 			if err == nil {
-				tmpList = append(tmpList, *tree)
+				tmpList = append(tmpList, tree)
 			}
 		}
-		treeList = &tmpList
+		treeList = tmpList
 	}
 	return
 }
@@ -177,7 +177,7 @@ func (viewUtils *SysDeptViewUtils) Page2Data(pageInfo *SysDeptPageView) (err err
 	return
 }
 
-func (viewUtils *SysDeptViewUtils) View2DataList(viewList *[]SysDeptView) (err error, dataList *[]model.SysDept) {
+func (viewUtils *SysDeptViewUtils) View2DataList(viewList []*SysDeptView) (err error, dataList []*model.SysDept) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDeptViewUtils View2DataList error: %v", e)
@@ -186,20 +186,20 @@ func (viewUtils *SysDeptViewUtils) View2DataList(viewList *[]SysDeptView) (err e
 		}
 	}()
 	if viewList != nil {
-		var dataTmpList []model.SysDept
-		for i := range *viewList {
-			view := (*viewList)[i]
-			err, data := viewUtils.View2Data(&view)
+		var dataTmpList []*model.SysDept
+		for i := range viewList {
+			view := viewList[i]
+			err, data := viewUtils.View2Data(view)
 			if err == nil {
-				dataTmpList = append(dataTmpList, *data)
+				dataTmpList = append(dataTmpList, data)
 			}
 		}
-		dataList = &dataTmpList
+		dataList = dataTmpList
 	}
 	return
 }
 
-func (viewUtils *SysDeptViewUtils) Data2ViewList(dataList *[]model.SysDept) (err error, viewList *[]SysDeptView) {
+func (viewUtils *SysDeptViewUtils) Data2ViewList(dataList []*model.SysDept) (err error, viewList []*SysDeptView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDeptViewUtils Data2ViewList error: %v", e)
@@ -208,15 +208,15 @@ func (viewUtils *SysDeptViewUtils) Data2ViewList(dataList *[]model.SysDept) (err
 		}
 	}()
 	if dataList != nil {
-		var viewTmpList []SysDeptView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, view := viewUtils.Data2View(&data)
+		var viewTmpList []*SysDeptView
+		for i := range dataList {
+			data := dataList[i]
+			err, view := viewUtils.Data2View(data)
 			if err == nil {
-				viewTmpList = append(viewTmpList, *view)
+				viewTmpList = append(viewTmpList, view)
 			}
 		}
-		viewList = &viewTmpList
+		viewList = viewTmpList
 	}
 	return
 }

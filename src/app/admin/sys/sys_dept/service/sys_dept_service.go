@@ -163,13 +163,13 @@ func (service *SysDeptService) Page(pageInfo *view.SysDeptPageView) (err error, 
 }
 
 // List 获取SysDept列表
-func (service *SysDeptService) List(v *view.SysDeptView, userView *userView.SysUserView) (err error, views *[]view.SysDeptView) {
+func (service *SysDeptService) List(v *view.SysDeptView, userView *userView.SysUserView) (err error, views []*view.SysDeptView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
 	data.DataScopeSql = aspect.DataScopeFilter(userView, "d", "u", "")
-	var datas *[]model.SysDept
+	var datas []*model.SysDept
 	if err, datas = sysDeptDao.List(data); err != nil {
 		return err, nil
 	} else {
@@ -179,22 +179,22 @@ func (service *SysDeptService) List(v *view.SysDeptView, userView *userView.SysU
 }
 
 // SelectDeptTree 获取部门树
-func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView, sysUserView *userView.SysUserView) (error, *[]view.SysDeptTreeView) {
+func (service *SysDeptService) SelectDeptTree(v *view.SysDeptView, sysUserView *userView.SysUserView) (error, []*view.SysDeptTreeView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
 	data.DataScopeSql = aspect.DataScopeFilter(sysUserView, "d", "u", "")
-	var datas *[]model.SysDept
+	var datas []*model.SysDept
 	if err, datas = sysDeptDao.List(data); err != nil {
 		return err, nil
 	} else {
-		var trees *[]view.SysDeptTreeView
+		var trees []*view.SysDeptTreeView
 		if err, trees = viewUtils.Data2TreeList(datas); err != nil {
 			return err, nil
 		} else {
-			deptTrees := getDeptTree(*trees)
-			return nil, &deptTrees
+			deptTrees := getDeptTree(trees)
+			return nil, deptTrees
 		}
 
 	}
@@ -210,8 +210,8 @@ func (service *SysDeptService) SelectDeptTreeByRole(id string) (error, []string)
 }
 
 // getDeptTree 获取部门树
-func getDeptTree(departments []view.SysDeptTreeView) []view.SysDeptTreeView {
-	var rootDepts []view.SysDeptTreeView
+func getDeptTree(departments []*view.SysDeptTreeView) []*view.SysDeptTreeView {
+	var rootDepts []*view.SysDeptTreeView
 
 	// 遍历所有部门，找到根节点
 	for _, dept := range departments {
@@ -226,8 +226,8 @@ func getDeptTree(departments []view.SysDeptTreeView) []view.SysDeptTreeView {
 	return rootDepts
 }
 
-func getChildren(parentId string, departments []view.SysDeptTreeView) []view.SysDeptTreeView {
-	var children []view.SysDeptTreeView
+func getChildren(parentId string, departments []*view.SysDeptTreeView) []*view.SysDeptTreeView {
+	var children []*view.SysDeptTreeView
 
 	// 遍历所有部门，找到指定父节点的子部门
 	for _, dept := range departments {

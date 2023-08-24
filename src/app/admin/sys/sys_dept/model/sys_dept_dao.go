@@ -45,7 +45,7 @@ func (dao *SysDeptDao) Get(id string) (err error, sysDept *SysDept) {
 
 // Page 分页获取SysDept记录
 // Author
-func (dao *SysDeptDao) Page(param *SysDept, page *common.PageInfo) (err error, datas *[]SysDept, total int64) {
+func (dao *SysDeptDao) Page(param *SysDept, page *common.PageInfo) (err error, datas []*SysDept, total int64) {
 	// 创建model
 	model := global.GOrmDao.Model(&SysDept{})
 	// 如果有条件搜索 下方会自动创建搜索语句
@@ -61,16 +61,13 @@ func (dao *SysDeptDao) Page(param *SysDept, page *common.PageInfo) (err error, d
 	if page.OrderByColumn != "" {
 		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	var tmp []SysDept
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = &tmp
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(&datas).Error
 	return err, datas, total
 }
 
 // List 获取SysDept记录
 // Author
-func (dao *SysDeptDao) List(data *SysDept) (err error, datas *[]SysDept) {
-	var rows []SysDept
+func (dao *SysDeptDao) List(data *SysDept) (err error, datas []*SysDept) {
 	db := global.GOrmDao.Model(&SysDept{}).Table("sys_dept d")
 	// TODO 输入查询条件
 	if data.DeptName != "" {
@@ -89,8 +86,7 @@ func (dao *SysDeptDao) List(data *SysDept) (err error, datas *[]SysDept) {
 		db.Where(data.DataScopeSql)
 	}
 	db.Order("d.parent_id, d.order_num")
-	err = db.Find(&rows).Error
-	datas = &rows
+	err = db.Find(&datas).Error
 	return err, datas
 }
 
