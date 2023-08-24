@@ -60,6 +60,9 @@ func (service *SysDictTypeService) Update(id string, sysDictTypeView *view.SysDi
 // Get 根据id获取SysDictType记录
 // Author
 func (service *SysDictTypeService) Get(id string) (err error, sysDictTypeView *view.SysDictTypeView) {
+	if id == "" {
+		return nil, nil
+	}
 	err1, sysDictType := sysDictTypeDao.Get(id)
 	if err1 != nil {
 		return err1, nil

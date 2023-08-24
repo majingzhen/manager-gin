@@ -36,11 +36,15 @@ func (service *SysUserService) Create(sysUserView *view.SysUserView) (err error)
 	if err = sysUserDao.Create(*sysUser); err != nil {
 		return err
 	} else {
-		if err2 := insertUserRole(sysUser.Id, sysUserView.RoleIds); err2 != nil {
-			return err2
+		if sysUserView.RoleIds != nil && len(sysUserView.RoleIds) > 0 {
+			if err2 := insertUserRole(sysUser.Id, sysUserView.RoleIds); err2 != nil {
+				return err2
+			}
 		}
-		if err3 := insertUserPost(sysUser.Id, sysUserView.PostIds); err3 != nil {
-			return err3
+		if sysUserView.PostIds != nil && len(sysUserView.PostIds) > 0 {
+			if err3 := insertUserPost(sysUser.Id, sysUserView.PostIds); err3 != nil {
+				return err3
+			}
 		}
 	}
 	return nil
@@ -115,6 +119,9 @@ func (service *SysUserService) Update(id string, sysUserView *view.SysUserView) 
 // Get 根据id获取SysUser记录
 // Author
 func (service *SysUserService) Get(id string) (err error, sysUserView *view.SysUserView) {
+	if id == "" {
+		return nil, nil
+	}
 	err1, sysUser := sysUserDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -128,7 +135,6 @@ func (service *SysUserService) Get(id string) (err error, sysUserView *view.SysU
 			sysUserView.Dept = deptView
 		}
 		// 组装角色信息
-
 		if err3, roles := roleService.AssembleRolesByUserId(id); err3 != nil {
 			return err3, nil
 		} else {
@@ -154,12 +160,12 @@ func (service *SysUserService) Page(pageInfo *view.SysUserPageView, user *view.S
 		return err2, res
 	} else {
 		// 组装部门数据
-		for i := 0; i < len(*viewList); i++ {
-			deptId := (*viewList)[i].DeptId
+		for i := 0; i < len(viewList); i++ {
+			deptId := viewList[i].DeptId
 			if err3, deptView := deptService.Get(deptId); err3 != nil {
 				return err3, nil
 			} else {
-				(*viewList)[i].Dept = deptView
+				viewList[i].Dept = deptView
 			}
 		}
 		res = &common.PageInfo{
@@ -171,12 +177,12 @@ func (service *SysUserService) Page(pageInfo *view.SysUserPageView, user *view.S
 }
 
 // List 获取SysUser记录
-func (service *SysUserService) List(v *view.SysUserView) (err error, views *[]view.SysUserView) {
+func (service *SysUserService) List(v *view.SysUserView) (err error, views []*view.SysUserView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
-	var datas *[]model.SysUser
+	var datas []*model.SysUser
 	if err, datas = sysUserDao.List(data); err != nil {
 		return err, nil
 	} else {
@@ -201,11 +207,14 @@ func (service *SysUserService) GetByUserName(userName string) (err error, sysUse
 
 // CheckFieldUnique 校验字段是否唯一
 // Author
-func (service *SysUserService) CheckFieldUnique(fieldName, value string) error {
-	if err, count := sysUserDao.CheckFieldUnique(fieldName, value); err != nil {
+func (service *SysUserService) CheckFieldUnique(fieldName, value, id string) error {
+	if fieldName == "" || value == "" {
+		return nil
+	}
+	if err, data := sysUserDao.SelectByField(fieldName, value); err != nil {
 		return err
 	} else {
-		if count > 0 {
+		if data != nil && data.Id != id {
 			return errors.New("数据重复")
 		}
 		return nil
@@ -220,16 +229,15 @@ func (service *SysUserService) CheckUserDataScope(userId, loginUserId string) er
 			return err
 		}
 		// 数据权限控制
-		err, data := viewUtils.View2Data(userView)
+		// err, data := viewUtils.View2Data(userView)
 		if err != nil {
 			return err
 		}
 		filter := aspect.DataScopeFilter(userView, "d", "u", "")
-		param := &model.SysUser{
-			DataScopeSql: filter,
-			Id:           userId,
-		}
-		data.DataScopeSql = filter
+		param := &model.SysUser{}
+		param.Id = userId
+		param.DataScopeSql = filter
+		// data.DataScopeSql = filter
 		err, _ = sysUserDao.List(param)
 		if err != nil {
 			return err

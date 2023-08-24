@@ -76,6 +76,9 @@ func (service *SysPostService) Update(id string, sysPostView *view.SysPostView) 
 // Get 根据id获取SysPost记录
 // Author
 func (service *SysPostService) Get(id string) (err error, sysPostView *view.SysPostView) {
+	if id == "" {
+		return nil, nil
+	}
 	err1, sysPost := sysPostDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -109,12 +112,12 @@ func (service *SysPostService) Page(pageInfo *view.SysPostPageView) (err error, 
 
 // List 获取SysPost列表
 // Author
-func (service *SysPostService) List(v *view.SysPostView) (err error, views *[]view.SysPostView) {
+func (service *SysPostService) List(v *view.SysPostView) (err error, views []*view.SysPostView) {
 	err, data := viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
 	}
-	var datas *[]model.SysPost
+	var datas []*model.SysPost
 	if err, datas = sysPostDao.List(data); err != nil {
 		return err, nil
 	} else {
@@ -149,7 +152,7 @@ func (service *SysPostService) CheckPostNameUnique(postName string) error {
 	return nil
 }
 
-func (service *SysPostService) SelectPostAll() (err error, views *[]view.SysPostView) {
+func (service *SysPostService) SelectPostAll() (err error, views []*view.SysPostView) {
 	err, views = service.List(&view.SysPostView{})
 	return
 }
@@ -159,14 +162,14 @@ func (service *SysPostService) SelectPostIdListByUserId(userId string) (err erro
 	if err != nil {
 		return err, nil
 	}
-	for _, data := range *dataList {
+	for _, data := range dataList {
 		ids = append(ids, data.Id)
 	}
 	return
 }
 
 // SelectPostListByUserId 根据用户ID查询岗位
-func (service *SysPostService) SelectPostListByUserId(userId string) (err error, views *[]view.SysPostView) {
+func (service *SysPostService) SelectPostListByUserId(userId string) (err error, views []*view.SysPostView) {
 	err, dataList := sysPostDao.SelectPostListByUserId(userId)
 	if err != nil {
 		return err, nil

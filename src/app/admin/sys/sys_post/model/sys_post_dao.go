@@ -45,7 +45,7 @@ func (dao *SysPostDao) Get(id string) (err error, sysPost *SysPost) {
 
 // Page 分页获取SysPost记录
 // Author
-func (dao *SysPostDao) Page(param *SysPost, page *common.PageInfo) (err error, datas *[]SysPost, total int64) {
+func (dao *SysPostDao) Page(param *SysPost, page *common.PageInfo) (err error, datas []*SysPost, total int64) {
 	// 创建model
 	model := global.GOrmDao.Model(&SysPost{})
 	// 如果有条件搜索 下方会自动创建搜索语句
@@ -61,16 +61,13 @@ func (dao *SysPostDao) Page(param *SysPost, page *common.PageInfo) (err error, d
 	if page.OrderByColumn != "" {
 		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	var tmp []SysPost
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = &tmp
+	err = model.Limit(page.Limit).Offset(page.Offset).Find(datas).Error
 	return err, datas, total
 }
 
 // List 获取SysPost记录
 // Author
-func (dao *SysPostDao) List(data *SysPost) (err error, datas *[]SysPost) {
-	var rows []SysPost
+func (dao *SysPostDao) List(data *SysPost) (err error, datas []*SysPost) {
 	db := global.GOrmDao.Model(&SysPost{})
 	if data.PostName != "" {
 		db.Where("post_name like ?", "%"+data.PostName+"%")
@@ -82,8 +79,7 @@ func (dao *SysPostDao) List(data *SysPost) (err error, datas *[]SysPost) {
 		db.Where("status = ?", data.Status)
 	}
 	db.Order("create_time desc")
-	err = db.Find(&rows).Error
-	datas = &rows
+	err = db.Find(&datas).Error
 	return err, datas
 }
 
@@ -109,13 +105,13 @@ func (dao *SysPostDao) CheckPostExistUser(postId string) (err error, count int64
 }
 
 // SelectPostListByUserId 根据用户ID查询岗位
-func (dao *SysPostDao) SelectPostListByUserId(userId string) (error, *[]SysPost) {
+func (dao *SysPostDao) SelectPostListByUserId(userId string) (error, []*SysPost) {
 	db := global.GOrmDao.Table("sys_post p")
 	db.Joins("left join sys_user_post up on p.id = up.post_id")
 	db.Joins("left join sys_user u on u.id = up.user_id")
 	db.Where("u.id = ?", userId)
 	db.Select("distinct p.id, p.post_code, p.post_name, p.post_sort, p.status, p.create_by, p.create_time, p.remark ")
-	var res []SysPost
+	var res []*SysPost
 	err := db.Find(&res).Error
-	return err, &res
+	return err, res
 }

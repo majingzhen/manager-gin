@@ -95,6 +95,9 @@ func (service *SysMenuService) Update(id string, view *view.SysMenuView) (err er
 // Get 根据id获取SysMenu记录
 // Author
 func (service *SysMenuService) Get(id string) (err error, view *view.SysMenuView) {
+	if id == "" {
+		return nil, nil
+	}
 	err1, sysMenu := sysMenuDao.Get(id)
 	if err1 != nil {
 		return err1, nil
@@ -136,12 +139,12 @@ func (service *SysMenuService) GetMenuPermission(user *userView.SysUserView) (er
 		perms = append(perms, "*:*:*")
 	} else {
 		if user.Roles != nil {
-			for _, role := range *user.Roles {
+			for _, role := range user.Roles {
 				err1, rolePerms := sysMenuDao.GetMenuPermissionByRoleId(role.Id)
 				if err1 != nil {
 					return err1, nil
 				}
-				role.Permissions = &rolePerms
+				role.Permissions = rolePerms
 				perms = append(perms, rolePerms...)
 			}
 		} else {

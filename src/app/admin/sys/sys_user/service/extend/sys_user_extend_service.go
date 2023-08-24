@@ -12,7 +12,7 @@ var sysUserDao = model.SysUserDaoApp
 var viewUtils = view.SysUserViewUtilsApp
 
 // GetByDeptId 根据部门id获取SysUser记录
-func (service *SysUserExtendService) GetByDeptId(deptId string) (err error, sysUserView *[]view.SysUserView) {
+func (service *SysUserExtendService) GetByDeptId(deptId string) (err error, sysUserView []*view.SysUserView) {
 	err1, sysUser := sysUserDao.GetByDeptId(deptId)
 	if err1 != nil {
 		return err1, nil

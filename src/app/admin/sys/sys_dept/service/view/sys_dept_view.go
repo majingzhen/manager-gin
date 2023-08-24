@@ -18,7 +18,6 @@ type SysDeptView struct {
 	Phone      string         `json:"phone" form:"phone"`
 	Email      string         `json:"email" form:"email"`
 	Status     string         `json:"status" form:"status"`
-	DeletedAt  string         `json:"deletedAt" form:"deletedAt"`
 	CreateBy   string         `json:"createBy" form:"createBy"`
 	CreateTime string         `json:"createTime" form:"createTime"`
 	UpdateBy   string         `json:"updateBy" form:"updateBy"`
@@ -37,7 +36,6 @@ type SysDeptPageView struct {
 	Phone      string `json:"phone" form:"phone"`
 	Email      string `json:"email" form:"email"`
 	Status     string `json:"status" form:"status"`
-	DeletedAt  string `json:"deletedAt" form:"deletedAt"`
 	CreateBy   string `json:"createBy" form:"createBy"`
 	CreateTime string `json:"createTime" form:"createTime"`
 	UpdateBy   string `json:"updateBy" form:"updateBy"`

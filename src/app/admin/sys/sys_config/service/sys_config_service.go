@@ -59,6 +59,9 @@ func (service *SysConfigService) Update(id string, sysConfigView *view.SysConfig
 // Get 根据id获取SysConfig记录
 // Author
 func (service *SysConfigService) Get(id string) (err error, sysConfigView *view.SysConfigView) {
+	if id == "" {
+		return nil, nil
+	}
 	err1, sysConfig := sysConfigDao.Get(id)
 	if err1 != nil {
 		return err1, nil

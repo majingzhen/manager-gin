@@ -147,7 +147,7 @@ func (api *SysRoleApi) List(c *gin.Context) {
 	}
 	// 判断是否需要根据用户获取数据
 	// userId := framework.GetLoginUserId(c)
-	if err, res := sysRoleService.List(&view); err != nil {
+	if err, res := sysRoleService.List(&view, framework.GetLoginUser(c)); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

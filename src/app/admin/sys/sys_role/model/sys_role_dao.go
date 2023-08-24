@@ -52,7 +52,7 @@ func (dao *SysRoleDao) Get(id string) (err error, sysRole *SysRole) {
 
 // Page 分页获取SysRole记录
 // Author
-func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, datas *[]SysRole, total int64) {
+func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, datas []*SysRole, total int64) {
 	// 创建model
 	model := global.GOrmDao.Table("sys_role r")
 	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
@@ -84,16 +84,16 @@ func (dao *SysRoleDao) Page(param *SysRole, page *common.PageInfo) (err error, d
 	if page.OrderByColumn != "" {
 		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	var tmp []SysRole
+	var tmp []*SysRole
 	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = &tmp
+	datas = tmp
 	return err, datas, total
 }
 
 // List 获取SysRole记录
 // Author
-func (dao *SysRoleDao) List(data *SysRole) (err error, datas *[]SysRole) {
-	var rows []SysRole
+func (dao *SysRoleDao) List(data *SysRole) (err error, datas []*SysRole) {
+	var rows []*SysRole
 	model := global.GOrmDao.Table("sys_role r")
 	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
 	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
@@ -116,19 +116,19 @@ func (dao *SysRoleDao) List(data *SysRole) (err error, datas *[]SysRole) {
 	}
 	model.Order("create_time desc")
 	err = model.Find(&rows).Error
-	datas = &rows
+	datas = rows
 	return err, datas
 }
 
 // GetRoleByUserId 根据用户获取角色集合
-func (dao *SysRoleDao) GetRoleByUserId(userId string) (err error, roles *[]SysRole) {
-	var tmp []SysRole
+func (dao *SysRoleDao) GetRoleByUserId(userId string) (err error, roles []*SysRole) {
+	var tmp []*SysRole
 	model := global.GOrmDao.Table("sys_role r")
 	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
 	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
 	model.Where("ur.user_id = ? and r.status = ?", userId, common.STATUS_NORMAL)
 	err = model.Find(&tmp).Error
-	roles = &tmp
+	roles = tmp
 	return err, roles
 }
 

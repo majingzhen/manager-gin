@@ -51,8 +51,6 @@ func (viewUtils *SysUserViewUtils) Data2View(data *model.SysUser) (err error, vi
 
 	tmp.Status = data.Status
 
-	tmp.DeletedAt = utils.Time2Str(data.DeletedAt)
-
 	tmp.LoginIp = data.LoginIp
 
 	tmp.LoginDate = utils.Time2Str(data.LoginDate)
@@ -103,8 +101,6 @@ func (viewUtils *SysUserViewUtils) View2Data(view *SysUserView) (err error, data
 	tmp.Salt = view.Salt
 
 	tmp.Status = view.Status
-
-	tmp.DeletedAt = utils.Str2Time(view.DeletedAt)
 
 	tmp.LoginIp = view.LoginIp
 
@@ -177,7 +173,7 @@ func (viewUtils *SysUserViewUtils) Page2Data(pageInfo *SysUserPageView) (err err
 	return
 }
 
-func (viewUtils *SysUserViewUtils) View2DataList(viewList *[]SysUserView) (err error, dataList *[]model.SysUser) {
+func (viewUtils *SysUserViewUtils) View2DataList(viewList []*SysUserView) (err error, dataList []*model.SysUser) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysUserViewUtils View2DataList error: %v", e)
@@ -186,20 +182,20 @@ func (viewUtils *SysUserViewUtils) View2DataList(viewList *[]SysUserView) (err e
 		}
 	}()
 	if viewList != nil {
-		var dataTmpList []model.SysUser
-		for i := range *viewList {
-			view := (*viewList)[i]
-			err, data := viewUtils.View2Data(&view)
+		var dataTmpList []*model.SysUser
+		for i := range viewList {
+			view := (viewList)[i]
+			err, data := viewUtils.View2Data(view)
 			if err == nil {
-				dataTmpList = append(dataTmpList, *data)
+				dataTmpList = append(dataTmpList, data)
 			}
 		}
-		dataList = &dataTmpList
+		dataList = dataTmpList
 	}
 	return
 }
 
-func (viewUtils *SysUserViewUtils) Data2ViewList(dataList *[]model.SysUser) (err error, viewList *[]SysUserView) {
+func (viewUtils *SysUserViewUtils) Data2ViewList(dataList []*model.SysUser) (err error, viewList []*SysUserView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysUserViewUtils Data2ViewList error: %v", e)
@@ -208,15 +204,15 @@ func (viewUtils *SysUserViewUtils) Data2ViewList(dataList *[]model.SysUser) (err
 		}
 	}()
 	if dataList != nil {
-		var viewTmpList []SysUserView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, view := viewUtils.Data2View(&data)
+		var viewTmpList []*SysUserView
+		for i := range dataList {
+			data := (dataList)[i]
+			err, view := viewUtils.Data2View(data)
 			if err == nil {
-				viewTmpList = append(viewTmpList, *view)
+				viewTmpList = append(viewTmpList, view)
 			}
 		}
-		viewList = &viewTmpList
+		viewList = viewTmpList
 	}
 	return
 }

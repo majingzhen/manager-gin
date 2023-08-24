@@ -7,14 +7,14 @@
 package model
 
 import (
+	"manager-gin/src/global"
 	"time"
 )
 
 // SysUser 结构体
 
 type SysUser struct {
-	Id string `json:"id" form:"id" gorm:"column:id;comment:用户ID;"`
-
+	global.GvaModel
 	DeptId string `json:"orgId" form:"orgId" gorm:"column:dept_id;comment:部门ID;"`
 
 	UserName string `json:"userName" form:"userName" gorm:"column:user_name;comment:用户账号;"`
@@ -37,19 +37,9 @@ type SysUser struct {
 
 	Status string `json:"status" form:"status" gorm:"column:status;comment:帐号状态（0正常 1停用）;"`
 
-	DeletedAt time.Time `json:"deletedAt" form:"deletedAt" gorm:"column:deleted_at;comment:删除标志;"`
-
 	LoginIp string `json:"loginIp" form:"loginIp" gorm:"column:login_ip;comment:最后登录IP;"`
 
-	LoginDate time.Time `json:"loginDate" form:"loginDate" gorm:"column:login_date;comment:最后登录时间;"`
-
-	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
-
-	CreateTime time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
-
-	UpdateBy string `json:"updateBy" form:"updateBy" gorm:"column:update_by;comment:更新者;"`
-
-	UpdateTime time.Time `json:"updateTime" form:"updateTime" gorm:"column:update_time;comment:更新时间;"`
+	LoginDate *time.Time `json:"loginDate" form:"loginDate" gorm:"column:login_date;comment:最后登录时间"`
 
 	Remark string `json:"remark" form:"remark" gorm:"column:remark;comment:备注;"`
 

@@ -52,7 +52,7 @@ func (dao *SysUserDao) Get(id string) (err error, sysUser *SysUser) {
 
 // Page 分页获取SysUser记录
 // Author
-func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, datas *[]SysUser, total int64) {
+func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, datas []*SysUser, total int64) {
 	// 创建model
 	model := global.GOrmDao.Table("sys_user u")
 	model.Select("distinct u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
@@ -85,16 +85,16 @@ func (dao *SysUserDao) Page(param *SysUser, page *common.PageInfo) (err error, d
 	if page.OrderByColumn != "" {
 		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
 	}
-	var tmp []SysUser
+	var tmp []*SysUser
 	err = model.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = &tmp
+	datas = tmp
 	return err, datas, total
 }
 
 // List 获取SysUser记录
 // Author
-func (dao *SysUserDao) List(data *SysUser) (err error, datas *[]SysUser) {
-	var rows []SysUser
+func (dao *SysUserDao) List(data *SysUser) (err error, datas []*SysUser) {
+	var rows []*SysUser
 	model := global.GOrmDao.Table("sys_user u")
 	model.Select("distinct u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
 	model.Joins("left join sys_dept d on u.dept_id = d.id")
@@ -118,7 +118,7 @@ func (dao *SysUserDao) List(data *SysUser) (err error, datas *[]SysUser) {
 	}
 	model.Order("create_time desc")
 	err = model.Find(&rows).Error
-	datas = &rows
+	datas = rows
 	return err, datas
 }
 
@@ -129,7 +129,7 @@ func (dao *SysUserDao) GetByUserName(name string) (err error, sysUser *SysUser) 
 }
 
 // GetByDeptId 根据部门id获取SysUser记录
-func (dao *SysUserDao) GetByDeptId(deptId string) (err error, sysUser *[]SysUser) {
+func (dao *SysUserDao) GetByDeptId(deptId string) (err error, sysUser []*SysUser) {
 	err = global.GOrmDao.Where("dept_id = ?", deptId).Find(&sysUser).Error
 	return
 }
@@ -138,4 +138,17 @@ func (dao *SysUserDao) CheckFieldUnique(fieldName, value string) (error, int64) 
 	var count int64
 	err := global.GOrmDao.Model(&SysUser{}).Where(fieldName+" = ?", value).Count(&count).Error
 	return err, count
+}
+
+func (dao *SysUserDao) SelectByField(fieldName string, value string) (error, *SysUser) {
+	var users []*SysUser
+	if err := global.GOrmDao.Model(&SysUser{}).Where(fieldName+" = ?", value).Find(&users).Error; err != nil {
+		return err, nil
+	} else {
+		if users != nil && len(users) > 0 {
+			return nil, users[0]
+		}
+		return nil, nil
+	}
+
 }

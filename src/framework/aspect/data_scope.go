@@ -20,19 +20,23 @@ const (
 	DATA_SCOPE_SELF = "5"
 )
 
+// DataScopeFilter 数据权限过滤
 func DataScopeFilter(user *view.SysUserView, deptAlias string, userAlias string, permission string) string {
 	// 如果是超级管理员，则不过滤数据
+	if user == nil {
+		return ""
+	}
 	if user.Id == common.SYSTEM_ROLE_ADMIN_ID {
 		return ""
 	}
 	sqlString := strings.Builder{}
 	conditions := make([]string, 0)
-	for _, role := range *user.Roles {
+	for _, role := range user.Roles {
 		dataScope := role.DataScope
 		if dataScope != DATA_SCOPE_CUSTOM && contains(conditions, dataScope) {
 			continue
 		}
-		if permission != "" && role.Permissions != nil && !contains(*role.Permissions, permission) {
+		if permission != "" && role.Permissions != nil && !contains(role.Permissions, permission) {
 			continue
 		}
 		switch dataScope {

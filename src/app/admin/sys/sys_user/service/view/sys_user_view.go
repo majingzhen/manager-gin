@@ -27,7 +27,6 @@ type SysUserView struct {
 	Password    string                  `json:"password" form:"password"`
 	Salt        string                  `json:"salt" form:"salt"`
 	Status      string                  `json:"status" form:"status"`
-	DeletedAt   string                  `json:"deletedAt" form:"deletedAt"`
 	LoginIp     string                  `json:"loginIp" form:"loginIp"`
 	LoginDate   string                  `json:"loginDate" form:"loginDate"`
 	CreateBy    string                  `json:"createBy" form:"createBy"`
@@ -35,7 +34,7 @@ type SysUserView struct {
 	UpdateBy    string                  `json:"updateBy" form:"updateBy"`
 	UpdateTime  string                  `json:"updateTime" form:"updateTime"`
 	Remark      string                  `json:"remark" form:"remark"`
-	Roles       *[]roleView.SysRoleView `json:"roles"`
+	Roles       []*roleView.SysRoleView `json:"roles"`
 	Dept        *deptView.SysDeptView   `json:"dept"`
 	RoleIds     []string                `json:"roleIds" form:"roleIds"`
 	PostIds     []string                `json:"postIds" form:"postIds"`
@@ -55,7 +54,6 @@ type SysUserPageView struct {
 	Password    string `json:"password" form:"password"`
 	Salt        string `json:"salt" form:"salt"`
 	Status      string `json:"status" form:"status"`
-	DeletedAt   string `json:"deletedAt" form:"deletedAt"`
 	LoginIp     string `json:"loginIp" form:"loginIp"`
 	LoginDate   string `json:"loginDate" form:"loginDate"`
 	CreateBy    string `json:"createBy" form:"createBy"`
@@ -74,7 +72,7 @@ type SysUserPageView struct {
 type SysUserInfoView struct {
 	SysUserView
 	RoleIds []string                `json:"roleIds" form:"roleIds"`
-	Roles   *[]roleView.SysRoleView `json:"roles" form:"roles"`
+	Roles   []*roleView.SysRoleView `json:"roles" form:"roles"`
 	PostIds []string                `json:"postIds" form:"postIds"`
-	Posts   *[]postView.SysPostView `json:"posts" form:"posts"`
+	Posts   []*postView.SysPostView `json:"posts" form:"posts"`
 }

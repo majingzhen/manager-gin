@@ -121,7 +121,7 @@ func (viewUtils *SysPostViewUtils) Page2Data(pageInfo *SysPostPageView) (err err
 	return
 }
 
-func (viewUtils *SysPostViewUtils) View2DataList(viewList *[]SysPostView) (err error, dataList *[]model.SysPost) {
+func (viewUtils *SysPostViewUtils) View2DataList(viewList []*SysPostView) (err error, dataList []*model.SysPost) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysPostViewUtils View2DataList error: %v", e)
@@ -130,20 +130,20 @@ func (viewUtils *SysPostViewUtils) View2DataList(viewList *[]SysPostView) (err e
 		}
 	}()
 	if viewList != nil {
-		var dataTmpList []model.SysPost
-		for i := range *viewList {
-			view := (*viewList)[i]
-			err, data := viewUtils.View2Data(&view)
+		var dataTmpList []*model.SysPost
+		for i := range viewList {
+			view := (viewList)[i]
+			err, data := viewUtils.View2Data(view)
 			if err == nil {
-				dataTmpList = append(dataTmpList, *data)
+				dataTmpList = append(dataTmpList, data)
 			}
 		}
-		dataList = &dataTmpList
+		dataList = dataTmpList
 	}
 	return
 }
 
-func (viewUtils *SysPostViewUtils) Data2ViewList(dataList *[]model.SysPost) (err error, viewList *[]SysPostView) {
+func (viewUtils *SysPostViewUtils) Data2ViewList(dataList []*model.SysPost) (err error, viewList []*SysPostView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysPostViewUtils Data2ViewList error: %v", e)
@@ -152,15 +152,15 @@ func (viewUtils *SysPostViewUtils) Data2ViewList(dataList *[]model.SysPost) (err
 		}
 	}()
 	if dataList != nil {
-		var viewTmpList []SysPostView
-		for i := range *dataList {
-			data := (*dataList)[i]
-			err, view := viewUtils.Data2View(&data)
+		var viewTmpList []*SysPostView
+		for i := range dataList {
+			data := (dataList)[i]
+			err, view := viewUtils.Data2View(data)
 			if err == nil {
-				viewTmpList = append(viewTmpList, *view)
+				viewTmpList = append(viewTmpList, view)
 			}
 		}
-		viewList = &viewTmpList
+		viewList = viewTmpList
 	}
 	return
 }

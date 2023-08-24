@@ -64,7 +64,7 @@ func (systemApi *SystemApi) Login(c *gin.Context) {
 	} else {
 		// 判断是否分配角色
 		_, sysUserView := sysUserService.Get(userView.Id)
-		if sysUserView.Roles == nil || len(*sysUserView.Roles) == 0 {
+		if sysUserView.Roles == nil || len(sysUserView.Roles) == 0 {
 			global.Logger.Error("用户不存在", zap.Error(err))
 			response.FailWithMessage("用户不存在", c)
 			return

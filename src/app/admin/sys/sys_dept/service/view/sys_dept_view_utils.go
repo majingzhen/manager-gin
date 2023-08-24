@@ -45,8 +45,6 @@ func (viewUtils *SysDeptViewUtils) Data2View(data *model.SysDept) (err error, vi
 
 	tmp.Status = data.Status
 
-	tmp.DeletedAt = utils.Time2Str(data.DeletedAt)
-
 	tmp.CreateBy = data.CreateBy
 
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
@@ -85,8 +83,6 @@ func (viewUtils *SysDeptViewUtils) View2Data(view *SysDeptView) (err error, data
 	tmp.Email = view.Email
 
 	tmp.Status = view.Status
-
-	tmp.DeletedAt = utils.Str2Time(view.DeletedAt)
 
 	tmp.CreateBy = view.CreateBy
 

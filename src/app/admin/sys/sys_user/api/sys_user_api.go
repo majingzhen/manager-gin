@@ -36,15 +36,15 @@ func (api *SysUserApi) Create(c *gin.Context) {
 	var sysUserView view.SysUserView
 	_ = c.ShouldBindJSON(&sysUserView)
 	// 校验参数
-	if err := sysUserService.CheckFieldUnique("user_name", sysUserView.UserName); err == nil {
+	if err := sysUserService.CheckFieldUnique("user_name", sysUserView.UserName, ""); err != nil {
 		response.FailWithMessage("登录账号已存在", c)
 		return
 	}
-	if err := sysUserService.CheckFieldUnique("phone_number", sysUserView.PhoneNumber); err == nil {
+	if err := sysUserService.CheckFieldUnique("phone_number", sysUserView.PhoneNumber, ""); err != nil {
 		response.FailWithMessage("手机号码已存在", c)
 		return
 	}
-	if err := sysUserService.CheckFieldUnique("email", sysUserView.Email); err == nil {
+	if err := sysUserService.CheckFieldUnique("email", sysUserView.Email, ""); err != nil {
 		response.FailWithMessage("邮箱账号已存在", c)
 		return
 	}
@@ -101,15 +101,15 @@ func (api *SysUserApi) Update(c *gin.Context) {
 		return
 	}
 	// 校验参数
-	if err := sysUserService.CheckFieldUnique("user_name", sysUserView.UserName); err == nil {
+	if err := sysUserService.CheckFieldUnique("user_name", sysUserView.UserName, sysUserView.Id); err != nil {
 		response.FailWithMessage("登录账号已存在", c)
 		return
 	}
-	if err := sysUserService.CheckFieldUnique("phone_number", sysUserView.PhoneNumber); err == nil {
+	if err := sysUserService.CheckFieldUnique("phone_number", sysUserView.PhoneNumber, sysUserView.Id); err != nil {
 		response.FailWithMessage("手机号码已存在", c)
 		return
 	}
-	if err := sysUserService.CheckFieldUnique("email", sysUserView.Email); err == nil {
+	if err := sysUserService.CheckFieldUnique("email", sysUserView.Email, sysUserView.Id); err != nil {
 		response.FailWithMessage("邮箱账号已存在", c)
 		return
 	}
@@ -128,24 +128,17 @@ func (api *SysUserApi) Update(c *gin.Context) {
 // @Router /sysUser/get [get]
 func (api *SysUserApi) Get(c *gin.Context) {
 	var sysUserInfoView = new(view.SysUserInfoView)
+	err, roles := roleService.SelectRoleAll(framework.GetLoginUser(c))
+	if err == nil {
+		removeAdminRole(&roles)
+		sysUserInfoView.Roles = roles
+	}
+	err, views := postService.SelectPostAll()
+	if err == nil {
+		sysUserInfoView.Posts = views
+	}
 	id := c.Param("id")
 	if id != "" {
-		err, roles := roleService.SelectRolesByUserId(id)
-		if err == nil {
-			// 剔除超级管理员角色
-			//for i := 0; i < len(*roles); i++ {
-			//	if (*roles)[i].Id == common.SYSTEM_ROLE_ADMIN_ID {
-			//		*roles = append((*roles)[:i], (*roles)[i+1:]...)
-			//		break
-			//	}
-			//}
-			removeAdminRole(roles)
-			sysUserInfoView.Roles = roles
-		}
-		err, views := postService.SelectPostListByUserId(id)
-		if err == nil {
-			sysUserInfoView.Posts = views
-		}
 		if err1, sysUserView := sysUserService.Get(id); err1 != nil {
 			global.Logger.Error("查询失败!", zap.Error(err1))
 			response.OkWithMessage(err1.Error(), c)
@@ -160,7 +153,7 @@ func (api *SysUserApi) Get(c *gin.Context) {
 			}
 			sysUserInfoView.PostIds = postIds
 			var roleIds []string
-			for _, roleView := range *sysUserView.Roles {
+			for _, roleView := range sysUserView.Roles {
 				if roleView.Id != common.SYSTEM_ROLE_ADMIN_ID {
 					roleIds = append(roleIds, roleView.Id)
 				}
@@ -277,7 +270,7 @@ func (api *SysUserApi) GetAuthRole(c *gin.Context) {
 		global.Logger.Error("获取数据失败!", zap.Error(err1))
 		response.FailWithMessage("获取失败", c)
 	} else {
-		removeAdminRole(res)
+		removeAdminRole(&res)
 		response.OkWithData(gin.H{
 			"user":  userView,
 			"roles": res,
@@ -315,7 +308,7 @@ func (api *SysUserApi) AuthRole(c *gin.Context) {
 }
 
 // 剔除超级管理员
-func removeAdminRole(roles *[]roleView.SysRoleView) {
+func removeAdminRole(roles *[]*roleView.SysRoleView) {
 	for i := 0; i < len(*roles); i++ {
 		if (*roles)[i].Id == common.SYSTEM_ROLE_ADMIN_ID {
 			*roles = append((*roles)[:i], (*roles)[i+1:]...)

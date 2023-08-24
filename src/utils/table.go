@@ -16,9 +16,9 @@ func ConvertDbTypeToGoType(dbType string) string {
 	case "bool":
 		return "bool"
 	case "datetime":
-		return "time.Time"
+		return "*time.Time"
 	case "date":
-		return "time.Time"
+		return "*time.Time"
 	default:
 		return "interface{}"
 	}

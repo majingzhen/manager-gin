@@ -129,6 +129,9 @@ func updateDeptChildren(id, newAncestors, oldAncestors string) (err error) {
 // Get 根据id获取SysDept记录
 // Author
 func (service *SysDeptService) Get(id string) (err error, sysDeptView *view.SysDeptView) {
+	if id == "" {
+		return nil, nil
+	}
 	err1, sysDept := sysDeptDao.Get(id)
 	if err1 != nil {
 		return err1, nil

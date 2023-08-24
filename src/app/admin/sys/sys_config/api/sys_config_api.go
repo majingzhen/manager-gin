@@ -156,6 +156,6 @@ func (api *SysConfigApi) SelectConfigByKey(c *gin.Context) {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		response.OkWithData(sysConfigView, c)
+		response.OkWithData(sysConfigView.ConfigValue, c)
 	}
 }
