@@ -166,7 +166,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.userIds = selection.map(item => item.userId)
+      this.userIds = selection.map(item => item.id)
       this.multiple = !selection.length
     },
     /** 打开授权用户表弹窗 */
@@ -177,7 +177,7 @@ export default {
     cancelAuthUser(row) {
       const roleId = this.queryParams.roleId;
       this.$modal.confirm('确认要取消该用户"' + row.userName + '"角色吗？').then(function() {
-        return authUserCancel({ userId: row.userId, roleId: roleId });
+        return authUserCancel({ userId: row.id, roleId: roleId });
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("取消授权成功");

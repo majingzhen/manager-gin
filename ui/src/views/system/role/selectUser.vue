@@ -98,13 +98,13 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.userIds = selection.map(item => item.userId);
+      this.userIds = selection.map(item => item.id);
     },
     // 查询表数据
     getList() {
       unallocatedUserList(this.queryParams).then(res => {
-        this.userList = res.rows;
-        this.total = res.total;
+        this.userList = res.data.rows;
+        this.total = res.data.total;
       });
     },
     /** 搜索按钮操作 */
@@ -127,7 +127,7 @@ export default {
       }
       authUserSelectAll({ roleId: roleId, userIds: userIds }).then(res => {
         this.$modal.msgSuccess(res.msg);
-        if (res.code === 200) {
+        if (res.code === 0) {
           this.visible = false;
           this.$emit("ok");
         }

@@ -206,3 +206,53 @@ func (api *SysRoleApi) DataScope(c *gin.Context) {
 		response.OkWithMessage("更新成功", c)
 	}
 }
+
+// CancelAuthUser 取消授权用户
+// @Summary 取消授权用户
+// @Router /sysRole/cancelAuthUser [put]
+func (api *SysRoleApi) CancelAuthUser(c *gin.Context) {
+	var view view.SysUserRoleView
+	_ = c.ShouldBindJSON(&view)
+	if err := sysRoleService.CancelAuthUser(&view); err != nil {
+		global.Logger.Error("取消授权失败!", zap.Error(err))
+		response.FailWithMessage("取消授权失败", c)
+	} else {
+		response.OkWithMessage("取消授权成功", c)
+	}
+}
+
+// BatchCancelAuthUser 批量取消授权用户
+// @Summary 批量取消授权用户
+// @Router /sysRole/batchCancelAuthUser [put]
+func (api *SysRoleApi) BatchCancelAuthUser(c *gin.Context) {
+	userId := c.Query("userIds")
+	roleId := c.Query("roleId")
+	if userId == "" || roleId == "" {
+		response.FailWithMessage("参数解析错误", c)
+	}
+	userIds := strings.Split(userId, ",")
+	if err := sysRoleService.BatchCancelAuthUser(roleId, userIds); err != nil {
+		global.Logger.Error("批量取消授权失败!", zap.Error(err))
+		response.FailWithMessage("批量取消授权失败", c)
+	} else {
+		response.OkWithMessage("批量取消授权成功", c)
+	}
+}
+
+// BatchSelectAuthUser 批量授权用户
+// @Summary 授权用户
+// @Router /sysRole/batchSelectAuthUser [put]
+func (api *SysRoleApi) BatchSelectAuthUser(c *gin.Context) {
+	userId := c.Query("userIds")
+	roleId := c.Query("roleId")
+	if userId == "" || roleId == "" {
+		response.FailWithMessage("参数解析错误", c)
+	}
+	userIds := strings.Split(userId, ",")
+	if err := sysRoleService.BatchSelectAuthUser(roleId, userIds); err != nil {
+		global.Logger.Error("批量授权失败!", zap.Error(err))
+		response.FailWithMessage("批量授权失败", c)
+	} else {
+		response.OkWithMessage("批量授权成功", c)
+	}
+}

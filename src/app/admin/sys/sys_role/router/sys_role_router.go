@@ -21,11 +21,15 @@ func (r *SysRoleRouter) InitSysRoleRouter(Router *gin.RouterGroup) {
 	sysRoleRouter := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
 	sysRoleRouterWithoutRecord := Router.Group("sysRole").Use(middleware.JWTAuthFilter())
 	{
-		sysRoleRouter.POST("create", sysRoleApi.Create)            // 新建SysRole
-		sysRoleRouter.DELETE("delete/:ids", sysRoleApi.Delete)     // 删除SysRole
-		sysRoleRouter.POST("update", sysRoleApi.Update)            // 更新SysRole
-		sysRoleRouter.PUT("changeStatus", sysRoleApi.ChangeStatus) // 更新SysRole状态
-		sysRoleRouter.PUT("dataScope", sysRoleApi.DataScope)       // 更新SysRole状态
+		sysRoleRouter.POST("create", sysRoleApi.Create)                      // 新建SysRole
+		sysRoleRouter.DELETE("delete/:ids", sysRoleApi.Delete)               // 删除SysRole
+		sysRoleRouter.POST("update", sysRoleApi.Update)                      // 更新SysRole
+		sysRoleRouter.PUT("changeStatus", sysRoleApi.ChangeStatus)           // 更新SysRole状态
+		sysRoleRouter.PUT("dataScope", sysRoleApi.DataScope)                 // 数据授权
+		sysRoleRouter.PUT("cancelAuth", sysRoleApi.CancelAuthUser)           // 取消授权
+		sysRoleRouter.PUT("batchCancelAuth", sysRoleApi.BatchCancelAuthUser) // 批量取消授权
+		sysRoleRouter.PUT("batchSelectAuth", sysRoleApi.BatchSelectAuthUser) // 批量选择授权
+
 	}
 	{
 		sysRoleRouterWithoutRecord.GET("get/:id", sysRoleApi.Get) // 根据ID获取SysRole

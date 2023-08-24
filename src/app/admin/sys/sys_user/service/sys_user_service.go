@@ -267,6 +267,7 @@ func (service *SysUserService) ChangeStatus(v *view.SysUserView) error {
 	return sysUserDao.Update(*sysUser)
 }
 
+// AuthRole	角色授权
 func (service *SysUserService) AuthRole(v *view.SysUserView) error {
 	// 删除用户角色关联数据
 	if err := userRoleDao.DeleteByUserIds([]string{v.Id}); err != nil {
@@ -279,6 +280,7 @@ func (service *SysUserService) AuthRole(v *view.SysUserView) error {
 	return nil
 }
 
+// SelectAllocatedList 获取已分配用户角色的用户列表
 func (service *SysUserService) SelectAllocatedList(pageInfo *view.SysUserPageView, user *view.SysUserView) (error, *common.PageInfo) {
 	err, param, page := viewUtils.Page2Data(pageInfo)
 	if err != nil {

@@ -305,6 +305,21 @@ func (service *SysRoleService) AuthDataScope(v *view.SysRoleView) error {
 	}
 }
 
+// CancelAuthUser 取消用户授权
+func (service *SysRoleService) CancelAuthUser(v *view.SysUserRoleView) error {
+	return userRoleDao.DeleteUserRoleInfo(v.UserId, v.RoleId)
+}
+
+// BatchCancelAuthUser 批量取消用户授权
+func (service *SysRoleService) BatchCancelAuthUser(roleId string, userIds []string) error {
+	return userRoleDao.DeleteUsersRoleInfo(roleId, userIds)
+}
+
+// BatchSelectAuthUser 批量选择用户授权
+func (service *SysRoleService) BatchSelectAuthUser(roleId string, userIds []string) error {
+	return userRoleDao.InsertUsersRoleInfo(roleId, userIds)
+}
+
 // insertRoleDept 新增角色部门信息
 func insertRoleDept(id string, ids []string) error {
 	var roleDepts []model.SysRoleDept

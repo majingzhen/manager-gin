@@ -31,3 +31,22 @@ func (dao *SysUserRoleDao) CountUserRoleByRoleId(id string) (error, int64) {
 	return err, total
 
 }
+
+// DeleteUserRoleInfo 根据用户id和角色id删除用户角色关联数据
+func (dao *SysUserRoleDao) DeleteUserRoleInfo(userId, roleId string) error {
+	return global.GOrmDao.Delete(&SysUserRole{}, "user_id = ? and role_id = ?", userId, roleId).Error
+}
+
+// DeleteUsersRoleInfo 根据用户id集合和角色id删除用户角色关联数据
+func (dao *SysUserRoleDao) DeleteUsersRoleInfo(roleId string, userIds []string) error {
+	return global.GOrmDao.Delete(&SysUserRole{}, "user_id in ? and role_id = ?", userIds, roleId).Error
+}
+
+// InsertUsersRoleInfo 批量插入用户角色关联数据
+func (dao *SysUserRoleDao) InsertUsersRoleInfo(roleId string, userIds []string) error {
+	var userRoles []SysUserRole
+	for _, userId := range userIds {
+		userRoles = append(userRoles, SysUserRole{RoleId: roleId, UserId: userId})
+	}
+	return global.GOrmDao.Create(&userRoles).Error
+}

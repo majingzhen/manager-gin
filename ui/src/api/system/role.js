@@ -86,7 +86,7 @@ export function unallocatedUserList(query) {
 // 取消用户授权角色
 export function authUserCancel(data) {
   return request({
-    url: '/sys/sysRole/authUser/cancel',
+    url: '/sys/sysRole/cancelAuth',
     method: 'put',
     data: data
   })
@@ -95,7 +95,7 @@ export function authUserCancel(data) {
 // 批量取消用户授权角色
 export function authUserCancelAll(data) {
   return request({
-    url: '/sys/sysRole/authUser/cancelAll',
+    url: '/sys/sysRole/batchCancelAuth',
     method: 'put',
     params: data
   })
@@ -104,7 +104,7 @@ export function authUserCancelAll(data) {
 // 授权用户选择
 export function authUserSelectAll(data) {
   return request({
-    url: '/sys/sysRole/authUser/selectAll',
+    url: '/sys/sysRole/batchSelectAuth',
     method: 'put',
     params: data
   })

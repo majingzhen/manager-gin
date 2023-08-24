@@ -46,3 +46,8 @@ type SysRolePageView struct {
 	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
 	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
 }
+
+type SysUserRoleView struct {
+	UserId string `json:"userId" form:"userId"`
+	RoleId string `json:"roleId" form:"roleId"`
+}
