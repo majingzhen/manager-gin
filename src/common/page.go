@@ -19,6 +19,22 @@ type Ids struct {
 	Ids []string `json:"ids" form:"ids"`
 }
 
+func CreatePageInfo(pageNum, pageSize int) *PageInfo {
+	if pageNum < 1 {
+		pageNum = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+	return &PageInfo{
+		PageNum:  pageNum,
+		PageSize: pageSize,
+		Limit:    pageSize,
+		Offset:   (pageNum - 1) * pageSize,
+	}
+
+}
+
 // Calculate 定义一个方法来计算 Limit 和 Offset
 func (p *PageInfo) Calculate() {
 	if p.PageNum < 1 {

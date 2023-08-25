@@ -1,15 +1,15 @@
 package framework
 
 import (
-	"manager-gin/src/app/admin/sys/sys_user/service"
-	"manager-gin/src/app/admin/sys/sys_user/service/view"
+	"manager-gin/src/app/admin/sys/service/sys_user"
+	"manager-gin/src/app/admin/sys/service/sys_user/view"
 	"manager-gin/src/global"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
 
-var userService = service.SysUserServiceApp
+var userService = sys_user.SysUserServiceApp
 
 func GetLoginUser(c *gin.Context) *view.SysUserView {
 	err, view := userService.Get(GetLoginUserId(c))

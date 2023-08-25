@@ -2,7 +2,7 @@ package aspect
 
 import (
 	"fmt"
-	"manager-gin/src/app/admin/sys/sys_user/service/view"
+	"manager-gin/src/app/admin/sys/service/sys_user/view"
 	"manager-gin/src/common"
 	"strings"
 )
