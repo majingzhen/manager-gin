@@ -6,6 +6,8 @@ import (
 )
 
 type Routers struct {
+	baseRouter BaseRouter
+	sysRouter  SysRouter
 }
 
 // InitRouter 初始化路由
@@ -18,15 +20,13 @@ func (routers *Routers) InitRouter() *gin.Engine {
 	// 使用Cors中间件处理跨域请求
 	r.Use(middleware.Cors())
 
-	sysRouter := new(SysRouter)
-	baseRouter := new(BaseRouter)
 	r.GET("/", func(ctx *gin.Context) {
 		ctx.String(200, "hello")
 	})
 	api := r.Group("/api")
 	{
-		sysRouter.InitSysRouter(api)
-		baseRouter.InitBaseRouter(api)
+		routers.sysRouter.InitSysRouter(api)
+		routers.baseRouter.InitBaseRouter(api)
 	}
 
 	return r
