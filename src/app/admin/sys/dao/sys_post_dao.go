@@ -1,4 +1,4 @@
-// Package model 自动生成模板 SysPostDao
+// Package dao 自动生成模板 SysPostDao
 // @description <TODO description class purpose>
 // @author
 // @File: sys_post

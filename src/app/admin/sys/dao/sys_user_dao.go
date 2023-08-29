@@ -1,4 +1,4 @@
-// Package model 自动生成模板 SysUserDao
+// Package dao 自动生成模板 SysUserDao
 // @description <TODO description class purpose>
 // @author
 // @File: sys_user

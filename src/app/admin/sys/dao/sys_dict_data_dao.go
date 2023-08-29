@@ -1,4 +1,4 @@
-// Package model 自动生成模板 SysDictDataDao
+// Package dao 自动生成模板 SysDictDataDao
 // @description <TODO description class purpose>
 // @author
 // @File: sys_dict_data

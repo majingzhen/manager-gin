@@ -1,4 +1,4 @@
-// Package model 自动生成模板 SysRoleDeptDao
+// Package dao 自动生成模板 SysRoleDeptDao
 // @description <TODO description class purpose>
 // @author
 // @File: sys_role_dept

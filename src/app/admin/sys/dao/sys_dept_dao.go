@@ -1,4 +1,4 @@
-// Package model 自动生成模板 SysDeptDao
+// Package dao 自动生成模板 SysDeptDao
 // @description <TODO description class purpose>
 // @author
 // @File: sys_dept
