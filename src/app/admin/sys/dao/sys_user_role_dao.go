@@ -7,6 +7,7 @@
 package dao
 
 import (
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/global"
 )
@@ -16,13 +17,13 @@ import (
 type SysUserRoleDao struct{}
 
 // CreateBatch 批量创建SysUserRole记录
-func (dao *SysUserRoleDao) CreateBatch(roles []model.SysUserRole) error {
-	return global.GOrmDao.Create(&roles).Error
+func (dao *SysUserRoleDao) CreateBatch(tx *gorm.DB, roles []model.SysUserRole) error {
+	return tx.Create(&roles).Error
 }
 
 // DeleteByUserIds 根据用户id删除用户角色关联数据
-func (dao *SysUserRoleDao) DeleteByUserIds(ids []string) error {
-	return global.GOrmDao.Delete(&[]model.SysUserRole{}, "user_id in ?", ids).Error
+func (dao *SysUserRoleDao) DeleteByUserIds(tx *gorm.DB, ids []string) error {
+	return tx.Delete(&[]model.SysUserRole{}, "user_id in ?", ids).Error
 }
 
 // CountUserRoleByRoleId 根据角色id查询用户数量

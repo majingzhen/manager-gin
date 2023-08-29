@@ -7,6 +7,7 @@
 package dao
 
 import (
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
@@ -18,8 +19,8 @@ type SysRoleDao struct{}
 
 // Create 创建SysRole记录
 // Author
-func (dao *SysRoleDao) Create(sysRole model.SysRole) (err error) {
-	err = global.GOrmDao.Create(&sysRole).Error
+func (dao *SysRoleDao) Create(tx *gorm.DB, sysRole model.SysRole) (err error) {
+	err = tx.Create(&sysRole).Error
 	return err
 }
 
@@ -32,15 +33,15 @@ func (dao *SysRoleDao) Delete(id string) (err error) {
 
 // DeleteByIds 批量删除SysRole记录
 // Author
-func (dao *SysRoleDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.SysRole{}, "id in ?", ids).Error
+func (dao *SysRoleDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
+	err = tx.Delete(&[]model.SysRole{}, "id in ?", ids).Error
 	return err
 }
 
 // Update 更新SysRole记录
 // Author
-func (dao *SysRoleDao) Update(sysRole *model.SysRole) (err error) {
-	err = global.GOrmDao.Updates(sysRole).Error
+func (dao *SysRoleDao) Update(tx *gorm.DB, sysRole *model.SysRole) (err error) {
+	err = tx.Updates(sysRole).Error
 	return err
 }
 

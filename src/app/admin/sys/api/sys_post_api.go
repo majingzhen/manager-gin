@@ -12,13 +12,13 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_post"
 	"manager-gin/src/app/admin/sys/service/sys_post/view"
 	response "manager-gin/src/common/response"
-	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
 )
 
 type SysPostApi struct {
+	BasicApi
 	sysPostService sys_post.SysPostService
 }
 
@@ -31,7 +31,7 @@ func (api *SysPostApi) Create(c *gin.Context) {
 	sysPostView.Id = utils.GenUID()
 	sysPostView.CreateTime = utils.GetCurTimeStr()
 	sysPostView.UpdateTime = utils.GetCurTimeStr()
-	sysPostView.CreateBy = framework.GetLoginUserName(c)
+	sysPostView.CreateBy = api.GetLoginUserName(c)
 	if err := api.sysPostService.Create(&sysPostView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -66,7 +66,7 @@ func (api *SysPostApi) Update(c *gin.Context) {
 		return
 	}
 	sysPostView.UpdateTime = utils.GetCurTimeStr()
-	sysPostView.UpdateBy = framework.GetLoginUserName(c)
+	sysPostView.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysPostService.Update(id, &sysPostView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

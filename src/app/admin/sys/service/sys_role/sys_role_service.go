@@ -9,12 +9,14 @@ package sys_role
 import (
 	"errors"
 	"fmt"
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/dao"
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/app/admin/sys/service/sys_role/view"
 	userView "manager-gin/src/app/admin/sys/service/sys_user/view"
 	"manager-gin/src/common"
 	"manager-gin/src/framework/aspect"
+	"manager-gin/src/global"
 )
 
 type SysRoleService struct {
@@ -33,14 +35,18 @@ func (s *SysRoleService) Create(sysRoleView *view.SysRoleView) (err error) {
 	if err1 != nil {
 		return err1
 	}
-	err2 := s.sysRoleDao.Create(*sysRole)
+	tx := global.GOrmDao.Begin()
+	err2 := s.sysRoleDao.Create(tx, *sysRole)
 	if err2 != nil {
+		tx.Rollback()
 		return err2
 	}
 	// 插入角色与菜单关联
-	if err = s.insertRoleMenu(sysRole.Id, sysRoleView.MenuIds); err != nil {
+	if err = s.insertRoleMenu(tx, sysRole.Id, sysRoleView.MenuIds); err != nil {
+		tx.Rollback()
 		return err
 	}
+	tx.Commit()
 	return nil
 }
 
@@ -72,16 +78,24 @@ func (s *SysRoleService) DeleteByIds(ids []string, loginUser *userView.SysUserVi
 			}
 		}
 	}
+	tx := global.GOrmDao.Begin()
 	// 删除角色与菜单关联
-	if err = s.roleMenuDao.DeleteRoleMenuByRoleIds(ids); err != nil {
+	if err = s.roleMenuDao.DeleteRoleMenuByRoleIds(tx, ids); err != nil {
+		tx.Rollback()
 		return err
 	}
 	// 删除角色与部门关联
-	if err = s.roleDeptDao.DeleteRoleDeptByRoleIds(ids); err != nil {
+	if err = s.roleDeptDao.DeleteRoleDeptByRoleIds(tx, ids); err != nil {
+		tx.Rollback()
 		return err
 	}
-	err = s.sysRoleDao.DeleteByIds(ids)
-	return err
+	if err = s.sysRoleDao.DeleteByIds(tx, ids); err != nil {
+		tx.Rollback()
+		return err
+	} else {
+		tx.Commit()
+		return nil
+	}
 }
 
 // Update 更新SysRole记录
@@ -92,25 +106,29 @@ func (s *SysRoleService) Update(id string, sysRoleView *view.SysRoleView) (err e
 	if err1 != nil {
 		return err1
 	}
-	if err = s.sysRoleDao.Update(sysRole); err != nil {
+	tx := global.GOrmDao.Begin()
+	if err = s.sysRoleDao.Update(tx, sysRole); err != nil {
 		return err
 	} else {
 		// 删除角色与菜单关联
-		if err = s.roleMenuDao.DeleteRoleMenuByRoleId(id); err != nil {
+		if err = s.roleMenuDao.DeleteRoleMenuByRoleId(tx, id); err != nil {
+			tx.Rollback()
 			return err
 		}
 		if sysRoleView.MenuIds != nil && len(sysRoleView.MenuIds) > 0 {
 			// 插入角色与菜单关联
-			if err = s.insertRoleMenu(id, sysRoleView.MenuIds); err != nil {
+			if err = s.insertRoleMenu(tx, id, sysRoleView.MenuIds); err != nil {
+				tx.Rollback()
 				return err
 			}
 		}
+		tx.Commit()
+		return nil
 	}
-	return err
 }
 
 // insertRoleMenu 新增角色菜单信息
-func (s *SysRoleService) insertRoleMenu(id string, ids []string) error {
+func (s *SysRoleService) insertRoleMenu(tx *gorm.DB, id string, ids []string) error {
 	var roleMenus []model.SysRoleMenu
 	for _, menuId := range ids {
 		roleMenus = append(roleMenus, model.SysRoleMenu{
@@ -118,7 +136,7 @@ func (s *SysRoleService) insertRoleMenu(id string, ids []string) error {
 			MenuId: menuId,
 		})
 	}
-	return s.roleMenuDao.CreateBatch(roleMenus)
+	return s.roleMenuDao.CreateBatch(tx, roleMenus)
 }
 
 // Get 根据id获取SysRole记录
@@ -278,7 +296,7 @@ func (s *SysRoleService) UpdateStatus(view *view.SysRoleView) error {
 	if err, data := s.viewUtils.View2Data(view); err != nil {
 		return err
 	} else {
-		return s.sysRoleDao.Update(data)
+		return s.sysRoleDao.Update(global.GOrmDao, data)
 	}
 }
 
@@ -287,19 +305,24 @@ func (s *SysRoleService) AuthDataScope(v *view.SysRoleView) error {
 	if err, data := s.viewUtils.View2Data(v); err != nil {
 		return err
 	} else {
-		if err := s.sysRoleDao.Update(data); err != nil {
+		tx := global.GOrmDao.Begin()
+		if err := s.sysRoleDao.Update(tx, data); err != nil {
+			tx.Rollback()
 			return err
 		} else {
 			// 删除角色与部门关联
-			if err = s.roleDeptDao.DeleteRoleDeptByRoleId(v.Id); err != nil {
+			if err = s.roleDeptDao.DeleteRoleDeptByRoleId(tx, v.Id); err != nil {
+				tx.Rollback()
 				return err
 			}
 			if v.DeptIds != nil && len(v.DeptIds) > 0 {
 				// 插入角色与部门关联
-				if err = s.insertRoleDept(v.Id, v.DeptIds); err != nil {
+				if err = s.insertRoleDept(tx, v.Id, v.DeptIds); err != nil {
+					tx.Rollback()
 					return err
 				}
 			}
+			tx.Commit()
 			return nil
 		}
 	}
@@ -321,7 +344,7 @@ func (s *SysRoleService) BatchSelectAuthUser(roleId string, userIds []string) er
 }
 
 // insertRoleDept 新增角色部门信息
-func (s *SysRoleService) insertRoleDept(id string, ids []string) error {
+func (s *SysRoleService) insertRoleDept(tx *gorm.DB, id string, ids []string) error {
 	var roleDepts []model.SysRoleDept
 	for _, deptId := range ids {
 		roleDepts = append(roleDepts, model.SysRoleDept{
@@ -329,5 +352,5 @@ func (s *SysRoleService) insertRoleDept(id string, ids []string) error {
 			DeptId: deptId,
 		})
 	}
-	return s.roleDeptDao.CreateBatch(roleDepts)
+	return s.roleDeptDao.CreateBatch(tx, roleDepts)
 }

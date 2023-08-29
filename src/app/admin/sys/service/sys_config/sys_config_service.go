@@ -74,25 +74,11 @@ func (s *SysConfigService) Get(id string) (err error, sysConfigView *view.SysCon
 // Page 分页获取SysConfig记录
 // Author
 func (s *SysConfigService) Page(pageInfo *view.SysConfigPageView) (err error, res *common.PageInfo) {
-	//err, param, page := viewUtils.Page2Data(pageInfo)
-	//if err != nil {
-	//	return err, nil
-	//}
 	err, res = s.sysConfigDao.Page(pageInfo)
 	if err != nil {
 		return err, nil
 	}
-	return nil, res
-	//if err2, viewList := viewUtils.Data2ViewList(datas); err2 != nil {
-	//	return err2, res
-	//} else {
-	//	res = &common.PageInfo{
-	//		Total: total,
-	//		Rows:  viewList,
-	//	}
-	//	return err, res
-	//}
-
+	return s.viewUtils.PageData2ViewList(res)
 }
 
 func (s *SysConfigService) List(v *view.SysConfigView) (err error, views []*view.SysConfigView) {

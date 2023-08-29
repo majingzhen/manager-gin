@@ -12,13 +12,13 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_dict_type"
 	"manager-gin/src/app/admin/sys/service/sys_dict_type/view"
 	response "manager-gin/src/common/response"
-	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
 )
 
 type SysDictTypeApi struct {
+	BasicApi
 	sysDictTypeService sys_dict_type.SysDictTypeService
 }
 
@@ -31,7 +31,7 @@ func (api *SysDictTypeApi) Create(c *gin.Context) {
 	sysDictTypeView.Id = utils.GenUID()
 	sysDictTypeView.CreateTime = utils.GetCurTimeStr()
 	sysDictTypeView.UpdateTime = utils.GetCurTimeStr()
-	sysDictTypeView.CreateBy = framework.GetLoginUser(c).UserName
+	sysDictTypeView.CreateBy = api.GetLoginUserName(c)
 	if err := api.sysDictTypeService.Create(&sysDictTypeView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -66,7 +66,7 @@ func (api *SysDictTypeApi) Update(c *gin.Context) {
 		return
 	}
 	sysDictTypeView.UpdateTime = utils.GetCurTimeStr()
-	sysDictTypeView.UpdateBy = framework.GetLoginUser(c).UserName
+	sysDictTypeView.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysDictTypeService.Update(id, &sysDictTypeView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

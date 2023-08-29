@@ -11,14 +11,6 @@ type PageInfo struct {
 	IsAsc         string      `json:"isAsc" form:"isAsc"`                 //排序方式
 }
 
-type Id struct {
-	ID string `json:"id" form:"id"` // 主键ID
-}
-
-type Ids struct {
-	Ids []string `json:"ids" form:"ids"`
-}
-
 func CreatePageInfo(pageNum, pageSize int) *PageInfo {
 	if pageNum < 1 {
 		pageNum = 1

@@ -12,13 +12,13 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_config"
 	"manager-gin/src/app/admin/sys/service/sys_config/view"
 	response "manager-gin/src/common/response"
-	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
 )
 
 type SysConfigApi struct {
+	BasicApi
 	configService sys_config.SysConfigService
 }
 
@@ -41,7 +41,7 @@ func (api *SysConfigApi) Create(c *gin.Context) {
 	sysConfigView.Id = utils.GenUID()
 	sysConfigView.CreateTime = utils.GetCurTimeStr()
 	sysConfigView.UpdateTime = utils.GetCurTimeStr()
-	sysConfigView.CreateBy = framework.GetLoginUserName(c)
+	sysConfigView.CreateBy = api.GetLoginUserName(c)
 	if err := api.configService.Create(&sysConfigView); err != nil {
 		global.Logger.Error(err.Error(), zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
@@ -86,7 +86,7 @@ func (api *SysConfigApi) Update(c *gin.Context) {
 		}
 	}
 	sysConfigView.UpdateTime = utils.GetCurTimeStr()
-	sysConfigView.UpdateBy = framework.GetLoginUserName(c)
+	sysConfigView.UpdateBy = api.GetLoginUserName(c)
 	if err := api.configService.Update(id, &sysConfigView); err != nil {
 		global.Logger.Error(err.Error(), zap.Error(err))
 		response.FailWithMessage(err.Error(), c)

@@ -12,15 +12,17 @@ const TokenExpireDuration = time.Hour * 2
 var MySecret = []byte("manager_gin_token")
 
 type MyClaims struct {
-	UserId string
+	UserId   string
+	UserName string
 	jwt.StandardClaims
 }
 
 // GenerateToken 生成Token
-func GenerateToken(userId string) (string, error) {
+func GenerateToken(userId, userName string) (string, error) {
 	// 创建一个我们自己的声明
 	c := MyClaims{
 		userId,
+		userName,
 		jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(TokenExpireDuration).Unix(), // 过期时间
 			IssuedAt:  time.Now().Unix(),

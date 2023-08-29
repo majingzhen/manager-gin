@@ -8,6 +8,7 @@ package sys_dept
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/dao"
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/app/admin/sys/service/sys_dept/view"
@@ -16,6 +17,7 @@ import (
 	userView "manager-gin/src/app/admin/sys/service/sys_user/view"
 	"manager-gin/src/common"
 	"manager-gin/src/framework/aspect"
+	"manager-gin/src/global"
 	"strings"
 )
 
@@ -100,17 +102,26 @@ func (s *SysDeptService) Update(id string, sysDeptView *view.SysDeptView) (err e
 			oldAncestors := oldDept.Ancestors
 			sysDept.Ancestors = newAncestors
 			// 更新子部门的祖级列表
-			err = s.updateDeptChildren(sysDept.Id, newAncestors, oldAncestors)
+			tx := global.GOrmDao.Begin()
+			err = s.updateDeptChildren(tx, sysDept.Id, newAncestors, oldAncestors)
 			if err != nil {
+				tx.Rollback()
 				return errors.New("数据更新失败")
+			} else {
+				if err = s.sysDeptDao.Update(tx, *sysDept); err != nil {
+					tx.Rollback()
+					return err
+				} else {
+					tx.Commit()
+					return nil
+				}
 			}
 		}
-		return s.sysDeptDao.Update(*sysDept)
 	}
 }
 
 // updateDeptChildren 更新子部门的祖级列表
-func (s *SysDeptService) updateDeptChildren(id, newAncestors, oldAncestors string) (err error) {
+func (s *SysDeptService) updateDeptChildren(tx *gorm.DB, id, newAncestors, oldAncestors string) (err error) {
 	var children *[]model.SysDept
 	err, children = s.sysDeptDao.SelectChildrenDeptById(id)
 	if err != nil {
@@ -118,7 +129,7 @@ func (s *SysDeptService) updateDeptChildren(id, newAncestors, oldAncestors strin
 	} else {
 		for _, child := range *children {
 			child.Ancestors = strings.Replace(child.Ancestors, oldAncestors, newAncestors, 1)
-			err = s.sysDeptDao.Update(child)
+			err = s.sysDeptDao.Update(tx, child)
 			if err != nil {
 				return err
 			}
@@ -227,9 +238,9 @@ func getDeptTree(departments []*view.SysDeptTreeView) []*view.SysDeptTreeView {
 	return rootDepts
 }
 
+// getChildren 获取所有子集部门
 func getChildren(parentId string, departments []*view.SysDeptTreeView) []*view.SysDeptTreeView {
 	var children []*view.SysDeptTreeView
-
 	// 遍历所有部门，找到指定父节点的子部门
 	for _, dept := range departments {
 		if dept.ParentId == parentId {

@@ -16,13 +16,13 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_user/view"
 	"manager-gin/src/common"
 	response "manager-gin/src/common/response"
-	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
 )
 
 type SysUserApi struct {
+	BasicApi
 	sysUserService sys_user.SysUserService
 	roleService    sys_role.SysRoleService
 	postService    sys_post.SysPostService
@@ -35,6 +35,7 @@ func (api *SysUserApi) Create(c *gin.Context) {
 	var sysUserView view.SysUserView
 	_ = c.ShouldBindJSON(&sysUserView)
 	// 校验参数
+
 	if err := api.sysUserService.CheckFieldUnique("user_name", sysUserView.UserName, ""); err != nil {
 		response.FailWithMessage("登录账号已存在", c)
 		return
@@ -52,7 +53,7 @@ func (api *SysUserApi) Create(c *gin.Context) {
 	sysUserView.UpdateTime = utils.GetCurTimeStr()
 	sysUserView.Salt = utils.GenUID()
 	sysUserView.Password = utils.EncryptionPassword(sysUserView.Password, sysUserView.Salt)
-	sysUserView.CreateBy = framework.GetLoginUserName(c)
+	sysUserView.CreateBy = api.GetLoginUserName(c)
 	if err := api.sysUserService.Create(&sysUserView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -67,10 +68,10 @@ func (api *SysUserApi) Create(c *gin.Context) {
 func (api *SysUserApi) Delete(c *gin.Context) {
 	idStr := c.Param("ids")
 	ids := strings.Split(idStr, ",")
-	if utils.Contains(ids, framework.GetLoginUserId(c)) {
+	if utils.Contains(ids, api.GetLoginUserId(c)) {
 		response.FailWithMessage("当前用户不能删除", c)
 	}
-	if err := api.sysUserService.DeleteByIds(ids, framework.GetLoginUserId(c)); err != nil {
+	if err := api.sysUserService.DeleteByIds(ids, api.GetLoginUserId(c)); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -94,7 +95,7 @@ func (api *SysUserApi) Update(c *gin.Context) {
 		return
 	}
 	// 校验用户是否有数据权限
-	err := api.sysUserService.CheckUserDataScope(id, framework.GetLoginUserId(c))
+	err := api.sysUserService.CheckUserDataScope(id, api.GetLoginUserId(c))
 	if err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
@@ -113,7 +114,7 @@ func (api *SysUserApi) Update(c *gin.Context) {
 		return
 	}
 	sysUserView.UpdateTime = utils.GetCurTimeStr()
-	sysUserView.UpdateBy = framework.GetLoginUserName(c)
+	sysUserView.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysUserService.Update(id, &sysUserView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -127,7 +128,7 @@ func (api *SysUserApi) Update(c *gin.Context) {
 // @Router /sysUser/get [get]
 func (api *SysUserApi) Get(c *gin.Context) {
 	var sysUserInfoView = new(view.SysUserInfoView)
-	err, roles := api.roleService.SelectRoleAll(framework.GetLoginUser(c))
+	err, roles := api.roleService.SelectRoleAll(api.GetLoginUser(c))
 	if err == nil {
 		removeAdminRole(&roles)
 		sysUserInfoView.Roles = roles
@@ -173,7 +174,7 @@ func (api *SysUserApi) Page(c *gin.Context) {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 		return
 	}
-	user := framework.GetLoginUser(c)
+	user := api.GetLoginUser(c)
 	if err, res := api.sysUserService.Page(&pageInfo, user); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -193,7 +194,7 @@ func (api *SysUserApi) List(c *gin.Context) {
 		return
 	}
 	// 判断是否需要根据用户获取数据
-	// userId := framework.GetLoginUserId(c)
+	// userId := api.GetLoginUserId(c)
 	if err, res := api.sysUserService.List(&view); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -215,12 +216,12 @@ func (api *SysUserApi) ResetPwd(c *gin.Context) {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
-	if err := api.sysUserService.CheckUserDataScope(req.Id, framework.GetLoginUserId(c)); err != nil {
+	if err := api.sysUserService.CheckUserDataScope(req.Id, api.GetLoginUserId(c)); err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
 	}
 	req.UpdateTime = utils.GetCurTimeStr()
-	req.UpdateBy = framework.GetLoginUserName(c)
+	req.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysUserService.ResetPwd(&req); err != nil {
 		response.FailWithMessage("重置密码失败", c)
 		return
@@ -241,12 +242,12 @@ func (api *SysUserApi) ChangeStatus(c *gin.Context) {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
-	if err := api.sysUserService.CheckUserDataScope(req.Id, framework.GetLoginUserId(c)); err != nil {
+	if err := api.sysUserService.CheckUserDataScope(req.Id, api.GetLoginUserId(c)); err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
 	}
 	req.UpdateTime = utils.GetCurTimeStr()
-	req.UpdateBy = framework.GetLoginUserName(c)
+	req.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysUserService.ChangeStatus(&req); err != nil {
 		response.FailWithMessage("更新状态失败", c)
 		return
@@ -288,7 +289,7 @@ func (api *SysUserApi) AuthRole(c *gin.Context) {
 		return
 	}
 	roleIds := strings.Split(roleIdStr, ",")
-	if err := api.sysUserService.CheckUserDataScope(userId, framework.GetLoginUserId(c)); err != nil {
+	if err := api.sysUserService.CheckUserDataScope(userId, api.GetLoginUserId(c)); err != nil {
 		response.FailWithMessage("没有权限访问用户数据", c)
 		return
 	}
@@ -296,7 +297,7 @@ func (api *SysUserApi) AuthRole(c *gin.Context) {
 		Id:         userId,
 		RoleIds:    roleIds,
 		UpdateTime: utils.GetCurTimeStr(),
-		UpdateBy:   framework.GetLoginUserName(c),
+		UpdateBy:   api.GetLoginUserName(c),
 	}
 
 	if err := api.sysUserService.AuthRole(v); err != nil {
@@ -326,7 +327,7 @@ func (api *SysUserApi) SelectAllocatedList(c *gin.Context) {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 		return
 	}
-	user := framework.GetLoginUser(c)
+	user := api.GetLoginUser(c)
 	if err, res := api.sysUserService.SelectAllocatedList(&pageInfo, user); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -345,7 +346,7 @@ func (api *SysUserApi) SelectUnallocatedList(c *gin.Context) {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 		return
 	}
-	user := framework.GetLoginUser(c)
+	user := api.GetLoginUser(c)
 	if err, res := api.sysUserService.SelectUnallocatedList(&pageInfo, user); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)

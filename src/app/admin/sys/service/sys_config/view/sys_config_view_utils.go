@@ -84,6 +84,26 @@ func (viewUtils *SysConfigViewUtils) View2Data(view *SysConfigView) (err error, 
 	return
 }
 
+func (viewUtils *SysConfigViewUtils) PageData2ViewList(pageInfo *common.PageInfo) (err error, res *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysConfigViewUtils PageData2ViewList error: %v", e)
+			global.Logger.Error("SysConfigViewUtils.PageData2ViewList:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	if pageInfo != nil && pageInfo.Rows != nil {
+		if p, ok := pageInfo.Rows.([]*model.SysConfig); ok {
+			if err, viewList := viewUtils.Data2ViewList(p); err != nil {
+				return err, nil
+			} else {
+				pageInfo.Rows = viewList
+			}
+		}
+	}
+	return nil, pageInfo
+}
+
 func (viewUtils *SysConfigViewUtils) Page2Data(pageInfo *SysConfigPageView) (err error, data *model.SysConfig, page *common.PageInfo) {
 	defer func() {
 		if e := recover(); e != nil {

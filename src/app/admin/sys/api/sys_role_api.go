@@ -13,13 +13,13 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_role/view"
 	"manager-gin/src/common"
 	response "manager-gin/src/common/response"
-	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
 )
 
 type SysRoleApi struct {
+	BasicApi
 	sysRoleService sys_role.SysRoleService
 }
 
@@ -44,7 +44,7 @@ func (api *SysRoleApi) Create(c *gin.Context) {
 	sysRoleView.Id = utils.GenUID()
 	sysRoleView.CreateTime = utils.GetCurTimeStr()
 	sysRoleView.UpdateTime = utils.GetCurTimeStr()
-	sysRoleView.CreateBy = framework.GetLoginUserName(c)
+	sysRoleView.CreateBy = api.GetLoginUserName(c)
 	if err := api.sysRoleService.Create(&sysRoleView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -59,7 +59,7 @@ func (api *SysRoleApi) Create(c *gin.Context) {
 func (api *SysRoleApi) Delete(c *gin.Context) {
 	idStr := c.Param("ids")
 	ids := strings.Split(idStr, ",")
-	if err := api.sysRoleService.DeleteByIds(ids, framework.GetLoginUser(c)); err != nil {
+	if err := api.sysRoleService.DeleteByIds(ids, api.GetLoginUser(c)); err != nil {
 		global.Logger.Error("删除失败!", zap.Error(err))
 		response.FailWithMessage("删除失败", c)
 	} else {
@@ -84,7 +84,7 @@ func (api *SysRoleApi) Update(c *gin.Context) {
 		return
 	}
 	// 校验数据权限
-	if err := api.sysRoleService.CheckRoleDataScope(id, framework.GetLoginUser(c)); err != nil {
+	if err := api.sysRoleService.CheckRoleDataScope(id, api.GetLoginUser(c)); err != nil {
 		response.FailWithMessage("没有权限访问角色数据", c)
 		return
 	}
@@ -97,7 +97,7 @@ func (api *SysRoleApi) Update(c *gin.Context) {
 		return
 	}
 	sysRoleView.UpdateTime = utils.GetCurTimeStr()
-	sysRoleView.UpdateBy = framework.GetLoginUserName(c)
+	sysRoleView.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysRoleService.Update(id, &sysRoleView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -129,7 +129,7 @@ func (api *SysRoleApi) Page(c *gin.Context) {
 		response.FailWithMessage("获取分页数据解析失败!", c)
 		return
 	}
-	user := framework.GetLoginUser(c)
+	user := api.GetLoginUser(c)
 	if err, res := api.sysRoleService.Page(&pageInfo, user); err != nil {
 		global.Logger.Error("获取分页信息失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -149,8 +149,8 @@ func (api *SysRoleApi) List(c *gin.Context) {
 		return
 	}
 	// 判断是否需要根据用户获取数据
-	// userId := framework.GetLoginUserId(c)
-	if err, res := api.sysRoleService.List(&view, framework.GetLoginUser(c)); err != nil {
+	// userId := api.GetLoginUserId(c)
+	if err, res := api.sysRoleService.List(&view, api.GetLoginUser(c)); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {
@@ -168,12 +168,12 @@ func (api *SysRoleApi) ChangeStatus(c *gin.Context) {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
-	if err := api.sysRoleService.CheckRoleDataScope(view.Id, framework.GetLoginUser(c)); err != nil {
+	if err := api.sysRoleService.CheckRoleDataScope(view.Id, api.GetLoginUser(c)); err != nil {
 		response.FailWithMessage("没有权限访问角色数据", c)
 		return
 	}
 	view.UpdateTime = utils.GetCurTimeStr()
-	view.UpdateBy = framework.GetLoginUserName(c)
+	view.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysRoleService.UpdateStatus(&view); err != nil {
 		global.Logger.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -192,12 +192,12 @@ func (api *SysRoleApi) DataScope(c *gin.Context) {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
-	if err := api.sysRoleService.CheckRoleDataScope(view.Id, framework.GetLoginUser(c)); err != nil {
+	if err := api.sysRoleService.CheckRoleDataScope(view.Id, api.GetLoginUser(c)); err != nil {
 		response.FailWithMessage("没有权限访问角色数据", c)
 		return
 	}
 	view.UpdateTime = utils.GetCurTimeStr()
-	view.UpdateBy = framework.GetLoginUserName(c)
+	view.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysRoleService.AuthDataScope(&view); err != nil {
 		global.Logger.Error("更新失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)

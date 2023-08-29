@@ -7,6 +7,7 @@
 package dao
 
 import (
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
@@ -32,8 +33,8 @@ func (dao *SysDeptDao) DeleteByIds(ids []string) (err error) {
 
 // Update 更新SysDept记录
 // Author
-func (dao *SysDeptDao) Update(sysDept model.SysDept) (err error) {
-	err = global.GOrmDao.Updates(&sysDept).Error
+func (dao *SysDeptDao) Update(tx *gorm.DB, sysDept model.SysDept) (err error) {
+	err = tx.Updates(&sysDept).Error
 	return err
 }
 

@@ -12,13 +12,13 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_dept"
 	"manager-gin/src/app/admin/sys/service/sys_dept/view"
 	response "manager-gin/src/common/response"
-	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
 )
 
 type SysDeptApi struct {
+	BasicApi
 	sysDeptService sys_dept.SysDeptService
 }
 
@@ -31,7 +31,7 @@ func (api *SysDeptApi) Create(c *gin.Context) {
 	sysDeptView.Id = utils.GenUID()
 	sysDeptView.CreateTime = utils.GetCurTimeStr()
 	sysDeptView.UpdateTime = utils.GetCurTimeStr()
-	sysDeptView.CreateBy = framework.GetLoginUserName(c)
+	sysDeptView.CreateBy = api.GetLoginUserName(c)
 	if err := api.sysDeptService.Create(&sysDeptView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -65,7 +65,7 @@ func (api *SysDeptApi) Update(c *gin.Context) {
 		return
 	}
 	sysDeptView.UpdateTime = utils.GetCurTimeStr()
-	sysDeptView.UpdateBy = framework.GetLoginUser(c).UserName
+	sysDeptView.UpdateBy = api.GetLoginUser(c).UserName
 	if err := api.sysDeptService.Update(id, &sysDeptView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -117,8 +117,8 @@ func (api *SysDeptApi) List(c *gin.Context) {
 		return
 	}
 	// 判断是否需要根据用户获取数据
-	// userId := framework.GetLoginUserId(c)
-	user := framework.GetLoginUser(c)
+	// userId := api.GetLoginUserId(c)
+	user := api.GetLoginUser(c)
 	if err, res := api.sysDeptService.List(&view, user); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -132,7 +132,7 @@ func (api *SysDeptApi) List(c *gin.Context) {
 // @Router /sysDept/listExclude [get]
 func (api *SysDeptApi) ListExclude(c *gin.Context) {
 	id := c.Param("id")
-	user := framework.GetLoginUser(c)
+	user := api.GetLoginUser(c)
 	if err, sysDeptView := api.sysDeptService.List(&view.SysDeptView{}, user); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
@@ -164,7 +164,7 @@ func (api *SysDeptApi) SelectDeptTree(c *gin.Context) {
 		response.FailWithMessage("获取参数解析失败!", c)
 		return
 	}
-	user := framework.GetLoginUser(c)
+	user := api.GetLoginUser(c)
 	if err, sysDeptView := api.sysDeptService.SelectDeptTree(&view, user); err != nil {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
@@ -186,7 +186,7 @@ func (api *SysDeptApi) SelectDeptTreeByRole(c *gin.Context) {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage(err.Error(), c)
 	} else {
-		err1, deptTree := api.sysDeptService.SelectDeptTree(&view.SysDeptView{}, framework.GetLoginUser(c))
+		err1, deptTree := api.sysDeptService.SelectDeptTree(&view.SysDeptView{}, api.GetLoginUser(c))
 		if err1 != nil {
 			global.Logger.Error("查询失败!", zap.Error(err))
 			response.FailWithMessage(err.Error(), c)

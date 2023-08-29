@@ -7,6 +7,7 @@
 package dao
 
 import (
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
@@ -18,22 +19,22 @@ type SysUserDao struct{}
 
 // Create 创建SysUser记录
 // Author
-func (dao *SysUserDao) Create(sysUser model.SysUser) (err error) {
-	err = global.GOrmDao.Create(&sysUser).Error
+func (dao *SysUserDao) Create(tx *gorm.DB, sysUser model.SysUser) (err error) {
+	err = tx.Create(&sysUser).Error
 	return err
 }
 
 // Delete 删除SysUser记录
 // Author
-func (dao *SysUserDao) Delete(id string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.SysUser{}, "id = ?", id).Error
+func (dao *SysUserDao) Delete(tx *gorm.DB, id string) (err error) {
+	err = tx.Delete(&[]model.SysUser{}, "id = ?", id).Error
 	return err
 }
 
 // DeleteByIds 批量删除SysUser记录
 // Author
-func (dao *SysUserDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.SysUser{}, "id in ?", ids).Error
+func (dao *SysUserDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
+	err = tx.Delete(&[]model.SysUser{}, "id in ?", ids).Error
 	return err
 }
 
@@ -135,12 +136,14 @@ func (dao *SysUserDao) GetByDeptId(deptId string) (err error, sysUser []*model.S
 	return
 }
 
+// CheckFieldUnique 判断指定字段是否为空
 func (dao *SysUserDao) CheckFieldUnique(fieldName, value string) (error, int64) {
 	var count int64
 	err := global.GOrmDao.Model(&model.SysUser{}).Where(fieldName+" = ?", value).Count(&count).Error
 	return err, count
 }
 
+// SelectByField 根据指定字段查询数据
 func (dao *SysUserDao) SelectByField(fieldName string, value string) (error, *model.SysUser) {
 	var users []*model.SysUser
 	if err := global.GOrmDao.Model(&model.SysUser{}).Where(fieldName+" = ?", value).Find(&users).Error; err != nil {
@@ -154,6 +157,7 @@ func (dao *SysUserDao) SelectByField(fieldName string, value string) (error, *mo
 
 }
 
+// SelectAllocatedList
 func (dao *SysUserDao) SelectAllocatedList(param *model.SysUser, page *common.PageInfo, roleId string) (err error, datas []*model.SysUser, total int64) {
 	// 创建model
 	db := global.GOrmDao.Table("sys_user u")

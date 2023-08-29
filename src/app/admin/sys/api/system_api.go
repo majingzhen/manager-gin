@@ -23,6 +23,7 @@ import (
 )
 
 type SystemApi struct {
+	BasicApi
 	sysUserService sys_user.SysUserService
 	roleService    sys_role.SysRoleService
 	menuService    sys_menu.SysMenuService
@@ -68,7 +69,7 @@ func (api *SystemApi) Login(c *gin.Context) {
 			response.FailWithMessage("用户不存在", c)
 			return
 		}
-		token, err := framework.GenerateToken(userView.Id)
+		token, err := framework.GenerateToken(userView.Id, userView.UserName)
 		if err != nil {
 			response.FailWithMessage("登录失败", c)
 			return
@@ -79,7 +80,7 @@ func (api *SystemApi) Login(c *gin.Context) {
 
 // GetUserInfo 获取用户信息
 func (api *SystemApi) GetUserInfo(c *gin.Context) {
-	userView := framework.GetLoginUser(c)
+	userView := api.GetLoginUser(c)
 	// 获取用户角色
 	_, roles := api.roleService.GetRoleByUserId(userView)
 	// 获取用户权限
@@ -95,7 +96,7 @@ func (api *SystemApi) GetUserInfo(c *gin.Context) {
 
 // GetRouters 获取路由信息
 func (api *SystemApi) GetRouters(c *gin.Context) {
-	userId := framework.GetLoginUserId(c)
+	userId := api.GetLoginUserId(c)
 	err, tree := api.menuService.GetMenuTreeByUserId(userId)
 	if err != nil {
 		// 处理生成验证码时的错误

@@ -12,12 +12,12 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_menu"
 	"manager-gin/src/app/admin/sys/service/sys_menu/view"
 	response "manager-gin/src/common/response"
-	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
 
 type SysMenuApi struct {
+	BasicApi
 	sysMenuService sys_menu.SysMenuService
 }
 
@@ -30,7 +30,7 @@ func (api *SysMenuApi) Create(c *gin.Context) {
 	sysMenuView.Id = utils.GenUID()
 	sysMenuView.CreateTime = utils.GetCurTimeStr()
 	sysMenuView.UpdateTime = utils.GetCurTimeStr()
-	sysMenuView.CreateBy = framework.GetLoginUser(c).UserName
+	sysMenuView.CreateBy = api.GetLoginUserName(c)
 	if err := api.sysMenuService.Create(&sysMenuView); err != nil {
 		global.Logger.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -64,7 +64,7 @@ func (api *SysMenuApi) Update(c *gin.Context) {
 		return
 	}
 	sysMenuView.UpdateTime = utils.GetCurTimeStr()
-	sysMenuView.UpdateBy = framework.GetLoginUser(c).UserName
+	sysMenuView.UpdateBy = api.GetLoginUserName(c)
 	if err := api.sysMenuService.Update(id, &sysMenuView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
@@ -96,7 +96,7 @@ func (api *SysMenuApi) List(c *gin.Context) {
 		response.FailWithMessage("获取参数解析失败!", c)
 		return
 	}
-	userId := framework.GetLoginUserId(c)
+	userId := api.GetLoginUserId(c)
 	if err, res := api.sysMenuService.SelectMenuList(&menuView, userId); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
@@ -110,7 +110,7 @@ func (api *SysMenuApi) List(c *gin.Context) {
 // @Router /sysMenu/selectMenuTreeByRoleId/{roleId} [get]
 func (api *SysMenuApi) SelectMenuTreeByRoleId(c *gin.Context) {
 	roleId := c.Param("roleId")
-	if err, menuList := api.sysMenuService.SelectMenuList(&view.SysMenuView{}, framework.GetLoginUserId(c)); err != nil {
+	if err, menuList := api.sysMenuService.SelectMenuList(&view.SysMenuView{}, api.GetLoginUserId(c)); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 		return
@@ -137,7 +137,7 @@ func (api *SysMenuApi) SelectMenuTree(c *gin.Context) {
 		response.FailWithMessage("获取参数解析失败!", c)
 		return
 	}
-	if err, menuList := api.sysMenuService.SelectMenuList(&menuView, framework.GetLoginUserId(c)); err != nil {
+	if err, menuList := api.sysMenuService.SelectMenuList(&menuView, api.GetLoginUserId(c)); err != nil {
 		global.Logger.Error("获取数据失败!", zap.Error(err))
 		response.FailWithMessage("获取失败", c)
 	} else {

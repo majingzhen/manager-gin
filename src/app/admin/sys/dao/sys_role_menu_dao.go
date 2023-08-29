@@ -7,8 +7,8 @@
 package dao
 
 import (
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
-	"manager-gin/src/global"
 )
 
 // SysRoleMenuDao 结构体
@@ -16,16 +16,16 @@ import (
 type SysRoleMenuDao struct{}
 
 // DeleteRoleMenuByRoleId 根据角色id删除角色菜单关联数据
-func (dao *SysRoleMenuDao) DeleteRoleMenuByRoleId(id string) error {
-	return global.GOrmDao.Delete(&[]model.SysRoleMenu{}, "role_id = ?", id).Error
+func (dao *SysRoleMenuDao) DeleteRoleMenuByRoleId(tx *gorm.DB, id string) error {
+	return tx.Delete(&[]model.SysRoleMenu{}, "role_id = ?", id).Error
 }
 
 // CreateBatch 批量插入
-func (dao *SysRoleMenuDao) CreateBatch(menus []model.SysRoleMenu) error {
-	return global.GOrmDao.Create(&menus).Error
+func (dao *SysRoleMenuDao) CreateBatch(tx *gorm.DB, menus []model.SysRoleMenu) error {
+	return tx.Create(&menus).Error
 }
 
 // DeleteRoleMenuByRoleIds 根据角色id集合删除角色菜单关联数据
-func (dao *SysRoleMenuDao) DeleteRoleMenuByRoleIds(ids []string) error {
-	return global.GOrmDao.Delete(&[]model.SysRoleMenu{}, "role_id in ?", ids).Error
+func (dao *SysRoleMenuDao) DeleteRoleMenuByRoleIds(tx *gorm.DB, ids []string) error {
+	return tx.Delete(&[]model.SysRoleMenu{}, "role_id in ?", ids).Error
 }

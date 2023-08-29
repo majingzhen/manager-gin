@@ -41,6 +41,7 @@ func JWTAuthFilter() gin.HandlerFunc {
 			// c.Redirect(http.StatusFound, "/login")
 		}
 		c.Set("user_id", mc.UserId)
+		c.Set("user_name", mc.UserName)
 		c.Next()
 	}
 }

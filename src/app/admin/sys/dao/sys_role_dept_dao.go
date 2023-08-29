@@ -7,8 +7,8 @@
 package dao
 
 import (
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
-	"manager-gin/src/global"
 )
 
 // SysRoleDeptDao 结构体
@@ -16,17 +16,17 @@ import (
 type SysRoleDeptDao struct{}
 
 // DeleteRoleDeptByRoleIds 根据角色id集合删除角色部门关联数据
-func (dao *SysRoleDeptDao) DeleteRoleDeptByRoleIds(ids []string) error {
-	return global.GOrmDao.Delete(&[]model.SysRoleDept{}, "role_id in ?", ids).Error
+func (dao *SysRoleDeptDao) DeleteRoleDeptByRoleIds(tx *gorm.DB, ids []string) error {
+	return tx.Delete(&[]model.SysRoleDept{}, "role_id in ?", ids).Error
 }
 
-// DeleteRoleDeptByDeptIds 根据角色id集合删除角色部门关联数据
-func (dao *SysRoleDeptDao) DeleteRoleDeptByRoleId(id string) error {
-	return global.GOrmDao.Delete(&[]model.SysRoleDept{}, "role_id = ?", id).Error
+// DeleteRoleDeptByRoleId 根据角色id集合删除角色部门关联数据
+func (dao *SysRoleDeptDao) DeleteRoleDeptByRoleId(tx *gorm.DB, id string) error {
+	return tx.Delete(&[]model.SysRoleDept{}, "role_id = ?", id).Error
 
 }
 
 // CreateBatch 批量创建SysRoleDept记录
-func (dao *SysRoleDeptDao) CreateBatch(depts []model.SysRoleDept) error {
-	return global.GOrmDao.Create(&depts).Error
+func (dao *SysRoleDeptDao) CreateBatch(tx *gorm.DB, depts []model.SysRoleDept) error {
+	return tx.Create(&depts).Error
 }

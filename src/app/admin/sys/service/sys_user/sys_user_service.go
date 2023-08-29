@@ -1,4 +1,4 @@
-// Package service 自动生成模板 SysUserService
+// Package sys_user 自动生成模板 SysUserService
 // @description <TODO description class purpose>
 // @author
 // @File: sys_user
@@ -8,6 +8,7 @@ package sys_user
 
 import (
 	"errors"
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/dao"
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/app/admin/sys/service/sys_dept"
@@ -15,10 +16,9 @@ import (
 	"manager-gin/src/app/admin/sys/service/sys_user/view"
 	"manager-gin/src/common"
 	"manager-gin/src/framework/aspect"
+	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
-
-var SysUserServiceApp = new(SysUserService)
 
 type SysUserService struct {
 	sysUserDao  dao.SysUserDao
@@ -36,25 +36,30 @@ func (s *SysUserService) Create(sysUserView *view.SysUserView) (err error) {
 	if err1 != nil {
 		return err1
 	}
-	if err = s.sysUserDao.Create(*sysUser); err != nil {
+	tx := global.GOrmDao.Begin()
+	if err = s.sysUserDao.Create(tx, *sysUser); err != nil {
 		return err
 	} else {
 		if sysUserView.RoleIds != nil && len(sysUserView.RoleIds) > 0 {
-			if err2 := s.insertUserRole(sysUser.Id, sysUserView.RoleIds); err2 != nil {
+			if err2 := s.insertUserRole(tx, sysUser.Id, sysUserView.RoleIds); err2 != nil {
+				tx.Rollback()
 				return err2
 			}
 		}
 		if sysUserView.PostIds != nil && len(sysUserView.PostIds) > 0 {
-			if err3 := s.insertUserPost(sysUser.Id, sysUserView.PostIds); err3 != nil {
+			if err3 := s.insertUserPost(tx, sysUser.Id, sysUserView.PostIds); err3 != nil {
+				tx.Rollback()
 				return err3
 			}
 		}
+		// 提交事务
+		tx.Commit()
+		return nil
 	}
-	return nil
 }
 
 // insertUserPost 插入用户岗位关联数据
-func (s *SysUserService) insertUserPost(id string, ids []string) error {
+func (s *SysUserService) insertUserPost(tx *gorm.DB, id string, ids []string) error {
 	var userPosts []model.SysUserPost
 	for _, postId := range ids {
 		userPosts = append(userPosts, model.SysUserPost{
@@ -62,11 +67,11 @@ func (s *SysUserService) insertUserPost(id string, ids []string) error {
 			PostId: postId,
 		})
 	}
-	return s.userPostDao.CreateBatch(userPosts)
+	return s.userPostDao.CreateBatch(tx, userPosts)
 }
 
 // insertUserRole 插入用户角色关联数据
-func (s *SysUserService) insertUserRole(userId string, roleIds []string) error {
+func (s *SysUserService) insertUserRole(tx *gorm.DB, userId string, roleIds []string) error {
 	var userRoles []model.SysUserRole
 	for _, roleId := range roleIds {
 		userRoles = append(userRoles, model.SysUserRole{
@@ -74,14 +79,7 @@ func (s *SysUserService) insertUserRole(userId string, roleIds []string) error {
 			RoleId: roleId,
 		})
 	}
-	return s.userRoleDao.CreateBatch(userRoles)
-}
-
-// Delete 删除SysUser记录
-// Author
-func (s *SysUserService) Delete(id string) (err error) {
-	err = s.sysUserDao.Delete(id)
-	return err
+	return s.userRoleDao.CreateBatch(tx, userRoles)
 }
 
 // DeleteByIds 批量删除SysUser记录
@@ -95,15 +93,22 @@ func (s *SysUserService) DeleteByIds(ids []string, loginUserId string) (err erro
 			return err
 		}
 	}
+	tx := global.GOrmDao.Begin()
 	// 删除用户角色关联数据
-	if err = s.userRoleDao.DeleteByUserIds(ids); err != nil {
+	if err = s.userRoleDao.DeleteByUserIds(tx, ids); err != nil {
+		tx.Rollback()
 		return err
 	}
 	// 删除用户岗位关联数据
-	if err = s.userPostDao.DeleteByUserIds(ids); err != nil {
+	if err = s.userPostDao.DeleteByUserIds(tx, ids); err != nil {
+		tx.Rollback()
 		return err
 	}
-	err = s.sysUserDao.DeleteByIds(ids)
+	err = s.sysUserDao.DeleteByIds(tx, ids)
+	if err != nil {
+		tx.Rollback()
+	}
+	tx.Commit()
 	return err
 }
 
@@ -272,14 +277,18 @@ func (s *SysUserService) ChangeStatus(v *view.SysUserView) error {
 
 // AuthRole	角色授权
 func (s *SysUserService) AuthRole(v *view.SysUserView) error {
+	tx := global.GOrmDao.Begin()
 	// 删除用户角色关联数据
-	if err := s.userRoleDao.DeleteByUserIds([]string{v.Id}); err != nil {
+	if err := s.userRoleDao.DeleteByUserIds(tx, []string{v.Id}); err != nil {
+		tx.Rollback()
 		return err
 	}
 	// 插入用户角色关联数据
-	if err := s.insertUserRole(v.Id, v.RoleIds); err != nil {
+	if err := s.insertUserRole(tx, v.Id, v.RoleIds); err != nil {
+		tx.Rollback()
 		return err
 	}
+	tx.Commit()
 	return nil
 }
 
