@@ -91,24 +91,10 @@ func (s *SysPostService) Get(id string) (err error, sysPostView *view.SysPostVie
 // Page 分页获取SysPost记录
 // Author
 func (s *SysPostService) Page(pageInfo *view.SysPostPageView) (err error, res *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
+	if err, res = s.sysPostDao.Page(pageInfo); err != nil {
 		return err, nil
 	}
-	err1, datas, total := s.sysPostDao.Page(param, page)
-	if err1 != nil {
-		return err1, res
-	}
-	if err2, viewList := s.viewUtils.Data2ViewList(datas); err2 != nil {
-		return err2, res
-	} else {
-		res = &common.PageInfo{
-			Total: total,
-			Rows:  viewList,
-		}
-		return err, res
-	}
-
+	return s.viewUtils.PageData2ViewList(res)
 }
 
 // List 获取SysPost列表

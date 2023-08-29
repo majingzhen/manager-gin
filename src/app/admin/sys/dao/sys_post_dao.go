@@ -8,6 +8,7 @@ package dao
 
 import (
 	"manager-gin/src/app/admin/sys/model"
+	"manager-gin/src/app/admin/sys/service/sys_post/view"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
@@ -46,24 +47,32 @@ func (dao *SysPostDao) Get(id string) (err error, sysPost *model.SysPost) {
 
 // Page 分页获取SysPost记录
 // Author
-func (dao *SysPostDao) Page(param *model.SysPost, page *common.PageInfo) (err error, datas []*model.SysPost, total int64) {
+func (dao *SysPostDao) Page(param *view.SysPostPageView) (err error, page *common.PageInfo) {
 	// 创建model
-	model := global.GOrmDao.Model(&model.SysPost{})
-	// 如果有条件搜索 下方会自动创建搜索语句
-	//if param.Id != "" {
-	//	model = model.Where("ID = ?", info.Id)
-	//}
-	if err = model.Count(&total).Error; err != nil {
+	db := global.GOrmDao.Model(&model.SysPost{})
+	if param.PostName != "" {
+		db.Where("post_name like ?", "%"+param.PostName+"%")
+	}
+	if param.PostCode != "" {
+		db.Where("post_code like ?", "%"+param.PostCode+"%")
+	}
+	if param.Status != "" {
+		db.Where("status = ?", param.Status)
+	}
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	if err = db.Count(&page.Total).Error; err != nil {
 		return
 	}
 	// 计算分页信息
 	page.Calculate()
 	// 生成排序信息
-	if page.OrderByColumn != "" {
-		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(&datas).Error
-	return err, datas, total
+	var dataList []*model.SysPost
+	err = db.Limit(page.Limit).Offset(page.Offset).Find(&dataList).Error
+	page.Rows = dataList
+	return err, page
 }
 
 // List 获取SysPost记录

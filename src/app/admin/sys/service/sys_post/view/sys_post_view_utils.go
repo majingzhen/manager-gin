@@ -164,3 +164,22 @@ func (viewUtils *SysPostViewUtils) Data2ViewList(dataList []*model.SysPost) (err
 	}
 	return
 }
+
+func (viewUtils *SysPostViewUtils) PageData2ViewList(pageInfo *common.PageInfo) (err error, res *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysPostViewUtils PageData2ViewList error: %v", e)
+			global.Logger.Error("SysPostViewUtils.PageData2ViewList:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	if pageInfo != nil && pageInfo.Rows != nil {
+		if p, ok := pageInfo.Rows.([]*model.SysPost); ok {
+			if err, viewList := viewUtils.Data2ViewList(p); err == nil {
+				pageInfo.Rows = viewList
+			}
+		}
+	}
+	res = pageInfo
+	return
+}

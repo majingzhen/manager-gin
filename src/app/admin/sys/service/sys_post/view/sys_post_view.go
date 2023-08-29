@@ -6,6 +6,8 @@
 // @create 2023-08-21 17:37:56
 package view
 
+import "manager-gin/src/common"
+
 // SysPostView 结构体
 
 type SysPostView struct {
@@ -22,6 +24,7 @@ type SysPostView struct {
 }
 
 type SysPostPageView struct {
+	common.PageView
 	// TODO 按需修改
 	Id         string `json:"id" form:"id"`
 	PostCode   string `json:"postCode" form:"postCode"`
@@ -33,9 +36,4 @@ type SysPostPageView struct {
 	UpdateBy   string `json:"updateBy" form:"updateBy"`
 	UpdateTime string `json:"updateTime" form:"updateTime"`
 	Remark     string `json:"remark" form:"remark"`
-
-	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
-	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
-	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
-	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
 }
