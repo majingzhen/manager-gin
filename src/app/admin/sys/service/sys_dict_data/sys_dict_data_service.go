@@ -70,25 +70,13 @@ func (s *SysDictDataService) Get(id string) (err error, sysDictDataView *view.Sy
 // Page 分页获取SysDictData记录
 // Author
 func (s *SysDictDataService) Page(pageInfo *view.SysDictDataPageView) (err error, res *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
+	if err, res = s.sysDictDataDao.Page(pageInfo); err != nil {
 		return err, nil
 	}
-	err1, datas, total := s.sysDictDataDao.Page(param, page)
-	if err1 != nil {
-		return err1, res
-	}
-	err2, viewList := s.viewUtils.Data2ViewList(datas)
-	if err2 != nil {
-		return err2, res
-	}
-	res = &common.PageInfo{
-		Total: total,
-		Rows:  viewList,
-	}
-	return err, res
+	return s.viewUtils.PageData2ViewList(res)
 }
 
+// GetByType 根据类型获取数据
 func (s *SysDictDataService) GetByType(dictType string) (err error, views []*view.SysDictDataView) {
 	err1, datas := s.sysDictDataDao.GetByType(dictType)
 	if err1 != nil {

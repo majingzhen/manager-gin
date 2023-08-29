@@ -8,6 +8,7 @@ package dao
 
 import (
 	"manager-gin/src/app/admin/sys/model"
+	"manager-gin/src/app/admin/sys/service/sys_dict_data/view"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
@@ -46,32 +47,32 @@ func (dao *SysDictDataDao) Get(id string) (err error, sysDictData *model.SysDict
 
 // Page 分页获取SysDictData记录
 // Author
-func (dao *SysDictDataDao) Page(param *model.SysDictData, page *common.PageInfo) (err error, datas []*model.SysDictData, total int64) {
+func (dao *SysDictDataDao) Page(param *view.SysDictDataPageView) (err error, page *common.PageInfo) {
 	// 创建model
-	model := global.GOrmDao.Model(&model.SysDictData{})
+	db := global.GOrmDao.Model(&model.SysDictData{})
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.DictType != "" {
-		model = model.Where("dict_type = ?", param.DictType)
+		db.Where("dict_type = ?", param.DictType)
 	}
 	if param.DictLabel != "" {
-		model = model.Where("dict_label like ?", "%"+param.DictLabel+"%")
+		db.Where("dict_label like ?", "%"+param.DictLabel+"%")
 	}
 	if param.Status != "" {
-		model = model.Where("status = ?", param.Status)
+		db.Where("status = ?", param.Status)
 	}
-
-	err = model.Count(&total).Error
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	err = db.Count(&page.Total).Error
 	if err != nil {
 		return
 	}
-	// 计算分页信息
-	page.Calculate()
 	// 生成排序信息
-	if page.OrderByColumn != "" {
-		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(&datas).Error
-	return err, datas, total
+	var dataList []*model.SysDictData
+	err = db.Limit(page.Limit).Offset(page.Offset).Find(&dataList).Error
+	page.Rows = dataList
+	return err, page
 }
 
 func (dao *SysDictDataDao) GetByType(dictType string) (err error, sysDictData []*model.SysDictData) {

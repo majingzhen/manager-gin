@@ -100,6 +100,25 @@ func (viewUtils *SysDictDataViewUtils) View2Data(view *SysDictDataView) (err err
 	return
 }
 
+func (viewUtils *SysDictDataViewUtils) PageData2ViewList(pageInfo *common.PageInfo) (err error, res *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysDictDataViewUtils PageData2ViewList error: %v", e)
+			global.Logger.Error("SysDictDataViewUtils.PageData2ViewList:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	if pageInfo != nil && pageInfo.Rows != nil {
+		if p, ok := pageInfo.Rows.([]*model.SysDictData); ok {
+			if err, viewList := viewUtils.Data2ViewList(p); err == nil {
+				pageInfo.Rows = viewList
+			}
+		}
+	}
+	res = pageInfo
+	return
+}
+
 func (viewUtils *SysDictDataViewUtils) Page2Data(pageInfo *SysDictDataPageView) (err error, data *model.SysDictData, page *common.PageInfo) {
 	defer func() {
 		if e := recover(); e != nil {

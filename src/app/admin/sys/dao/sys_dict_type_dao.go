@@ -8,6 +8,7 @@ package dao
 
 import (
 	"manager-gin/src/app/admin/sys/model"
+	"manager-gin/src/app/admin/sys/service/sys_dict_type/view"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
@@ -53,7 +54,7 @@ func (dao *SysDictTypeDao) Get(id string) (err error, sysDictType *model.SysDict
 
 // Page 分页获取SysDictType记录
 // Author
-func (dao *SysDictTypeDao) Page(param *model.SysDictType, page *common.PageInfo) (err error, sysDictTypes []*model.SysDictType, total int64) {
+func (dao *SysDictTypeDao) Page(param *view.SysDictTypePageView) (err error, page *common.PageInfo) {
 	// 创建db
 	db := global.GOrmDao.Model(&model.SysDictType{})
 	// 如果有条件搜索 下方会自动创建搜索语句
@@ -66,17 +67,18 @@ func (dao *SysDictTypeDao) Page(param *model.SysDictType, page *common.PageInfo)
 	if param.Status != "" {
 		db = db.Where("status = ?", param.Status)
 	}
-	err = db.Count(&total).Error
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	err = db.Count(&page.Total).Error
 	if err != nil {
 		return
 	}
-	// 计算分页信息
-	page.Calculate()
-	if page.OrderByColumn != "" {
-		db.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
-	err = db.Limit(page.Limit).Offset(page.Offset).Find(&sysDictTypes).Error
-	return err, sysDictTypes, total
+	var dataList []*model.SysDictType
+	err = db.Limit(page.Limit).Offset(page.Offset).Find(&dataList).Error
+	page.Rows = dataList
+	return err, page
 }
 
 func (dao *SysDictTypeDao) SelectDictTypeAll() (err error, datas []*model.SysDictType) {

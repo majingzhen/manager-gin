@@ -17,7 +17,7 @@ import (
 
 type SysDictTypeViewUtils struct{}
 
-func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2View(data *model.SysDictType) (err error, view *SysDictTypeView) {
+func (viewUtils *SysDictTypeViewUtils) Data2View(data *model.SysDictType) (err error, view *SysDictTypeView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictTypeViewUtils View2Data error: %v", e)
@@ -39,7 +39,7 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2View(data *model.SysDictT
 	return
 }
 
-func (sysDictTypeViewUtils *SysDictTypeViewUtils) Page2Data(pageInfo *SysDictTypePageView) (err error, data *model.SysDictType, page *common.PageInfo) {
+func (viewUtils *SysDictTypeViewUtils) Page2Data(pageInfo *SysDictTypePageView) (err error, data *model.SysDictType, page *common.PageInfo) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictTypeViewUtils View2Data error: %v", e)
@@ -62,7 +62,7 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) Page2Data(pageInfo *SysDictTyp
 	return
 }
 
-func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2Data(view *SysDictTypeView) (err error, data *model.SysDictType) {
+func (viewUtils *SysDictTypeViewUtils) View2Data(view *SysDictTypeView) (err error, data *model.SysDictType) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictTypeViewUtils View2Data error: %v", e)
@@ -84,7 +84,26 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2Data(view *SysDictTypeVie
 	return
 }
 
-func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2DataList(viewList []*SysDictTypeView) (err error, dataList []*model.SysDictType) {
+func (viewUtils *SysDictTypeViewUtils) PageData2ViewList(pageInfo *common.PageInfo) (err error, res *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysDictTypeViewUtils PageData2ViewList error: %v", e)
+			global.Logger.Error("SysDictTypeViewUtils.PageData2ViewList:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	if pageInfo != nil && pageInfo.Rows != nil {
+		if p, ok := pageInfo.Rows.([]*model.SysDictType); ok {
+			if err, viewList := viewUtils.Data2ViewList(p); err == nil {
+				pageInfo.Rows = viewList
+			}
+		}
+	}
+	res = pageInfo
+	return
+}
+
+func (viewUtils *SysDictTypeViewUtils) View2DataList(viewList []*SysDictTypeView) (err error, dataList []*model.SysDictType) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictTypeViewUtils View2DataList error: %v", e)
@@ -96,7 +115,7 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2DataList(viewList []*SysD
 		var dataTmpList []*model.SysDictType
 		for i := range viewList {
 			view := viewList[i]
-			err, data := sysDictTypeViewUtils.View2Data(view)
+			err, data := viewUtils.View2Data(view)
 			if err == nil {
 				dataTmpList = append(dataTmpList, data)
 			}
@@ -106,7 +125,7 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) View2DataList(viewList []*SysD
 	return
 }
 
-func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2ViewList(dataList []*model.SysDictType) (err error, viewList []*SysDictTypeView) {
+func (viewUtils *SysDictTypeViewUtils) Data2ViewList(dataList []*model.SysDictType) (err error, viewList []*SysDictTypeView) {
 	defer func() {
 		if e := recover(); e != nil {
 			err = fmt.Errorf("SysDictTypeViewUtils Data2ViewList error: %v", e)
@@ -118,7 +137,7 @@ func (sysDictTypeViewUtils *SysDictTypeViewUtils) Data2ViewList(dataList []*mode
 		var viewTmpList []*SysDictTypeView
 		for i := range dataList {
 			data := (dataList)[i]
-			err, view := sysDictTypeViewUtils.Data2View(data)
+			err, view := viewUtils.Data2View(data)
 			if err == nil {
 				viewTmpList = append(viewTmpList, view)
 			}

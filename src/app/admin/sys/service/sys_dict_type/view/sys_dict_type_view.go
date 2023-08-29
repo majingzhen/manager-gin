@@ -6,6 +6,8 @@
 // @create 2023-08-18 13:41:26
 package view
 
+import "manager-gin/src/common"
+
 // SysDictTypeView 结构体
 
 type SysDictTypeView struct {
@@ -21,12 +23,9 @@ type SysDictTypeView struct {
 }
 
 type SysDictTypePageView struct {
-	DictName      string `json:"dictName" form:"dictName"`
-	DictType      string `json:"dictType" form:"dictType"`
-	Status        string `json:"status" form:"status"`
-	CreateTime    string `json:"createTime" form:"createTime"`
-	OrderByColumn string `form:"orderByColumn" form:"orderByColumn"` //排序字段
-	IsAsc         string `form:"isAsc" form:"isAsc"`                 //排序方式
-	PageNum       int    `form:"pageNum" form:"pageNum"`             //当前页码
-	PageSize      int    `form:"pageSize" form:"pageSize"`           //每页数
+	common.PageView
+	DictName   string `json:"dictName" form:"dictName"`
+	DictType   string `json:"dictType" form:"dictType"`
+	Status     string `json:"status" form:"status"`
+	CreateTime string `json:"createTime" form:"createTime"`
 }

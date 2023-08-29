@@ -6,6 +6,8 @@
 // @create 2023-08-20 19:08:42
 package view
 
+import "manager-gin/src/common"
+
 // SysDictDataView 结构体
 
 type SysDictDataView struct {
@@ -26,6 +28,7 @@ type SysDictDataView struct {
 }
 
 type SysDictDataPageView struct {
+	common.PageView
 	// TODO 按需修改
 	Id         string `json:"id" form:"id"`
 	DictSort   int    `json:"dictSort" form:"dictSort"`
@@ -41,9 +44,4 @@ type SysDictDataPageView struct {
 	UpdateBy   string `json:"updateBy" form:"updateBy"`
 	UpdateTime string `json:"updateTime" form:"updateTime"`
 	Remark     string `json:"remark" form:"remark"`
-
-	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
-	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
-	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
-	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
 }

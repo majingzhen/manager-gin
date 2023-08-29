@@ -77,23 +77,10 @@ func (s *SysDictTypeService) Get(id string) (err error, sysDictTypeView *view.Sy
 // Page 分页获取SysDictType记录
 // Author
 func (s *SysDictTypeService) Page(pageInfo *view.SysDictTypePageView) (err error, res *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
+	if err, res = s.sysDictTypeDao.Page(pageInfo); err != nil {
 		return err, nil
 	}
-	err1, sysDictTypes, total := s.sysDictTypeDao.Page(param, page)
-	if err1 != nil {
-		return err1, nil
-	}
-	err2, viewList := s.viewUtils.Data2ViewList(sysDictTypes)
-	if err2 != nil {
-		return err2, nil
-	}
-	res = &common.PageInfo{
-		Total: total,
-		Rows:  viewList,
-	}
-	return nil, res
+	return s.viewUtils.PageData2ViewList(res)
 }
 
 // SelectDictTypeAll 获取全部数据
