@@ -84,43 +84,6 @@ func (viewUtils *SysPostViewUtils) View2Data(view *SysPostView) (err error, data
 	return
 }
 
-func (viewUtils *SysPostViewUtils) Page2Data(pageInfo *SysPostPageView) (err error, data *model.SysPost, page *common.PageInfo) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = fmt.Errorf("SysPostViewUtils View2Data error: %v", e)
-			global.Logger.Error("SysPostViewUtils.View2Data:格式转换异常",
-				zap.Any("error", e))
-		}
-	}()
-	// TODO 按需修改
-	var tmp model.SysPost
-
-	tmp.Id = pageInfo.Id
-
-	tmp.PostCode = pageInfo.PostCode
-
-	tmp.PostName = pageInfo.PostName
-
-	tmp.PostSort = pageInfo.PostSort
-
-	tmp.Status = pageInfo.Status
-
-	tmp.CreateBy = pageInfo.CreateBy
-
-	tmp.UpdateBy = pageInfo.UpdateBy
-
-	tmp.Remark = pageInfo.Remark
-
-	data = &tmp
-	page = &common.PageInfo{
-		PageSize:      pageInfo.PageSize,
-		PageNum:       pageInfo.PageNum,
-		OrderByColumn: pageInfo.OrderByColumn,
-		IsAsc:         pageInfo.IsAsc,
-	}
-	return
-}
-
 func (viewUtils *SysPostViewUtils) View2DataList(viewList []*SysPostView) (err error, dataList []*model.SysPost) {
 	defer func() {
 		if e := recover(); e != nil {

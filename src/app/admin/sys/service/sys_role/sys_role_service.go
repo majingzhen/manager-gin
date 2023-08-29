@@ -159,25 +159,11 @@ func (s *SysRoleService) Get(id string) (err error, sysRoleView *view.SysRoleVie
 // Page 分页获取SysRole记录
 // Author
 func (s *SysRoleService) Page(pageInfo *view.SysRolePageView, sysUserView *userView.SysUserView) (err error, res *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
-		return err, nil
-	}
-	param.DataScopeSql = aspect.DataScopeFilter(sysUserView, "d", "u", "")
-	err1, datas, total := s.sysRoleDao.Page(param, page)
-	if err1 != nil {
-		return err1, res
-	}
-	if err2, viewList := s.viewUtils.Data2ViewList(datas); err2 != nil {
-		return err2, res
-	} else {
-		res = &common.PageInfo{
-			Total: total,
-			Rows:  viewList,
-		}
+	pageInfo.DataScopeSql = aspect.DataScopeFilter(sysUserView, "d", "u", "")
+	if err, res = s.sysRoleDao.Page(pageInfo); err != nil {
 		return err, res
 	}
-
+	return s.viewUtils.PageData2ViewList(res)
 }
 
 // List 获取SysRole列表

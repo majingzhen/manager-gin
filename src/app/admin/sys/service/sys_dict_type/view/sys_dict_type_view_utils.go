@@ -39,29 +39,6 @@ func (viewUtils *SysDictTypeViewUtils) Data2View(data *model.SysDictType) (err e
 	return
 }
 
-func (viewUtils *SysDictTypeViewUtils) Page2Data(pageInfo *SysDictTypePageView) (err error, data *model.SysDictType, page *common.PageInfo) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = fmt.Errorf("SysDictTypeViewUtils View2Data error: %v", e)
-			global.Logger.Error("SysDictTypeViewUtils.Data2View:格式转换异常",
-				zap.Any("error", e))
-		}
-	}()
-
-	var tmp model.SysDictType
-	tmp.DictName = pageInfo.DictName
-	tmp.DictType = pageInfo.DictType
-	tmp.Status = pageInfo.Status
-	data = &tmp
-	page = &common.PageInfo{
-		PageSize:      pageInfo.PageSize,
-		PageNum:       pageInfo.PageNum,
-		OrderByColumn: pageInfo.OrderByColumn,
-		IsAsc:         pageInfo.IsAsc,
-	}
-	return
-}
-
 func (viewUtils *SysDictTypeViewUtils) View2Data(view *SysDictTypeView) (err error, data *model.SysDictType) {
 	defer func() {
 		if e := recover(); e != nil {

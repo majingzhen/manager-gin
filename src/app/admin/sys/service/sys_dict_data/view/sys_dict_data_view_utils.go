@@ -119,51 +119,6 @@ func (viewUtils *SysDictDataViewUtils) PageData2ViewList(pageInfo *common.PageIn
 	return
 }
 
-func (viewUtils *SysDictDataViewUtils) Page2Data(pageInfo *SysDictDataPageView) (err error, data *model.SysDictData, page *common.PageInfo) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = fmt.Errorf("SysDictDataViewUtils View2Data error: %v", e)
-			global.Logger.Error("SysDictDataViewUtils.View2Data:格式转换异常",
-				zap.Any("error", e))
-		}
-	}()
-	// TODO 按需修改
-	var tmp model.SysDictData
-
-	tmp.Id = pageInfo.Id
-
-	tmp.DictSort = pageInfo.DictSort
-
-	tmp.DictLabel = pageInfo.DictLabel
-
-	tmp.DictValue = pageInfo.DictValue
-
-	tmp.DictType = pageInfo.DictType
-
-	tmp.CssClass = pageInfo.CssClass
-
-	tmp.ListClass = pageInfo.ListClass
-
-	tmp.IsDefault = pageInfo.IsDefault
-
-	tmp.Status = pageInfo.Status
-
-	tmp.CreateBy = pageInfo.CreateBy
-
-	tmp.UpdateBy = pageInfo.UpdateBy
-
-	tmp.Remark = pageInfo.Remark
-
-	data = &tmp
-	page = &common.PageInfo{
-		PageSize:      pageInfo.PageSize,
-		PageNum:       pageInfo.PageNum,
-		OrderByColumn: pageInfo.OrderByColumn,
-		IsAsc:         pageInfo.IsAsc,
-	}
-	return
-}
-
 func (viewUtils *SysDictDataViewUtils) View2DataList(viewList []*SysDictDataView) (err error, dataList []*model.SysDictData) {
 	defer func() {
 		if e := recover(); e != nil {

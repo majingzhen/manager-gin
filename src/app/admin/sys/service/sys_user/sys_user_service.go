@@ -155,30 +155,23 @@ func (s *SysUserService) Get(id string) (err error, sysUserView *view.SysUserVie
 // Page 分页获取SysUser记录
 // Author
 func (s *SysUserService) Page(pageInfo *view.SysUserPageView, user *view.SysUserView) (err error, res *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
-		return err, nil
+	pageInfo.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
+	if err, res = s.sysUserDao.Page(pageInfo); err != nil {
+		return err, res
 	}
-	param.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
-	err1, datas, total := s.sysUserDao.Page(param, page)
-	if err1 != nil {
-		return err1, res
-	}
-	if err2, viewList := s.viewUtils.Data2ViewList(datas); err2 != nil {
-		return err2, res
+	if err, res = s.viewUtils.PageData2ViewList(res); err != nil {
+		return err, res
 	} else {
-		// 组装部门数据
-		for i := 0; i < len(viewList); i++ {
-			deptId := viewList[i].DeptId
-			if err3, deptView := s.deptService.Get(deptId); err3 != nil {
-				return err3, nil
-			} else {
-				viewList[i].Dept = deptView
+		if o, ok := res.Rows.([]*view.SysUserView); ok {
+			// 组装部门数据
+			for i := 0; i < len(o); i++ {
+				deptId := o[i].DeptId
+				if err3, deptView := s.deptService.Get(deptId); err3 != nil {
+					return err3, nil
+				} else {
+					o[i].Dept = deptView
+				}
 			}
-		}
-		res = &common.PageInfo{
-			Total: total,
-			Rows:  viewList,
 		}
 		return err, res
 	}
@@ -293,64 +286,48 @@ func (s *SysUserService) AuthRole(v *view.SysUserView) error {
 }
 
 // SelectAllocatedList 获取已分配用户角色的用户列表
-func (s *SysUserService) SelectAllocatedList(pageInfo *view.SysUserPageView, user *view.SysUserView) (error, *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
+func (s *SysUserService) SelectAllocatedList(pageInfo *view.SysUserPageView, user *view.SysUserView) (err error, res *common.PageInfo) {
+	pageInfo.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
+	if err, res = s.sysUserDao.SelectAllocatedList(pageInfo); err != nil {
 		return err, nil
 	}
-	roleId := pageInfo.RoleId
-	param.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
-	err1, datas, total := s.sysUserDao.SelectAllocatedList(param, page, roleId)
-	if err1 != nil {
-		return err1, nil
-	}
-	if err2, viewList := s.viewUtils.Data2ViewList(datas); err2 != nil {
-		return err2, nil
+	if err, res = s.viewUtils.PageData2ViewList(res); err != nil {
+		return err, res
 	} else {
-		// 组装部门数据
-		for i := 0; i < len(viewList); i++ {
-			deptId := viewList[i].DeptId
-			if err3, deptView := s.deptService.Get(deptId); err3 != nil {
-				return err3, nil
-			} else {
-				viewList[i].Dept = deptView
+		if o, ok := res.Rows.([]*view.SysUserView); ok {
+			// 组装部门数据
+			for i := 0; i < len(o); i++ {
+				deptId := o[i].DeptId
+				if err3, deptView := s.deptService.Get(deptId); err3 != nil {
+					return err3, nil
+				} else {
+					o[i].Dept = deptView
+				}
 			}
-		}
-		res := &common.PageInfo{
-			Total: total,
-			Rows:  viewList,
 		}
 		return err, res
 	}
 }
 
 // SelectUnallocatedList 获取未分配用户角色的用户列表
-func (s *SysUserService) SelectUnallocatedList(pageInfo *view.SysUserPageView, user *view.SysUserView) (error, *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
+func (s *SysUserService) SelectUnallocatedList(pageInfo *view.SysUserPageView, user *view.SysUserView) (err error, res *common.PageInfo) {
+	pageInfo.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
+	if err, res = s.sysUserDao.SelectUnallocatedList(pageInfo); err != nil {
 		return err, nil
 	}
-	roleId := pageInfo.RoleId
-	param.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
-	err1, datas, total := s.sysUserDao.SelectUnallocatedList(param, page, roleId)
-	if err1 != nil {
-		return err1, nil
-	}
-	if err2, viewList := s.viewUtils.Data2ViewList(datas); err2 != nil {
-		return err2, nil
+	if err, res = s.viewUtils.PageData2ViewList(res); err != nil {
+		return err, res
 	} else {
-		// 组装部门数据
-		for i := 0; i < len(viewList); i++ {
-			deptId := viewList[i].DeptId
-			if err3, deptView := s.deptService.Get(deptId); err3 != nil {
-				return err3, nil
-			} else {
-				viewList[i].Dept = deptView
+		if o, ok := res.Rows.([]*view.SysUserView); ok {
+			// 组装部门数据
+			for i := 0; i < len(o); i++ {
+				deptId := o[i].DeptId
+				if err3, deptView := s.deptService.Get(deptId); err3 != nil {
+					return err3, nil
+				} else {
+					o[i].Dept = deptView
+				}
 			}
-		}
-		res := &common.PageInfo{
-			Total: total,
-			Rows:  viewList,
 		}
 		return err, res
 	}

@@ -10,6 +10,7 @@ import (
 	deptView "manager-gin/src/app/admin/sys/service/sys_dept/view"
 	postView "manager-gin/src/app/admin/sys/service/sys_post/view"
 	roleView "manager-gin/src/app/admin/sys/service/sys_role/view"
+	"manager-gin/src/common"
 )
 
 // SysUserView 结构体
@@ -41,23 +42,20 @@ type SysUserView struct {
 }
 
 type SysUserPageView struct {
+	common.PageView
 	// TODO 按需修改
-	Id          string `json:"id" form:"id"`
-	DeptId      string `json:"deptId" form:"deptId"`
-	UserName    string `json:"userName" form:"userName"`
-	NickName    string `json:"nickName" form:"nickName"`
-	UserType    string `json:"userType" form:"userType"`
-	Email       string `json:"email" form:"email"`
-	PhoneNumber string `json:"phoneNumber" form:"phoneNumber"`
-	Sex         string `json:"sex" form:"sex"`
-	Status      string `json:"status" form:"status"`
-	CreateTime  string `json:"createTime" form:"createTime"`
-	RoleId      string `json:"roleId" form:"roleId"`
-
-	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
-	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
-	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
-	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
+	Id           string `json:"id" form:"id"`
+	DeptId       string `json:"deptId" form:"deptId"`
+	UserName     string `json:"userName" form:"userName"`
+	NickName     string `json:"nickName" form:"nickName"`
+	UserType     string `json:"userType" form:"userType"`
+	Email        string `json:"email" form:"email"`
+	PhoneNumber  string `json:"phoneNumber" form:"phoneNumber"`
+	Sex          string `json:"sex" form:"sex"`
+	Status       string `json:"status" form:"status"`
+	CreateTime   string `json:"createTime" form:"createTime"`
+	RoleId       string `json:"roleId" form:"roleId"`
+	DataScopeSql string
 }
 
 // SysUserInfoView 结构体

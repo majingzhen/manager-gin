@@ -9,6 +9,7 @@ package dao
 import (
 	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
+	"manager-gin/src/app/admin/sys/service/sys_role/view"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
@@ -54,7 +55,7 @@ func (dao *SysRoleDao) Get(id string) (err error, sysRole *model.SysRole) {
 
 // Page 分页获取SysRole记录
 // Author
-func (dao *SysRoleDao) Page(param *model.SysRole, page *common.PageInfo) (err error, datas []*model.SysRole, total int64) {
+func (dao *SysRoleDao) Page(param *view.SysRolePageView) (err error, page *common.PageInfo) {
 	// 创建model
 	db := global.GOrmDao.Table("sys_role r")
 	db.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
@@ -77,19 +78,18 @@ func (dao *SysRoleDao) Page(param *model.SysRole, page *common.PageInfo) (err er
 	if param.DataScopeSql != "" {
 		db.Where(param.DataScopeSql)
 	}
-	if err = db.Count(&total).Error; err != nil {
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	if err = db.Count(&page.Total).Error; err != nil {
 		return
 	}
-	// 计算分页信息
-	page.Calculate()
 	// 生成排序信息
-	if page.OrderByColumn != "" {
-		db.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
 	var tmp []*model.SysRole
 	err = db.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = tmp
-	return err, datas, total
+	page.Rows = tmp
+	return err, page
 }
 
 // List 获取SysRole记录

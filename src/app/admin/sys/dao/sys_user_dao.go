@@ -9,6 +9,7 @@ package dao
 import (
 	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
+	"manager-gin/src/app/admin/sys/service/sys_user/view"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
@@ -54,7 +55,7 @@ func (dao *SysUserDao) Get(id string) (err error, sysUser *model.SysUser) {
 
 // Page 分页获取SysUser记录
 // Author
-func (dao *SysUserDao) Page(param *model.SysUser, page *common.PageInfo) (err error, datas []*model.SysUser, total int64) {
+func (dao *SysUserDao) Page(param *view.SysUserPageView) (err error, page *common.PageInfo) {
 	// 创建model
 	db := global.GOrmDao.Table("sys_user u")
 	db.Select("distinct u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
@@ -73,24 +74,23 @@ func (dao *SysUserDao) Page(param *model.SysUser, page *common.PageInfo) (err er
 		db.Where("u.status = ?", param.Status)
 	}
 	if param.DeptId != "" {
-		db.Where("u.dept_id = ?", param.DeptId)
+		db.Where("(u.dept_id = ? or u.dept_id in (SELECT t.id FROM sys_dept t WHERE find_in_set(?, ancestors)))", param.DeptId, param.DeptId)
 	}
 	if param.DataScopeSql != "" {
 		db.Where(param.DataScopeSql)
 	}
-	if err = db.Count(&total).Error; err != nil {
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	if err = db.Count(&page.Total).Error; err != nil {
 		return
 	}
-	// 计算分页信息
-	page.Calculate()
 	// 生成排序信息
-	if page.OrderByColumn != "" {
-		db.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
 	var tmp []*model.SysUser
 	err = db.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = tmp
-	return err, datas, total
+	page.Rows = tmp
+	return err, page
 }
 
 // List 获取SysUser记录
@@ -157,15 +157,15 @@ func (dao *SysUserDao) SelectByField(fieldName string, value string) (error, *mo
 
 }
 
-// SelectAllocatedList
-func (dao *SysUserDao) SelectAllocatedList(param *model.SysUser, page *common.PageInfo, roleId string) (err error, datas []*model.SysUser, total int64) {
+// SelectAllocatedList 获取已分配用户角色的用户列表
+func (dao *SysUserDao) SelectAllocatedList(param *view.SysUserPageView) (err error, page *common.PageInfo) {
 	// 创建model
 	db := global.GOrmDao.Table("sys_user u")
 	db.Select("distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time")
 	db.Joins("left join sys_dept d on u.dept_id = d.id")
 	db.Joins("left join sys_user_role ur on u.id = ur.user_id")
 	db.Joins("left join sys_role r on ur.role_id = r.id")
-	db.Where("r.id = ?", roleId)
+	db.Where("r.id = ?", param.RoleId)
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.UserName != "" {
 		db.Where("u.user_name like ?", "%"+param.UserName+"%")
@@ -176,30 +176,30 @@ func (dao *SysUserDao) SelectAllocatedList(param *model.SysUser, page *common.Pa
 	if param.DataScopeSql != "" {
 		db.Where(param.DataScopeSql)
 	}
-	if err = db.Count(&total).Error; err != nil {
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	if err = db.Count(&page.Total).Error; err != nil {
 		return
 	}
-	// 计算分页信息
-	page.Calculate()
 	// 生成排序信息
-	if page.OrderByColumn != "" {
-		db.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
 	var tmp []*model.SysUser
 	err = db.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = tmp
-	return err, datas, total
+	page.Rows = tmp
+	return err, page
 }
 
-func (dao *SysUserDao) SelectUnallocatedList(param *model.SysUser, page *common.PageInfo, roleId string) (err error, datas []*model.SysUser, total int64) {
+// SelectUnallocatedList 获取未分配用户角色的用户列表
+func (dao *SysUserDao) SelectUnallocatedList(param *view.SysUserPageView) (err error, page *common.PageInfo) {
 	// 创建model
 	db := global.GOrmDao.Table("sys_user u")
 	db.Select("distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time")
 	db.Joins("left join sys_dept d on u.dept_id = d.id")
 	db.Joins("left join sys_user_role ur on u.id = ur.user_id")
 	db.Joins("left join sys_role r on ur.role_id = r.id")
-	db.Where("(r.id != ? or r.id is null)", roleId)
-	db.Where("u.id not in (select u.id from sys_user u inner join sys_user_role ur on u.id = ur.user_id and ur.role_id = ?)", roleId)
+	db.Where("(r.id != ? or r.id is null)", param.RoleId)
+	db.Where("u.id not in (select u.id from sys_user u inner join sys_user_role ur on u.id = ur.user_id and ur.role_id = ?)", param.RoleId)
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.UserName != "" {
 		db.Where("u.user_name like ?", "%"+param.UserName+"%")
@@ -210,17 +210,16 @@ func (dao *SysUserDao) SelectUnallocatedList(param *model.SysUser, page *common.
 	if param.DataScopeSql != "" {
 		db.Where(param.DataScopeSql)
 	}
-	if err = db.Count(&total).Error; err != nil {
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	if err = db.Count(&page.Total).Error; err != nil {
 		return
 	}
-	// 计算分页信息
-	page.Calculate()
 	// 生成排序信息
-	if page.OrderByColumn != "" {
-		db.Order(page.OrderByColumn + " " + page.IsAsc + " ")
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
 	var tmp []*model.SysUser
 	err = db.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	datas = tmp
-	return err, datas, total
+	page.Rows = tmp
+	return err, page
 }

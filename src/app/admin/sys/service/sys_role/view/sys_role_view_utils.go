@@ -110,45 +110,6 @@ func (viewUtils *SysRoleViewUtils) View2Data(view *SysRoleView) (err error, data
 	return
 }
 
-func (viewUtils *SysRoleViewUtils) Page2Data(pageInfo *SysRolePageView) (err error, data *model.SysRole, page *common.PageInfo) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = fmt.Errorf("SysRoleViewUtils View2Data error: %v", e)
-			global.Logger.Error("SysRoleViewUtils.View2Data:格式转换异常",
-				zap.Any("error", e))
-		}
-	}()
-	// TODO 按需修改
-	var tmp model.SysRole
-
-	tmp.Id = pageInfo.Id
-
-	tmp.RoleName = pageInfo.RoleName
-
-	tmp.RoleKey = pageInfo.RoleKey
-
-	tmp.RoleSort = pageInfo.RoleSort
-
-	tmp.DataScope = pageInfo.DataScope
-
-	tmp.Status = pageInfo.Status
-
-	tmp.CreateBy = pageInfo.CreateBy
-
-	tmp.UpdateBy = pageInfo.UpdateBy
-
-	tmp.Remark = pageInfo.Remark
-
-	data = &tmp
-	page = &common.PageInfo{
-		PageSize:      pageInfo.PageSize,
-		PageNum:       pageInfo.PageNum,
-		OrderByColumn: pageInfo.OrderByColumn,
-		IsAsc:         pageInfo.IsAsc,
-	}
-	return
-}
-
 func (viewUtils *SysRoleViewUtils) View2DataList(viewList []*SysRoleView) (err error, dataList []*model.SysRole) {
 	defer func() {
 		if e := recover(); e != nil {
@@ -190,5 +151,24 @@ func (viewUtils *SysRoleViewUtils) Data2ViewList(dataList []*model.SysRole) (err
 		}
 		viewList = viewTmpList
 	}
+	return
+}
+
+func (viewUtils *SysRoleViewUtils) PageData2ViewList(pageInfo *common.PageInfo) (err error, res *common.PageInfo) {
+	defer func() {
+		if e := recover(); e != nil {
+			err = fmt.Errorf("SysRoleViewUtils PageData2ViewList error: %v", e)
+			global.Logger.Error("SysRoleViewUtils.PageData2ViewList:格式转换异常",
+				zap.Any("error", e))
+		}
+	}()
+	if pageInfo != nil && pageInfo.Rows != nil {
+		if p, ok := pageInfo.Rows.([]*model.SysRole); ok {
+			if err, viewList := viewUtils.Data2ViewList(p); err == nil {
+				pageInfo.Rows = viewList
+			}
+		}
+	}
+	res = pageInfo
 	return
 }

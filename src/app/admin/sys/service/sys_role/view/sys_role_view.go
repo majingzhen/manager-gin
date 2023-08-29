@@ -6,6 +6,8 @@
 // @create 2023-08-21 17:37:56
 package view
 
+import "manager-gin/src/common"
+
 // SysRoleView 结构体
 type SysRoleView struct {
 	Id                string   `json:"id" form:"id"`
@@ -28,23 +30,20 @@ type SysRoleView struct {
 }
 
 type SysRolePageView struct {
+	common.PageView
 	// TODO 按需修改
-	Id         string `json:"id" form:"id"`
-	RoleName   string `json:"roleName" form:"roleName"`
-	RoleKey    string `json:"roleKey" form:"roleKey"`
-	RoleSort   int    `json:"roleSort" form:"roleSort"`
-	DataScope  string `json:"dataScope" form:"dataScope"`
-	Status     string `json:"status" form:"status"`
-	CreateBy   string `json:"createBy" form:"createBy"`
-	CreateTime string `json:"createTime" form:"createTime"`
-	UpdateBy   string `json:"updateBy" form:"updateBy"`
-	UpdateTime string `json:"updateTime" form:"updateTime"`
-	Remark     string `json:"remark" form:"remark"`
-
-	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
-	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
-	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
-	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
+	Id           string `json:"id" form:"id"`
+	RoleName     string `json:"roleName" form:"roleName"`
+	RoleKey      string `json:"roleKey" form:"roleKey"`
+	RoleSort     int    `json:"roleSort" form:"roleSort"`
+	DataScope    string `json:"dataScope" form:"dataScope"`
+	Status       string `json:"status" form:"status"`
+	CreateBy     string `json:"createBy" form:"createBy"`
+	CreateTime   string `json:"createTime" form:"createTime"`
+	UpdateBy     string `json:"updateBy" form:"updateBy"`
+	UpdateTime   string `json:"updateTime" form:"updateTime"`
+	Remark       string `json:"remark" form:"remark"`
+	DataScopeSql string
 }
 
 type SysUserRoleView struct {
