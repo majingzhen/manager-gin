@@ -94,14 +94,13 @@ func (viewUtils *SysConfigViewUtils) PageData2ViewList(pageInfo *common.PageInfo
 	}()
 	if pageInfo != nil && pageInfo.Rows != nil {
 		if p, ok := pageInfo.Rows.([]*model.SysConfig); ok {
-			if err, viewList := viewUtils.Data2ViewList(p); err != nil {
-				return err, nil
-			} else {
+			if err, viewList := viewUtils.Data2ViewList(p); err == nil {
 				pageInfo.Rows = viewList
 			}
 		}
 	}
-	return nil, pageInfo
+	res = pageInfo
+	return
 }
 
 func (viewUtils *SysConfigViewUtils) Page2Data(pageInfo *SysConfigPageView) (err error, data *model.SysConfig, page *common.PageInfo) {

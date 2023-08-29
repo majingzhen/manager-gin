@@ -11,6 +11,13 @@ type PageInfo struct {
 	IsAsc         string      `json:"isAsc" form:"isAsc"`                 //排序方式
 }
 
+type PageView struct {
+	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
+	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
+	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
+	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
+}
+
 func CreatePageInfo(pageNum, pageSize int) *PageInfo {
 	if pageNum < 1 {
 		pageNum = 1

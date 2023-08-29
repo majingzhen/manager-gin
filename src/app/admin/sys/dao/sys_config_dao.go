@@ -60,19 +60,18 @@ func (dao *SysConfigDao) Page(param *view.SysConfigPageView) (err error, res *co
 	if param.ConfigType != "" {
 		db.Where("config_type = ?", param.ConfigType)
 	}
-	var total int64
-	if err = db.Count(&total).Error; err != nil {
+	page := common.CreatePageInfo(param.PageNum, param.PageSize)
+	if err = db.Count(&page.Total).Error; err != nil {
 		return
 	}
-	page := common.CreatePageInfo(param.PageNum, param.PageSize)
+
 	// 生成排序信息
 	if param.OrderByColumn != "" {
 		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
 	}
-	var tmp []*model.SysConfig
-	err = db.Limit(page.Limit).Offset(page.Offset).Find(&tmp).Error
-	page.Rows = tmp
-	page.Total = total
+	var dataList []*model.SysConfig
+	err = db.Limit(page.Limit).Offset(page.Offset).Find(&dataList).Error
+	page.Rows = dataList
 	return err, page
 }
 

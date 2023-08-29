@@ -155,23 +155,10 @@ func (s *SysDeptService) Get(id string) (err error, sysDeptView *view.SysDeptVie
 // Page 分页获取SysDept记录
 // Author
 func (s *SysDeptService) Page(pageInfo *view.SysDeptPageView) (err error, res *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
+	if err, res = s.sysDeptDao.Page(pageInfo); err != nil {
 		return err, nil
 	}
-	err1, datas, total := s.sysDeptDao.Page(param, page)
-	if err1 != nil {
-		return err1, nil
-	}
-	if err2, viewList := s.viewUtils.Data2ViewList(datas); err2 != nil {
-		return err2, nil
-	} else {
-		res = &common.PageInfo{
-			Total: total,
-			Rows:  viewList,
-		}
-		return err, res
-	}
+	return s.viewUtils.PageData2ViewList(res)
 }
 
 // List 获取SysDept列表
