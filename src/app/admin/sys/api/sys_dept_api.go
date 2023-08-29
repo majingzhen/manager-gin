@@ -87,25 +87,6 @@ func (api *SysDeptApi) Get(c *gin.Context) {
 	}
 }
 
-// Page 分页获取SysDept列表
-// @Summary 分页获取SysDept列表
-// @Router /sysDept/page [get]
-func (api *SysDeptApi) Page(c *gin.Context) {
-	var pageInfo view.SysDeptPageView
-	// 绑定查询参数到 pageInfo
-	if err := c.ShouldBindQuery(&pageInfo); err != nil {
-		response.FailWithMessage("获取分页数据解析失败!", c)
-		return
-	}
-
-	if err, res := api.sysDeptService.Page(&pageInfo); err != nil {
-		global.Logger.Error("获取分页信息失败!", zap.Error(err))
-		response.FailWithMessage("获取失败", c)
-	} else {
-		response.OkWithDetailed(res, "获取成功", c)
-	}
-}
-
 // List 获取SysDept列表
 // @Summary 获取SysDept列表
 // @Router /sysDept/list [get]

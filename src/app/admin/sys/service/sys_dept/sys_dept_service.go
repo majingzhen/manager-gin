@@ -152,15 +152,6 @@ func (s *SysDeptService) Get(id string) (err error, sysDeptView *view.SysDeptVie
 	return err, sysDeptView
 }
 
-// Page 分页获取SysDept记录
-// Author
-func (s *SysDeptService) Page(pageInfo *view.SysDeptPageView) (err error, res *common.PageInfo) {
-	if err, res = s.sysDeptDao.Page(pageInfo); err != nil {
-		return err, nil
-	}
-	return s.viewUtils.PageData2ViewList(res)
-}
-
 // List 获取SysDept列表
 func (s *SysDeptService) List(v *view.SysDeptView, userView *userView.SysUserView) (err error, views []*view.SysDeptView) {
 	err, data := s.viewUtils.View2Data(v)

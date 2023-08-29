@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/model"
-	"manager-gin/src/common"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
@@ -117,61 +116,6 @@ func (viewUtils *SysMenuViewUtils) View2Data(view *SysMenuView) (err error, data
 	tmp.Remark = view.Remark
 
 	data = &tmp
-	return
-}
-
-func (viewUtils *SysMenuViewUtils) Page2Data(pageInfo *SysMenuPageView) (err error, data *model.SysMenu, page *common.PageInfo) {
-	defer func() {
-		if e := recover(); e != nil {
-			err = fmt.Errorf("SysMenuViewUtils View2Data error: %v", e)
-			global.Logger.Error("SysMenuViewUtils.View2Data:格式转换异常",
-				zap.Any("error", e))
-		}
-	}()
-	// TODO 按需修改
-	var tmp model.SysMenu
-
-	tmp.Id = pageInfo.Id
-
-	tmp.MenuName = pageInfo.MenuName
-
-	tmp.ParentId = pageInfo.ParentId
-
-	tmp.OrderNum = pageInfo.OrderNum
-
-	tmp.Path = pageInfo.Path
-
-	tmp.Component = pageInfo.Component
-
-	tmp.Query = pageInfo.Query
-
-	tmp.IsFrame = pageInfo.IsFrame
-
-	tmp.IsCache = pageInfo.IsCache
-
-	tmp.MenuType = pageInfo.MenuType
-
-	tmp.Visible = pageInfo.Visible
-
-	tmp.Status = pageInfo.Status
-
-	tmp.Perms = pageInfo.Perms
-
-	tmp.Icon = pageInfo.Icon
-
-	tmp.CreateBy = pageInfo.CreateBy
-
-	tmp.UpdateBy = pageInfo.UpdateBy
-
-	tmp.Remark = pageInfo.Remark
-
-	data = &tmp
-	page = &common.PageInfo{
-		PageSize:      pageInfo.PageSize,
-		PageNum:       pageInfo.PageNum,
-		OrderByColumn: pageInfo.OrderByColumn,
-		IsAsc:         pageInfo.IsAsc,
-	}
 	return
 }
 

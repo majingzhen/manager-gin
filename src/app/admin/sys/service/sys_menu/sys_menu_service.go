@@ -110,28 +110,6 @@ func (s *SysMenuService) Get(id string) (err error, view *view.SysMenuView) {
 	return
 }
 
-// List 分页获取SysMenu记录
-// Author
-func (s *SysMenuService) List(pageInfo *view.SysMenuPageView) (err error, res *common.PageInfo) {
-	err, param, page := s.viewUtils.Page2Data(pageInfo)
-	if err != nil {
-		return err, nil
-	}
-	err1, datas, total := s.sysMenuDao.List(param, page)
-	if err1 != nil {
-		return err1, res
-	}
-	err2, viewList := s.viewUtils.Data2ViewList(datas)
-	if err2 != nil {
-		return err2, res
-	}
-	res = &common.PageInfo{
-		Total: total,
-		Rows:  viewList,
-	}
-	return err, res
-}
-
 // GetMenuPermission 根据用户id获取菜单权限
 func (s *SysMenuService) GetMenuPermission(user *userView.SysUserView) (err error, perms []string) {
 	is := user.Id == common.SYSTEM_ADMIN_ID

@@ -54,31 +54,3 @@ type MetaView struct {
 	NoCache bool   `json:"NoCache"`
 	Link    string `json:"link"`
 }
-
-type SysMenuPageView struct {
-	// TODO 按需修改
-	Id         string `json:"id" form:"id"`
-	MenuName   string `json:"menuName" form:"menuName"`
-	ParentId   string `json:"parentId" form:"parentId"`
-	OrderNum   int    `json:"orderNum" form:"orderNum"`
-	Path       string `json:"path" form:"path"`
-	Component  string `json:"component" form:"component"`
-	Query      string `json:"query" form:"query"`
-	IsFrame    int    `json:"isFrame" form:"isFrame"`
-	IsCache    int    `json:"isCache" form:"isCache"`
-	MenuType   string `json:"menuType" form:"menuType"`
-	Visible    string `json:"visible" form:"visible"`
-	Status     string `json:"status" form:"status"`
-	Perms      string `json:"perms" form:"perms"`
-	Icon       string `json:"icon" form:"icon"`
-	CreateBy   string `json:"createBy" form:"createBy"`
-	CreateTime string `json:"createTime" form:"createTime"`
-	UpdateBy   string `json:"updateBy" form:"updateBy"`
-	UpdateTime string `json:"updateTime" form:"updateTime"`
-	Remark     string `json:"remark" form:"remark"`
-
-	OrderByColumn string `json:"orderByColumn" form:"orderByColumn"` //排序字段
-	IsAsc         string `json:"isAsc" form:"isAsc"`                 //排序方式
-	PageNum       int    `json:"pageNum" form:"pageNum"`             //当前页码
-	PageSize      int    `json:"pageSize" form:"pageSize"`           //每页数
-}

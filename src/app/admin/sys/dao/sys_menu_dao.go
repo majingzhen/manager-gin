@@ -44,30 +44,6 @@ func (dao *SysMenuDao) Get(id string) (err error, sysMenu *model.SysMenu) {
 	return
 }
 
-// List 分页获取SysMenu记录
-// Author
-func (dao *SysMenuDao) List(param *model.SysMenu, page *common.PageInfo) (err error, datas []*model.SysMenu, total int64) {
-	// 创建model
-	model := global.GOrmDao.Model(&model.SysMenu{})
-	// 如果有条件搜索 下方会自动创建搜索语句
-	//if param.Id != "" {
-	//	model = model.Where("ID = ?", info.Id)
-	//}
-
-	err = model.Count(&total).Error
-	if err != nil {
-		return
-	}
-	// 计算分页信息
-	page.Calculate()
-	// 生成排序信息
-	if page.OrderByColumn != "" {
-		model.Order(page.OrderByColumn + " " + page.IsAsc + " ")
-	}
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(&datas).Error
-	return err, datas, total
-}
-
 func (dao *SysMenuDao) GetMenuPermissionByRoleId(roleId string) (err error, perms []string) {
 	var rows []model.SysMenu
 	db := global.GOrmDao.Table("sys_menu m")

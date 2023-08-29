@@ -9,8 +9,6 @@ package dao
 import (
 	"gorm.io/gorm"
 	"manager-gin/src/app/admin/sys/model"
-	"manager-gin/src/app/admin/sys/service/sys_dept/view"
-	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
 
@@ -44,28 +42,6 @@ func (dao *SysDeptDao) Update(tx *gorm.DB, sysDept model.SysDept) (err error) {
 func (dao *SysDeptDao) Get(id string) (err error, sysDept *model.SysDept) {
 	err = global.GOrmDao.Where("id = ?", id).First(&sysDept).Error
 	return
-}
-
-// Page 分页获取SysDept记录
-// Author
-func (dao *SysDeptDao) Page(param *view.SysDeptPageView) (err error, page *common.PageInfo) {
-	// 创建model
-	model := global.GOrmDao.Model(&model.SysDept{})
-	// 如果有条件搜索 下方会自动创建搜索语句
-	//if param.Id != "" {
-	//	model = model.Where("ID = ?", info.Id)
-	//}
-	if err = model.Count(&page.Total).Error; err != nil {
-		return
-	}
-	// 计算分页信息
-	page = common.CreatePageInfo(param.PageSize, param.PageNum)
-	// 生成排序信息
-	if param.OrderByColumn != "" {
-		model.Order(param.OrderByColumn + " " + param.IsAsc + " ")
-	}
-	err = model.Limit(page.Limit).Offset(page.Offset).Find(&page.Rows).Error
-	return err, page
 }
 
 // List 获取SysDept记录
