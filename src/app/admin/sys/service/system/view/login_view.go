@@ -1,13 +1,13 @@
-// Package view 自动生成模板 SysUser
+// Package view 自动生成模板 User
 // @description <TODO description class purpose>
 // @author
-// @File: sys_user
+// @File: user
 // @version 1.0.0
 // @create 2023-08-18 13:41:26
 package view
 
 import (
-	"manager-gin/src/app/admin/sys/service/sys_user/view"
+	"manager-gin/src/app/admin/sys/service/user/view"
 )
 
 // LoginUserView 结构体
@@ -19,9 +19,9 @@ type LoginUserView struct {
 }
 
 type LoginUserResView struct {
-	UserInfo    *view.SysUserView `json:"user"`
-	Roles       []string          `json:"roles"`
-	Permissions []string          `json:"permissions"`
+	UserInfo    *view.UserView `json:"user"`
+	Roles       []string       `json:"roles"`
+	Permissions []string       `json:"permissions"`
 }
 
 // Captcha 验证码响应

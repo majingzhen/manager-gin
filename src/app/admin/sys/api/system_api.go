@@ -1,17 +1,17 @@
-// Package api  SysUserApi 自动生成模板
+// Package api  UserApi 自动生成模板
 // @description <TODO description class purpose>
 // @author
-// @File: sys_user
+// @File: user
 // @version 1.0.0
 // @create 2023-08-18 13:41:26
 package api
 
 import (
 	"image/color"
-	"manager-gin/src/app/admin/sys/service/sys_menu"
-	"manager-gin/src/app/admin/sys/service/sys_role"
-	"manager-gin/src/app/admin/sys/service/sys_user"
+	"manager-gin/src/app/admin/sys/service/menu"
+	"manager-gin/src/app/admin/sys/service/role"
 	"manager-gin/src/app/admin/sys/service/system/view"
+	"manager-gin/src/app/admin/sys/service/user"
 	"manager-gin/src/common/response"
 	"manager-gin/src/framework"
 	"manager-gin/src/global"
@@ -24,9 +24,9 @@ import (
 
 type SystemApi struct {
 	BasicApi
-	sysUserService sys_user.SysUserService
-	roleService    sys_role.SysRoleService
-	menuService    sys_menu.SysMenuService
+	userService user.UserService
+	roleService role.RoleService
+	menuService menu.MenuService
 }
 
 // store 验证码
@@ -49,7 +49,7 @@ func (api *SystemApi) Login(c *gin.Context) {
 		response.FailWithMessage("账号密码不能为空", c)
 		return
 	}
-	err, userView := api.sysUserService.GetByUserName(loginUserView.UserName)
+	err, userView := api.userService.GetByUserName(loginUserView.UserName)
 	if err != nil || userView == nil {
 		global.Logger.Error("用户不存在", zap.Error(err))
 		response.FailWithMessage("用户不存在", c)
@@ -63,8 +63,8 @@ func (api *SystemApi) Login(c *gin.Context) {
 		return
 	} else {
 		// 判断是否分配角色
-		_, sysUserView := api.sysUserService.Get(userView.Id)
-		if sysUserView.Roles == nil || len(sysUserView.Roles) == 0 {
+		_, userView := api.userService.Get(userView.Id)
+		if userView.Roles == nil || len(userView.Roles) == 0 {
 			global.Logger.Error("用户不存在", zap.Error(err))
 			response.FailWithMessage("用户不存在", c)
 			return

@@ -6,36 +6,36 @@ import (
 )
 
 type SysRouter struct {
-	userRouter     router.SysUserRouter
-	menuRouter     router.SysMenuRouter
-	postRouter     router.SysPostRouter
-	configRouter   router.SysConfigRouter
-	deptRouter     router.SysDeptRouter
-	roleRouter     router.SysRoleRouter
-	dictTypeRouter router.SysDictTypeRouter
-	dictDataRouter router.SysDictDataRouter
+	userRouter     router.UserRouter
+	menuRouter     router.MenuRouter
+	postRouter     router.PostRouter
+	configRouter   router.ConfigRouter
+	deptRouter     router.DeptRouter
+	roleRouter     router.RoleRouter
+	dictTypeRouter router.DictTypeRouter
+	dictDataRouter router.DictDataRouter
 }
 
-// var jobRouter job.SysJobRouter
-// var jobLogRouter jobLog.SysJobLogRouter
-// var logininForRouter logininfor.SysLogininforRouter
+// var jobRouter job.JobRouter
+// var jobLogRouter jobLog.JobLogRouter
+// var logininForRouter logininfor.LogininforRouter
 
-// InitSysRouter 初始化 InitSys 路由信息
+// InitSysRouter 初始化 Init 路由信息
 func (r *SysRouter) InitSysRouter(Router *gin.RouterGroup) {
 	sys := Router.Group("sys")
 	{
-		r.userRouter.InitSysUserRouter(sys)
-		r.menuRouter.InitSysMenuRouter(sys)
-		r.roleRouter.InitSysRoleRouter(sys)
-		r.dictTypeRouter.InitSysDictTypeRouter(sys)
-		r.dictDataRouter.InitSysDictDataRouter(sys)
-		//noticeRouter.InitSysNoticeRouter(sys)
-		//operLogRouter.InitSysOperLogRouter(sys)
-		r.postRouter.InitSysPostRouter(sys)
-		r.configRouter.InitSysConfigRouter(sys)
-		r.deptRouter.InitSysDeptRouter(sys)
-		//jobRouter.InitSysJobRouter(sys)
-		//jobLogRouter.InitSysJobLogRouter(sys)
-		//logininForRouter.InitSysLogininforRouter(sys)
+		r.userRouter.InitUserRouter(sys)
+		r.menuRouter.InitMenuRouter(sys)
+		r.roleRouter.InitRoleRouter(sys)
+		r.dictTypeRouter.InitDictTypeRouter(sys)
+		r.dictDataRouter.InitDictDataRouter(sys)
+		//noticeRouter.InitNoticeRouter(sys)
+		//operLogRouter.InitOperLogRouter(sys)
+		r.postRouter.InitPostRouter(sys)
+		r.configRouter.InitConfigRouter(sys)
+		r.deptRouter.InitDeptRouter(sys)
+		//jobRouter.InitJobRouter(sys)
+		//jobLogRouter.InitJobLogRouter(sys)
+		//logininForRouter.InitLogininforRouter(sys)
 	}
 }
