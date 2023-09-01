@@ -12,6 +12,7 @@ import (
 	"manager-gin/src/app/admin/sys/service/role"
 	"manager-gin/src/app/admin/sys/service/system/view"
 	"manager-gin/src/app/admin/sys/service/user"
+	"manager-gin/src/common/basic"
 	"manager-gin/src/common/response"
 	"manager-gin/src/framework"
 	"manager-gin/src/global"
@@ -23,7 +24,7 @@ import (
 )
 
 type SystemApi struct {
-	BasicApi
+	basic.BasicApi
 	userService user.UserService
 	roleService role.RoleService
 	menuService menu.MenuService

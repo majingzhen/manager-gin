@@ -14,7 +14,6 @@ import (
 )
 
 // ConfigDao 结构体
-
 type ConfigDao struct{}
 
 // Create 创建Config记录

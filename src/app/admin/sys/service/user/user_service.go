@@ -15,6 +15,7 @@ import (
 	"manager-gin/src/app/admin/sys/service/role"
 	"manager-gin/src/app/admin/sys/service/user/view"
 	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"manager-gin/src/framework/aspect"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -86,7 +87,7 @@ func (s *UserService) insertUserRole(tx *gorm.DB, userId string, roleIds []strin
 // Author
 func (s *UserService) DeleteByIds(ids []string, loginUserId string) (err error) {
 	for _, id := range ids {
-		if common.SYSTEM_ADMIN_ID == id {
+		if constants.SYSTEM_ADMIN_ID == id {
 			return errors.New("不允许操作超级管理员用户")
 		}
 		if err = s.CheckUserDataScope(id, loginUserId); err != nil {
@@ -224,7 +225,7 @@ func (s *UserService) CheckFieldUnique(fieldName, value, id string) error {
 
 // CheckUserDataScope 校验数据权限
 func (s *UserService) CheckUserDataScope(userId, loginUserId string) error {
-	if common.SYSTEM_ADMIN_ID != loginUserId {
+	if constants.SYSTEM_ADMIN_ID != loginUserId {
 		err, userView := s.Get(userId)
 		if err != nil {
 			return err

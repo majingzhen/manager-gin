@@ -14,7 +14,8 @@ import (
 	roleView "manager-gin/src/app/admin/sys/service/role/view"
 	"manager-gin/src/app/admin/sys/service/user"
 	"manager-gin/src/app/admin/sys/service/user/view"
-	"manager-gin/src/common"
+	"manager-gin/src/common/basic"
+	"manager-gin/src/common/constants"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -22,7 +23,7 @@ import (
 )
 
 type UserApi struct {
-	BasicApi
+	basic.BasicApi
 	userService user.UserService
 	roleService role.RoleService
 	postService post.PostService
@@ -90,7 +91,7 @@ func (api *UserApi) Update(c *gin.Context) {
 		response.FailWithMessage("更新失败", c)
 		return
 	}
-	if common.SYSTEM_ADMIN_ID == id {
+	if constants.SYSTEM_ADMIN_ID == id {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
@@ -154,7 +155,7 @@ func (api *UserApi) Get(c *gin.Context) {
 			userInfoView.PostIds = postIds
 			var roleIds []string
 			for _, roleView := range userView.Roles {
-				if roleView.Id != common.SYSTEM_ROLE_ADMIN_ID {
+				if roleView.Id != constants.SYSTEM_ROLE_ADMIN_ID {
 					roleIds = append(roleIds, roleView.Id)
 				}
 			}
@@ -212,7 +213,7 @@ func (api *UserApi) ResetPwd(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if common.SYSTEM_ADMIN_ID == req.Id {
+	if constants.SYSTEM_ADMIN_ID == req.Id {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
@@ -238,7 +239,7 @@ func (api *UserApi) ChangeStatus(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
-	if common.SYSTEM_ADMIN_ID == req.Id {
+	if constants.SYSTEM_ADMIN_ID == req.Id {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
@@ -310,7 +311,7 @@ func (api *UserApi) AuthRole(c *gin.Context) {
 // 剔除超级管理员
 func removeAdminRole(roles *[]*roleView.RoleView) {
 	for i := 0; i < len(*roles); i++ {
-		if (*roles)[i].Id == common.SYSTEM_ROLE_ADMIN_ID {
+		if (*roles)[i].Id == constants.SYSTEM_ROLE_ADMIN_ID {
 			*roles = append((*roles)[:i], (*roles)[i+1:]...)
 			break
 		}

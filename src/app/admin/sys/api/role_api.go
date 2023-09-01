@@ -11,7 +11,8 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/service/role"
 	"manager-gin/src/app/admin/sys/service/role/view"
-	"manager-gin/src/common"
+	"manager-gin/src/common/basic"
+	"manager-gin/src/common/constants"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -19,7 +20,7 @@ import (
 )
 
 type RoleApi struct {
-	BasicApi
+	basic.BasicApi
 	roleService role.RoleService
 }
 
@@ -79,7 +80,7 @@ func (api *RoleApi) Update(c *gin.Context) {
 		return
 	}
 	// 校验参数
-	if id == common.SYSTEM_ROLE_ADMIN_ID {
+	if id == constants.SYSTEM_ROLE_ADMIN_ID {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
@@ -164,7 +165,7 @@ func (api *RoleApi) List(c *gin.Context) {
 func (api *RoleApi) ChangeStatus(c *gin.Context) {
 	var view view.RoleView
 	_ = c.ShouldBindJSON(&view)
-	if view.Id == common.SYSTEM_ROLE_ADMIN_ID {
+	if view.Id == constants.SYSTEM_ROLE_ADMIN_ID {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}
@@ -188,7 +189,7 @@ func (api *RoleApi) ChangeStatus(c *gin.Context) {
 func (api *RoleApi) DataScope(c *gin.Context) {
 	var view view.RoleView
 	_ = c.ShouldBindJSON(&view)
-	if view.Id == common.SYSTEM_ROLE_ADMIN_ID {
+	if view.Id == constants.SYSTEM_ROLE_ADMIN_ID {
 		response.FailWithMessage("超级管理员不允许修改", c)
 		return
 	}

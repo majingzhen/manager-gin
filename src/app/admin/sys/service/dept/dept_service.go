@@ -15,7 +15,7 @@ import (
 	"manager-gin/src/app/admin/sys/service/role"
 	"manager-gin/src/app/admin/sys/service/user/extend"
 	userView "manager-gin/src/app/admin/sys/service/user/view"
-	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"manager-gin/src/framework/aspect"
 	"manager-gin/src/global"
 	"strings"
@@ -43,7 +43,7 @@ func (s *DeptService) Create(deptView *view.DeptView) (err error) {
 		if err1, deptView := s.Get(dept.ParentId); err1 != nil {
 			return errors.New("父级部门不存在")
 		} else {
-			if deptView.Status == common.DEPT_DISABLE {
+			if deptView.Status == constants.DEPT_DISABLE {
 				return errors.New("父级部门已经被禁用, 禁止新增")
 			}
 			dept.Ancestors = deptView.Ancestors + "," + dept.ParentId

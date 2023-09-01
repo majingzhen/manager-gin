@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/service/dept"
 	"manager-gin/src/app/admin/sys/service/dept/view"
+	"manager-gin/src/common/basic"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -18,7 +19,7 @@ import (
 )
 
 type DeptApi struct {
-	BasicApi
+	basic.BasicApi
 	deptService dept.DeptService
 }
 

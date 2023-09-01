@@ -11,6 +11,7 @@ import (
 	"manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/app/admin/sys/service/role/view"
 	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"manager-gin/src/global"
 )
 
@@ -128,7 +129,7 @@ func (dao *RoleDao) GetRoleByUserId(userId string) (err error, roles []*model.Ro
 	model := global.GOrmDao.Table("sys_role r")
 	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
 	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
-	model.Where("ur.user_id = ? and r.status = ?", userId, common.STATUS_NORMAL)
+	model.Where("ur.user_id = ? and r.status = ?", userId, constants.STATUS_NORMAL)
 	err = model.Find(&tmp).Error
 	roles = tmp
 	return err, roles

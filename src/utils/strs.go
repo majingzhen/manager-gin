@@ -3,7 +3,7 @@ package utils
 import (
 	"github.com/gogf/gf/crypto/gmd5"
 	uuid "github.com/satori/go.uuid"
-	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"strings"
 )
 
@@ -16,7 +16,7 @@ func ToTitle(underscoreName string) string {
 }
 func ToCamelCase(underscoreName string) string {
 	words := strings.Split(strings.ToLower(underscoreName), "_")
-	for i := 1; i < len(words); i++ {
+	for i := 0; i < len(words); i++ {
 		words[i] = strings.Title(words[i])
 	}
 	return strings.Join(words, "")
@@ -29,8 +29,9 @@ func EncryptionPassword(password, salt string) string {
 	return hashedPassword
 }
 
+// IsHttp 判断是否是http链接
 func IsHttp(link string) bool {
-	prefixes := []string{common.HTTP, common.HTTPS}
+	prefixes := []string{constants.HTTP, constants.HTTPS}
 	for _, prefix := range prefixes {
 		if strings.HasPrefix(link, prefix) {
 			return true
@@ -39,6 +40,7 @@ func IsHttp(link string) bool {
 	return false
 }
 
+// ReplaceEach 将字符串str中的所有与搜索列表中的子串匹配的部分替换为对应的替换列表中的子串
 func ReplaceEach(str string, searchList []string, replacementList []string) string {
 	if str == "" || searchList == nil || replacementList == nil {
 		return ""
@@ -55,8 +57,19 @@ func ReplaceEach(str string, searchList []string, replacementList []string) stri
 	return str
 }
 
+// GenUID 生成UUID
 func GenUID() string {
 	uid := uuid.NewV4()
 	uidStr := strings.ReplaceAll(uid.String(), "-", "")
 	return uidStr
+}
+
+// EndsWithIgnoreCase 判断字符串s是否以字符串t结尾，忽略大小写
+func EndsWithIgnoreCase(s, t string) bool {
+	return strings.HasSuffix(strings.ToLower(s), strings.ToLower(t))
+}
+
+// BeginsWithIgnoreCase 判断字符串s是否以字符串t开头，忽略大小写
+func BeginsWithIgnoreCase(s, t string) bool {
+	return strings.HasPrefix(strings.ToLower(s), strings.ToLower(t))
 }

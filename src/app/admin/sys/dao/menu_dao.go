@@ -8,7 +8,7 @@ package dao
 
 import (
 	"manager-gin/src/app/admin/sys/model"
-	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"manager-gin/src/global"
 )
 
@@ -26,7 +26,7 @@ func (dao *MenuDao) Create(sysMenu model.Menu) (err error) {
 // Delete 删除Menu记录
 // Author
 func (dao *MenuDao) Delete(id string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.Menu{}, "id = ?", id).Error
+	err = global.GOrmDao.Delete(&model.Menu{}, "id = ?", id).Error
 	return err
 }
 
@@ -51,7 +51,7 @@ func (dao *MenuDao) GetMenuPermissionByRoleId(roleId string) (err error, perms [
 	db.Joins("left join sys_role_menu rm on m.id = rm.menu_id")
 	db.Joins("left join sys_role r on r.id = rm.role_id")
 	db.Select("distinct m.perms")
-	db.Where("rm.role_id = ? and r.status = ?", roleId, common.STATUS_NORMAL)
+	db.Where("rm.role_id = ? and r.status = ?", roleId, constants.STATUS_NORMAL)
 	err = db.Scan(&rows).Error
 	if err != nil {
 		return
@@ -69,7 +69,7 @@ func (dao *MenuDao) GetMenuPermissionByUserId(userId string) (err error, perms [
 	db.Joins("left join sys_role_menu rm on m.id = rm.menu_id")
 	db.Joins("left join sys_user_role ur on rm.role_id = ur.role_id")
 	db.Select("distinct m.perms")
-	db.Where("ur.user_id = ? and r.status = ? and m.status = ?", userId, common.STATUS_NORMAL, common.STATUS_NORMAL)
+	db.Where("ur.user_id = ? and r.status = ? and m.status = ?", userId, constants.STATUS_NORMAL, constants.STATUS_NORMAL)
 	err = db.Scan(&rows).Error
 	if err != nil {
 		return
@@ -83,7 +83,7 @@ func (dao *MenuDao) GetMenuPermissionByUserId(userId string) (err error, perms [
 // SelectMenuAll 查询所有菜单
 func (dao *MenuDao) SelectMenuAll() (err error, menus []*model.Menu) {
 	db := global.GOrmDao.Model(&[]model.Menu{})
-	db.Where("status = ? and menu_type in (?, ?)", common.STATUS_NORMAL, common.MENU_TYPE_DIR, common.MENU_TYPE_MENU)
+	db.Where("status = ? and menu_type in (?, ?)", constants.STATUS_NORMAL, constants.MENU_TYPE_DIR, constants.MENU_TYPE_MENU)
 	err1 := db.Find(&menus).Error
 	if err1 != nil {
 		return err1, nil
@@ -98,7 +98,7 @@ func (dao *MenuDao) SelectMenuByUserId(userId string) (err error, menus []*model
 	db.Joins("left join sys_user_role ur on rm.role_id = ur.role_id")
 	db.Joins("left join sys_role r on r.id = rm.role_id")
 	db.Select("distinct m.id, m.parent_id, m.menu_name, m.path, m.component, m.`query`, m.visible, m.status, perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time")
-	db.Where("ur.user_id = ? and r.status = ? and m.status = ? and menu_type in (?, ?)", userId, common.STATUS_NORMAL, common.STATUS_NORMAL, common.MENU_TYPE_DIR, common.MENU_TYPE_MENU)
+	db.Where("ur.user_id = ? and r.status = ? and m.status = ? and menu_type in (?, ?)", userId, constants.STATUS_NORMAL, constants.STATUS_NORMAL, constants.MENU_TYPE_DIR, constants.MENU_TYPE_MENU)
 	db.Order("m.parent_id, m.order_num")
 	err = db.Scan(&menus).Error
 	if err != nil {

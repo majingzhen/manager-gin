@@ -1,19 +1,18 @@
-package routers
+package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"manager-gin/src/app/admin/sys/router"
 )
 
 type SysRouter struct {
-	userRouter     router.UserRouter
-	menuRouter     router.MenuRouter
-	postRouter     router.PostRouter
-	configRouter   router.ConfigRouter
-	deptRouter     router.DeptRouter
-	roleRouter     router.RoleRouter
-	dictTypeRouter router.DictTypeRouter
-	dictDataRouter router.DictDataRouter
+	userRouter     UserRouter
+	menuRouter     MenuRouter
+	postRouter     PostRouter
+	configRouter   ConfigRouter
+	deptRouter     DeptRouter
+	roleRouter     RoleRouter
+	dictTypeRouter DictTypeRouter
+	dictDataRouter DictDataRouter
 }
 
 // var jobRouter job.JobRouter

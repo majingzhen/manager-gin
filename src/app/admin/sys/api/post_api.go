@@ -11,14 +11,16 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/service/post"
 	"manager-gin/src/app/admin/sys/service/post/view"
+	"manager-gin/src/common/basic"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
 )
 
+// PostApi 结构体
 type PostApi struct {
-	BasicApi
+	basic.BasicApi
 	postService post.PostService
 }
 

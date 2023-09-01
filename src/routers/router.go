@@ -2,12 +2,15 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
+	genRouter "manager-gin/src/app/admin/gen/router"
+	sysRouter "manager-gin/src/app/admin/sys/router"
 	"manager-gin/src/middleware"
 )
 
 type Routers struct {
 	baseRouter BaseRouter
-	sysRouter  SysRouter
+	sysRouter  sysRouter.SysRouter
+	genRouter  genRouter.GenRouter
 }
 
 // InitRouter 初始化路由
@@ -27,6 +30,7 @@ func (routers *Routers) InitRouter() *gin.Engine {
 	{
 		routers.sysRouter.InitSysRouter(api)
 		routers.baseRouter.InitBaseRouter(api)
+		routers.genRouter.InitGenRouter(api)
 	}
 
 	return r

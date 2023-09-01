@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/service/config"
 	"manager-gin/src/app/admin/sys/service/config/view"
+	"manager-gin/src/common/basic"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -18,7 +19,7 @@ import (
 )
 
 type ConfigApi struct {
-	BasicApi
+	basic.BasicApi
 	configService config.ConfigService
 }
 

@@ -84,9 +84,9 @@ export default {
     // 查询表数据
     getList() {
       listDbTable(this.queryParams).then(res => {
-        if (res.code === 200) {
-          this.dbTableList = res.rows;
-          this.total = res.total;
+        if (res.code === 0) {
+          this.dbTableList = res.data.rows;
+          this.total = res.data.total;
         }
       });
     },
@@ -109,7 +109,7 @@ export default {
       }
       importTable({ tables: tableNames }).then(res => {
         this.$modal.msgSuccess(res.msg);
-        if (res.code === 200) {
+        if (res.code === 0) {
           this.visible = false;
           this.$emit("ok");
         }

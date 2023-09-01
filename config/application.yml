@@ -13,3 +13,14 @@ database:
   db_name: manager
   table_prefix: ""
   log_mode: true
+
+# 代码生成
+gen:
+  # 作者
+  author: matuto
+  # 默认生成包路径 system 需改成自己的模块名称 如 system monitor tool
+  package_name: manager-gin/src/app/admin/sys
+  # 自动去除表前缀，默认是false
+  autoRemovePre: false
+  # 表前缀（生成类名不会包含表前缀，多个用逗号分隔）
+  tablePrefix: sys_

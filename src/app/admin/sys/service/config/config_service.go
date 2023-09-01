@@ -12,6 +12,7 @@ import (
 	model2 "manager-gin/src/app/admin/sys/model"
 	"manager-gin/src/app/admin/sys/service/config/view"
 	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 )
 
 type ConfigService struct {
@@ -37,7 +38,7 @@ func (s *ConfigService) DeleteByIds(ids []string) (err error) {
 		if err1, config := s.configDao.Get(id); err1 != nil {
 			return err1
 		} else {
-			if config.ConfigType == common.YES {
+			if config.ConfigType == constants.YES {
 				return errors.New("系统内置，不可删除")
 			}
 		}

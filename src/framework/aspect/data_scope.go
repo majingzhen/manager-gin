@@ -3,7 +3,7 @@ package aspect
 import (
 	"fmt"
 	"manager-gin/src/app/admin/sys/service/user/view"
-	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"strings"
 )
 
@@ -26,7 +26,7 @@ func DataScopeFilter(user *view.UserView, deptAlias string, userAlias string, pe
 	if user == nil {
 		return ""
 	}
-	if user.Id == common.SYSTEM_ROLE_ADMIN_ID {
+	if user.Id == constants.SYSTEM_ROLE_ADMIN_ID {
 		return ""
 	}
 	sqlString := strings.Builder{}

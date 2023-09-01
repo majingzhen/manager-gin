@@ -11,13 +11,14 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/service/menu"
 	"manager-gin/src/app/admin/sys/service/menu/view"
+	"manager-gin/src/common/basic"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 )
 
 type MenuApi struct {
-	BasicApi
+	basic.BasicApi
 	menuService menu.MenuService
 }
 

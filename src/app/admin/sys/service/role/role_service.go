@@ -15,6 +15,7 @@ import (
 	"manager-gin/src/app/admin/sys/service/role/view"
 	userView "manager-gin/src/app/admin/sys/service/user/view"
 	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"manager-gin/src/framework/aspect"
 	"manager-gin/src/global"
 )
@@ -61,7 +62,7 @@ func (s *RoleService) Delete(id string) (err error) {
 // Author
 func (s *RoleService) DeleteByIds(ids []string, loginUser *userView.UserView) (err error) {
 	for _, id := range ids {
-		if id == common.SYSTEM_ROLE_ADMIN_ID {
+		if id == constants.SYSTEM_ROLE_ADMIN_ID {
 			return errors.New("不允许删除超级管理员角色")
 		}
 		if err := s.CheckRoleDataScope(id, loginUser); err != nil {
@@ -185,7 +186,7 @@ func (s *RoleService) List(v *view.RoleView, loginUser *userView.UserView) (err 
 
 // GetRoleByUserId 根据用户获取角色集合
 func (s *RoleService) GetRoleByUserId(user *userView.UserView) (err error, roleNames []string) {
-	is := user.Id == common.SYSTEM_ADMIN_ID
+	is := user.Id == constants.SYSTEM_ADMIN_ID
 	if is {
 		roleNames = append(roleNames, "admin")
 	} else {
@@ -264,7 +265,7 @@ func (s *RoleService) CheckRoleKeyUnique(roleKey string, id string) error {
 
 // CheckRoleDataScope 校验角色是否允许操作
 func (s *RoleService) CheckRoleDataScope(id string, loginUser *userView.UserView) error {
-	if loginUser.Id != common.SYSTEM_ADMIN_ID {
+	if loginUser.Id != constants.SYSTEM_ADMIN_ID {
 		role := &model.Role{
 			Id:           id,
 			DataScopeSql: aspect.DataScopeFilter(loginUser, "d", "u", ""),

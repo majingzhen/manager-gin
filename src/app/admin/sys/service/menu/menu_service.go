@@ -13,7 +13,7 @@ import (
 	"manager-gin/src/app/admin/sys/service/menu/view"
 	"manager-gin/src/app/admin/sys/service/role"
 	userView "manager-gin/src/app/admin/sys/service/user/view"
-	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"manager-gin/src/utils"
 	"strings"
 )
@@ -35,7 +35,7 @@ func (s *MenuService) Create(view *view.MenuView) error {
 			return errors.New("菜单名称已存在")
 		}
 	}
-	if view.IsFrame == common.YES_FRAME && !utils.IsHttp(view.Path) {
+	if view.IsFrame == constants.YES_FRAME && !utils.IsHttp(view.Path) {
 		return errors.New("外链必须以http://或者https://开头")
 	}
 	if err1, sysMenu := s.viewUtils.View2Data(view); err1 != nil {
@@ -78,7 +78,7 @@ func (s *MenuService) Update(id string, view *view.MenuView) (err error) {
 			return errors.New("菜单名称已存在")
 		}
 	}
-	if view.IsFrame == common.YES_FRAME && !utils.IsHttp(view.Path) {
+	if view.IsFrame == constants.YES_FRAME && !utils.IsHttp(view.Path) {
 		return errors.New("外链必须以http://或者https://开头")
 	}
 	if view.Id == view.ParentId {
@@ -112,7 +112,7 @@ func (s *MenuService) Get(id string) (err error, view *view.MenuView) {
 
 // GetMenuPermission 根据用户id获取菜单权限
 func (s *MenuService) GetMenuPermission(user *userView.UserView) (err error, perms []string) {
-	is := user.Id == common.SYSTEM_ADMIN_ID
+	is := user.Id == constants.SYSTEM_ADMIN_ID
 	// 管理员拥有所有权限
 	if is {
 		perms = append(perms, "*:*:*")
@@ -141,7 +141,7 @@ func (s *MenuService) GetMenuPermission(user *userView.UserView) (err error, per
 // GetMenuTreeByUserId 根据用户id获取菜单树
 func (s *MenuService) GetMenuTreeByUserId(userId string) (err error, menuTree []*view.RouterView) {
 	var menus []*model2.Menu
-	itIs := userId == common.SYSTEM_ADMIN_ID
+	itIs := userId == constants.SYSTEM_ADMIN_ID
 	if itIs {
 		err, menus = s.sysMenuDao.SelectMenuAll()
 	} else {
@@ -163,7 +163,7 @@ func (s *MenuService) SelectMenuList(v *view.MenuView, userId string) (err error
 		return err, nil
 	}
 	var dataMenus []*model2.Menu
-	itIs := userId == common.SYSTEM_ADMIN_ID
+	itIs := userId == constants.SYSTEM_ADMIN_ID
 	if itIs {
 		err, dataMenus = s.sysMenuDao.SelectMenuList(data)
 	} else {
@@ -196,7 +196,7 @@ func buildTree(menuList []*view.MenuView, parentId string) []*view.RouterView {
 				Meta:      meta,
 			}
 			views := buildTree(menuList, menu.Id)
-			if views != nil && menu.MenuType == common.MENU_TYPE_DIR {
+			if views != nil && menu.MenuType == constants.MENU_TYPE_DIR {
 				node.AlwaysShow = true
 				node.Redirect = "noRedirect"
 				node.Children = views
@@ -242,7 +242,7 @@ func buildTree(menuList []*view.MenuView, parentId string) []*view.RouterView {
 				}
 				children := &view.RouterView{
 					Path:      routerPath,
-					Component: common.INNER_LINK,
+					Component: constants.INNER_LINK,
 					Name:      strings.Title(routerPath),
 					Query:     menu.Query,
 					Meta:      childMeta,
@@ -258,20 +258,20 @@ func buildTree(menuList []*view.MenuView, parentId string) []*view.RouterView {
 
 // 获取组件信息
 func getComponent(menu view.MenuView) string {
-	component := common.LAYOUT
+	component := constants.LAYOUT
 	if menu.Component != "" && !isMenuFrame(menu) {
 		component = menu.Component
 	} else if menu.Component == "" && menu.ParentId != "1" && isInnerLink(menu) {
-		component = common.INNER_LINK
+		component = constants.INNER_LINK
 	} else if menu.Component == "" && isParentView(menu) {
-		component = common.PARENT_VIEW
+		component = constants.PARENT_VIEW
 	}
 	return component
 }
 
 // 是否为parent_view组件
 func isParentView(menu view.MenuView) bool {
-	return menu.ParentId != "0" && menu.MenuType == common.MENU_TYPE_DIR
+	return menu.ParentId != "0" && menu.MenuType == constants.MENU_TYPE_DIR
 }
 
 // 获取路由地址
@@ -282,7 +282,7 @@ func getRouterPath(menu view.MenuView) string {
 		routerPath = innerLinkReplaceEach(routerPath)
 	}
 	// 非外链并且是一级目录（类型为目录）
-	if (menu.ParentId == "0" && menu.MenuType == common.MENU_TYPE_DIR) && menu.IsFrame == common.NO_FRAME {
+	if (menu.ParentId == "0" && menu.MenuType == constants.MENU_TYPE_DIR) && menu.IsFrame == constants.NO_FRAME {
 		routerPath = "/" + menu.Path
 	} else if isMenuFrame(menu) { // 非外链并且是一级目录（类型为菜单）
 		routerPath = "/"
@@ -292,12 +292,12 @@ func getRouterPath(menu view.MenuView) string {
 
 // 内链域名特殊字符替换
 func innerLinkReplaceEach(path string) string {
-	return utils.ReplaceEach(path, []string{common.HTTP, common.HTTPS, common.WWW, "."}, []string{"", "", "", "/"})
+	return utils.ReplaceEach(path, []string{constants.HTTP, constants.HTTPS, constants.WWW, "."}, []string{"", "", "", "/"})
 }
 
 // isInnerLink 是否为内链组件
 func isInnerLink(menu view.MenuView) bool {
-	return menu.IsFrame == common.NO_FRAME && utils.IsHttp(menu.Path)
+	return menu.IsFrame == constants.NO_FRAME && utils.IsHttp(menu.Path)
 }
 
 // 获取组件名称
@@ -312,7 +312,7 @@ func getRouterName(menu view.MenuView) string {
 
 // 是否为外链
 func isMenuFrame(menu view.MenuView) bool {
-	return menu.ParentId == "0" && common.MENU_TYPE_MENU == menu.MenuType && menu.IsFrame == common.YES_FRAME
+	return menu.ParentId == "0" && constants.MENU_TYPE_MENU == menu.MenuType && menu.IsFrame == constants.YES_FRAME
 }
 
 // CheckMenuNameUniqueAll 判断名称是否重复

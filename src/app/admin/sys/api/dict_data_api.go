@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/sys/service/dict_data"
 	"manager-gin/src/app/admin/sys/service/dict_data/view"
+	"manager-gin/src/common/basic"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -18,7 +19,7 @@ import (
 )
 
 type DictDataApi struct {
-	BasicApi
+	basic.BasicApi
 	dictDataService dict_data.DictDataService
 }
 
