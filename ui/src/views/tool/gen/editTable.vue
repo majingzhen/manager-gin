@@ -163,8 +163,8 @@ export default {
     if (tableId) {
       // 获取表详细信息
       getGenTable(tableId).then(res => {
-        this.columns = res.data.rows;
-        this.info = res.data.info;
+        this.columns = res.data.columnList;
+        this.info = res.data;
         this.tables = res.data.tables;
       });
       /** 查询字典下拉列表 */

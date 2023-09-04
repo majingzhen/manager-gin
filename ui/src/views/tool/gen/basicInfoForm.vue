@@ -12,8 +12,8 @@
         </el-form-item>
       </el-col>
       <el-col :span="12">
-        <el-form-item label="实体类名称" prop="className">
-          <el-input placeholder="请输入" v-model="info.className" />
+        <el-form-item label="结构体名称" prop="structName">
+          <el-input placeholder="请输入" v-model="info.structName" />
         </el-form-item>
       </el-col>
       <el-col :span="12">

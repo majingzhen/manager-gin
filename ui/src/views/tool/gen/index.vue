@@ -102,9 +102,9 @@
         width="120"
       />
       <el-table-column
-        label="实体"
+        label="结构体"
         align="center"
-        prop="className"
+        prop="structName"
         :show-overflow-tooltip="true"
         width="120"
       />
@@ -291,7 +291,7 @@ export default {
     },
     /** 预览按钮 */
     handlePreview(row) {
-      previewTable(row.tableId).then(response => {
+      previewTable(row.id).then(response => {
         this.preview.data = response.data;
         this.preview.open = true;
         this.preview.activeName = "domain.java";
@@ -310,22 +310,22 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.tableId);
+      this.ids = selection.map(item => item.id);
       this.tableNames = selection.map(item => item.tableName);
       this.single = selection.length != 1;
       this.multiple = !selection.length;
     },
     /** 修改按钮操作 */
     handleEditTable(row) {
-      const tableId = row.tableId || this.ids[0];
+      const tableId = row.id || this.ids[0];
       const tableName = row.tableName || this.tableNames[0];
       const params = { pageNum: this.queryParams.pageNum };
       this.$tab.openPage("修改[" + tableName + "]生成配置", '/tool/gen-edit/index/' + tableId, params);
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const tableIds = row.tableId || this.ids;
-      this.$modal.confirm('是否确认删除表编号为"' + tableIds + '"的数据项？').then(function() {
+      const tableIds = row.id || this.ids;
+      this.$modal.confirm('是否确认删除数据项？').then(function() {
         return delTable(tableIds);
       }).then(() => {
         this.getList();

@@ -8,16 +8,43 @@ import (
 	"strings"
 )
 
-func InitTable(genTable *model.Table, operName string) {
+// InitTable 初始化表结构体
+func InitTable(genTable *model.Table, operName string) *model.Table {
 	genTable.CreateBy = operName
-	genTable.PackageName = global.GVA_VP.GetString("gen_code.package_name")
-	genTable.ModuleName = genModuleName(global.GVA_VP.GetString("gen_code.package_name"))
+	genTable.StructName = convertStructName(genTable.Name)
+	genTable.PackageName = global.GVA_VP.GetString("gen.package_name")
+	genTable.ModuleName = genModuleName(global.GVA_VP.GetString("gen.package_name"))
 	genTable.BusinessName = getBusinessName(genTable.Name)
 	genTable.FunctionName = genTable.TableComment
-	genTable.FunctionAuthor = global.GVA_VP.GetString("gen_code.author")
+	genTable.FunctionAuthor = global.GVA_VP.GetString("gen.author")
+	return genTable
 }
 
-func InitColumnField(column *model.TableColumn, table *model.Table) {
+// convertStructName 转换struct名称
+func convertStructName(tableName string) string {
+	autoRemovePre := global.GVA_VP.GetBool("gen.auto_remove_pre")
+	tablePrefix := global.GVA_VP.GetString("gen.table_prefix")
+	if autoRemovePre && tablePrefix != "" {
+		searchList := strings.Split(tablePrefix, ",")
+		tableName = replaceFirst(tableName, searchList)
+	}
+	return ToTitle(tableName)
+}
+
+// replaceFirst 批量替换前缀
+func replaceFirst(replaceMen string, searchList []string) string {
+	text := replaceMen
+	for _, s := range searchList {
+		if strings.HasPrefix(text, s) {
+			text = strings.Replace(replaceMen, s, "", 1)
+			break
+		}
+	}
+	return text
+}
+
+// InitColumnField 初始化列属性字段
+func InitColumnField(column *model.TableColumn, table *model.Table) *model.TableColumn {
 	dataType := getColumnType(column.ColumnType)
 	columnName := column.ColumnName
 	column.TableId = table.Id
@@ -87,9 +114,10 @@ func InitColumnField(column *model.TableColumn, table *model.Table) {
 			column.QueryType = constants.QUERY_LIKE
 		}
 	}
-
+	return column
 }
 
+// getColumnByTableName 根据表名获取列信息
 func getColumnLength(columnType string) int {
 	if strings.Contains(columnType, "(") {
 		length := columnType[strings.Index(columnType, "(")+1 : strings.Index(columnType, ")")]
@@ -100,6 +128,7 @@ func getColumnLength(columnType string) int {
 	}
 }
 
+// getColumnType 获取列类型
 func getColumnType(columnType string) string {
 	if strings.Contains(columnType, "(") {
 		return columnType[:strings.Index(columnType, "(")-1]
@@ -108,11 +137,13 @@ func getColumnType(columnType string) string {
 	}
 }
 
+// getBusinessName 获取业务名称
 func getBusinessName(name string) string {
 	lastIndex := strings.LastIndex(name, "_")
 	return name[lastIndex+1:]
 }
 
+// genModuleName 获取模块名称
 func genModuleName(packageName string) string {
 	lastIndex := strings.LastIndex(packageName, "/")
 	return packageName[lastIndex+1:]

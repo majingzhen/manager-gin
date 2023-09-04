@@ -20,7 +20,7 @@ export function listDbTable(query) {
 // 查询表详细信息
 export function getGenTable(tableId) {
   return request({
-    url: '/gen/' + tableId,
+    url: '/gen/table/get/' + tableId,
     method: 'get'
   })
 }
@@ -54,7 +54,7 @@ export function previewTable(tableId) {
 // 删除表数据
 export function delTable(tableId) {
   return request({
-    url: '/gen/' + tableId,
+    url: '/gen/table/delete/' + tableId,
     method: 'delete'
   })
 }

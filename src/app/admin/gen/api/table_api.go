@@ -11,6 +11,7 @@ import (
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/gen/service/table"
 	"manager-gin/src/app/admin/gen/service/table/view"
+	"manager-gin/src/app/admin/gen/service/table_column"
 	"manager-gin/src/common/basic"
 	response "manager-gin/src/common/response"
 	"manager-gin/src/global"
@@ -20,7 +21,8 @@ import (
 
 type TableApi struct {
 	basic.BasicApi
-	tableService table.TableService
+	tableService  table.Service
+	columnService table_column.TableColumnService
 }
 
 // Create 创建Table
@@ -97,6 +99,12 @@ func (api *TableApi) Get(c *gin.Context) {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
+		// 通过id查询列信息
+		if err, tableView.ColumnList = api.columnService.GetColumnListByTableId(id); err != nil {
+			global.Logger.Error("查询失败!", zap.Error(err))
+			response.FailWithMessage("查询失败", c)
+			return
+		}
 		response.OkWithData(tableView, c)
 	}
 }

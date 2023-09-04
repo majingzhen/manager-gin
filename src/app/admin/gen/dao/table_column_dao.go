@@ -27,8 +27,8 @@ func (dao *TableColumnDao) Create(tx *gorm.DB, genTableColumn *model.TableColumn
 
 // DeleteByIds 批量删除TableColumn记录
 // Author
-func (dao *TableColumnDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.TableColumn{}, "id in ?", ids).Error
+func (dao *TableColumnDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
+	err = tx.Delete(&[]model.TableColumn{}, "id in ?", ids).Error
 	return err
 }
 
@@ -88,4 +88,16 @@ func (dao *TableColumnDao) SelectDbTableColumns(tx *gorm.DB, tableName string) (
 	db.Where("table_name = ?", tableName).Find(&dataList)
 	err = db.Find(&dataList).Error
 	return err, dataList
+}
+
+// DeleteByTableIds 根据表id删除列信息
+func (dao *TableColumnDao) DeleteByTableIds(tx *gorm.DB, tableIds []string) error {
+	return tx.Table("gen_table_column").Where("table_id in (?)", tableIds).Delete(&model.TableColumn{}).Error
+}
+
+// GetColumnListByTableId 根据表id获取列信息
+func (dao *TableColumnDao) GetColumnListByTableId(tableId string) (error, []*model.TableColumn) {
+	var columns []*model.TableColumn
+	err := global.GOrmDao.Table("gen_table_column").Where("table_id = ?", tableId).Order("sort").Find(&columns).Error
+	return err, columns
 }

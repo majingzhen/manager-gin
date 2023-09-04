@@ -15,7 +15,6 @@ import (
 )
 
 // UserDao 结构体
-
 type UserDao struct{}
 
 // Create 创建User记录

@@ -27,8 +27,8 @@ func (dao *TableDao) Create(tx *gorm.DB, table *model.Table) (err error) {
 
 // DeleteByIds 批量删除Table记录
 // Author
-func (dao *TableDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.Table{}, "id in ?", ids).Error
+func (dao *TableDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
+	err = tx.Delete(&[]model.Table{}, "id in ?", ids).Error
 	return err
 }
 
