@@ -1,0 +1,5 @@
+2023-09-05T14:52:23.264+0800	[34mINFO[0m	Connect to database success
+2023-09-05T14:52:23.283+0800	[34mINFO[0m	Connected to MongoDB!
+2023-09-05T14:52:25.358+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "OPTIONS", "path": "/api/captchaImage", "ip": "127.0.0.1", "latency": "0s"}
+2023-09-05T14:52:25.366+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/captchaImage", "ip": "127.0.0.1", "latency": "5.2961ms"}
+2023-09-05T14:52:28.723+0800	[34mINFO[0m	系统信号中断
