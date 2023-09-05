@@ -20,28 +20,28 @@ type PostDao struct{}
 // Create 创建Post记录
 // Author
 func (dao *PostDao) Create(sysPost model.Post) (err error) {
-	err = global.GOrmDao.Create(&sysPost).Error
+	err = global.GormDao.Create(&sysPost).Error
 	return err
 }
 
 // DeleteByIds 批量删除Post记录
 // Author
 func (dao *PostDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.Post{}, "id in ?", ids).Error
+	err = global.GormDao.Delete(&[]model.Post{}, "id in ?", ids).Error
 	return err
 }
 
 // Update 更新Post记录
 // Author
 func (dao *PostDao) Update(sysPost model.Post) (err error) {
-	err = global.GOrmDao.Updates(&sysPost).Error
+	err = global.GormDao.Updates(&sysPost).Error
 	return err
 }
 
 // Get 根据id获取Post记录
 // Author
 func (dao *PostDao) Get(id string) (err error, sysPost *model.Post) {
-	err = global.GOrmDao.Where("id = ?", id).First(&sysPost).Error
+	err = global.GormDao.Where("id = ?", id).First(&sysPost).Error
 	return
 }
 
@@ -49,7 +49,7 @@ func (dao *PostDao) Get(id string) (err error, sysPost *model.Post) {
 // Author
 func (dao *PostDao) Page(param *view.PostPageView) (err error, page *common.PageInfo) {
 	// 创建model
-	db := global.GOrmDao.Model(&model.Post{})
+	db := global.GormDao.Model(&model.Post{})
 	if param.PostName != "" {
 		db.Where("post_name like ?", "%"+param.PostName+"%")
 	}
@@ -78,7 +78,7 @@ func (dao *PostDao) Page(param *view.PostPageView) (err error, page *common.Page
 // List 获取Post记录
 // Author
 func (dao *PostDao) List(data *model.Post) (err error, datas []*model.Post) {
-	db := global.GOrmDao.Model(&model.Post{})
+	db := global.GormDao.Model(&model.Post{})
 	if data.PostName != "" {
 		db.Where("post_name like ?", "%"+data.PostName+"%")
 	}
@@ -97,7 +97,7 @@ func (dao *PostDao) List(data *model.Post) (err error, datas []*model.Post) {
 // Author
 func (dao *PostDao) CheckPostNameUnique(postName string) (err error, count int64) {
 	var sysPost model.Post
-	err = global.GOrmDao.Model(&model.Post{}).Where("post_name = ?", postName).First(&sysPost).Count(&count).Error
+	err = global.GormDao.Model(&model.Post{}).Where("post_name = ?", postName).First(&sysPost).Count(&count).Error
 	return
 }
 
@@ -105,18 +105,18 @@ func (dao *PostDao) CheckPostNameUnique(postName string) (err error, count int64
 // Author
 func (dao *PostDao) CheckPostCodeUnique(postCode string) (err error, count int64) {
 	var sysPost model.Post
-	err = global.GOrmDao.Model(&model.Post{}).Where("post_code = ?", postCode).First(&sysPost).Count(&count).Error
+	err = global.GormDao.Model(&model.Post{}).Where("post_code = ?", postCode).First(&sysPost).Count(&count).Error
 	return
 }
 
 func (dao *PostDao) CheckPostExistUser(postId string) (err error, count int64) {
-	err = global.GOrmDao.Table("sys_user_post").Where("post_id = ?", postId).Count(&count).Error
+	err = global.GormDao.Table("sys_user_post").Where("post_id = ?", postId).Count(&count).Error
 	return
 }
 
 // SelectPostListByUserId 根据用户ID查询岗位
 func (dao *PostDao) SelectPostListByUserId(userId string) (error, []*model.Post) {
-	db := global.GOrmDao.Table("sys_post p")
+	db := global.GormDao.Table("sys_post p")
 	db.Joins("left join sys_user_post up on p.id = up.post_id")
 	db.Joins("left join sys_user u on u.id = up.user_id")
 	db.Where("u.id = ?", userId)

@@ -20,28 +20,28 @@ type DictDataDao struct{}
 // Create 创建DictData记录
 // Author
 func (dao *DictDataDao) Create(sysDictData model.DictData) (err error) {
-	err = global.GOrmDao.Create(&sysDictData).Error
+	err = global.GormDao.Create(&sysDictData).Error
 	return err
 }
 
 // DeleteByIds 批量删除DictData记录
 // Author
 func (dao *DictDataDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.DictData{}, "id in ?", ids).Error
+	err = global.GormDao.Delete(&[]model.DictData{}, "id in ?", ids).Error
 	return err
 }
 
 // Update 更新DictData记录
 // Author
 func (dao *DictDataDao) Update(sysDictData model.DictData) (err error) {
-	err = global.GOrmDao.Updates(&sysDictData).Error
+	err = global.GormDao.Updates(&sysDictData).Error
 	return err
 }
 
 // Get 根据id获取DictData记录
 // Author
 func (dao *DictDataDao) Get(id string) (err error, sysDictData *model.DictData) {
-	err = global.GOrmDao.Where("id = ?", id).First(&sysDictData).Error
+	err = global.GormDao.Where("id = ?", id).First(&sysDictData).Error
 	return
 }
 
@@ -49,7 +49,7 @@ func (dao *DictDataDao) Get(id string) (err error, sysDictData *model.DictData) 
 // Author
 func (dao *DictDataDao) Page(param *view.DictDataPageView) (err error, page *common.PageInfo) {
 	// 创建model
-	db := global.GOrmDao.Model(&model.DictData{})
+	db := global.GormDao.Model(&model.DictData{})
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.DictType != "" {
 		db.Where("dict_type = ?", param.DictType)
@@ -76,6 +76,6 @@ func (dao *DictDataDao) Page(param *view.DictDataPageView) (err error, page *com
 }
 
 func (dao *DictDataDao) GetByType(dictType string) (err error, sysDictData []*model.DictData) {
-	err = global.GOrmDao.Where("dict_type = ?", dictType).Find(&sysDictData).Error
+	err = global.GormDao.Where("dict_type = ?", dictType).Find(&sysDictData).Error
 	return
 }

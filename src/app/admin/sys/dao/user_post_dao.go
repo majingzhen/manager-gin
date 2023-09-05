@@ -18,10 +18,10 @@ type UserPostDao struct{}
 
 // CreateBatch 批量创建UserPost记录
 func (dao *UserPostDao) CreateBatch(tx *gorm.DB, posts []model.UserPost) error {
-	return global.GOrmDao.Create(&posts).Error
+	return global.GormDao.Create(&posts).Error
 }
 
 // DeleteByUserIds 根据用户id批量删除UserPost记录
 func (dao *UserPostDao) DeleteByUserIds(tx *gorm.DB, ids []string) error {
-	return global.GOrmDao.Delete(&model.UserPost{}, "user_id in ?", ids).Error
+	return global.GormDao.Delete(&model.UserPost{}, "user_id in ?", ids).Error
 }

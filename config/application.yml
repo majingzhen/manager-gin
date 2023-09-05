@@ -5,7 +5,8 @@ server:
 logger:
   file_path: ./log/manager.log
 
-database:
+# 数据库配置
+datasource:
   host: 127.0.0.1
   port: 3306
   username: root
@@ -13,6 +14,10 @@ database:
   db_name: manager
   table_prefix: ""
   log_mode: true
+  mongodb:
+    host: 127.0.0.1
+    port: 27017
+    db_name: manager
 
 # 代码生成
 gen:

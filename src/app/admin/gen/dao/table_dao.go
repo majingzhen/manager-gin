@@ -35,21 +35,21 @@ func (dao *TableDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
 // Update 更新Table记录
 // Author
 func (dao *TableDao) Update(table model.Table) (err error) {
-	err = global.GOrmDao.Updates(&table).Error
+	err = global.GormDao.Updates(&table).Error
 	return err
 }
 
 // Get 根据id获取Table记录
 // Author
 func (dao *TableDao) Get(id string) (err error, table *model.Table) {
-	err = global.GOrmDao.Where("id = ?", id).First(&table).Error
+	err = global.GormDao.Where("id = ?", id).First(&table).Error
 	return
 }
 
 // Page 分页获取Table记录
 // Author
 func (dao *TableDao) Page(param *view.TablePageView) (err error, page *common.PageInfo) {
-	db := global.GOrmDao.Model(&model.Table{})
+	db := global.GormDao.Model(&model.Table{})
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.TableName != "" {
 		db.Where("lower(table_name) like lower(?)", "%"+param.TableName+"%")
@@ -75,7 +75,7 @@ func (dao *TableDao) Page(param *view.TablePageView) (err error, page *common.Pa
 // List 获取Table记录
 // Author
 func (dao *TableDao) List(v *view.TableQueryView) (err error, dataList []*model.Table) {
-	db := global.GOrmDao.Model(&model.Table{})
+	db := global.GormDao.Model(&model.Table{})
 	// TODO 输入查询条件
 	//if data.Id != "" {
 	//    db.Where("id = ?", data.Id)
@@ -87,7 +87,7 @@ func (dao *TableDao) List(v *view.TableQueryView) (err error, dataList []*model.
 
 // SelectDbTablePage 获取数据库表列表
 func (dao *TableDao) SelectDbTablePage(v *view.TablePageView) (error, *common.PageInfo) {
-	tx := global.GOrmDao.Table("information_schema.tables")
+	tx := global.GormDao.Table("information_schema.tables")
 	tx.Select("TABLE_NAME table_name,TABLE_COMMENT table_comment,CREATE_TIME create_time,UPDATE_TIME update_time")
 	tx.Where("table_schema = (select database())")
 	tx.Where("table_name NOT LIKE 'qrtz_%' AND table_name NOT LIKE 'gen_%'")
@@ -114,7 +114,7 @@ func (dao *TableDao) SelectDbTablePage(v *view.TablePageView) (error, *common.Pa
 
 func (dao *TableDao) SelectDbTableList(names []string) (error, []*model.Table) {
 	var tmp []*model.Table
-	tx := global.GOrmDao.Table("information_schema.tables")
+	tx := global.GormDao.Table("information_schema.tables")
 	tx.Select("TABLE_NAME table_name,TABLE_COMMENT table_comment,CREATE_TIME create_time,UPDATE_TIME update_time")
 	tx.Where("table_schema = (select database())")
 	tx.Where("table_name NOT LIKE 'qrtz_%' AND table_name NOT LIKE 'gen_%'")

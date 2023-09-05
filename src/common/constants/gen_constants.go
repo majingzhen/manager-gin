@@ -19,6 +19,7 @@ const (
 	PARENT_MENU_NAME = "parentMenuName"
 	// HTML_INPUT 文本框
 	HTML_INPUT = "input"
+
 	// HTML_TEXTAREA 文本域
 	HTML_TEXTAREA = "textarea"
 

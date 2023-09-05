@@ -36,7 +36,7 @@ func (s *RoleService) Create(sysRoleView *view.RoleView) (err error) {
 	if err1 != nil {
 		return err1
 	}
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	err2 := s.sysRoleDao.Create(tx, *sysRole)
 	if err2 != nil {
 		tx.Rollback()
@@ -79,7 +79,7 @@ func (s *RoleService) DeleteByIds(ids []string, loginUser *userView.UserView) (e
 			}
 		}
 	}
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	// 删除角色与菜单关联
 	if err = s.roleMenuDao.DeleteRoleMenuByRoleIds(tx, ids); err != nil {
 		tx.Rollback()
@@ -107,7 +107,7 @@ func (s *RoleService) Update(id string, sysRoleView *view.RoleView) (err error) 
 	if err1 != nil {
 		return err1
 	}
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	if err = s.sysRoleDao.Update(tx, sysRole); err != nil {
 		return err
 	} else {
@@ -283,7 +283,7 @@ func (s *RoleService) UpdateStatus(view *view.RoleView) error {
 	if err, data := s.viewUtils.View2Data(view); err != nil {
 		return err
 	} else {
-		return s.sysRoleDao.Update(global.GOrmDao, data)
+		return s.sysRoleDao.Update(global.GormDao, data)
 	}
 }
 
@@ -292,7 +292,7 @@ func (s *RoleService) AuthDataScope(v *view.RoleView) error {
 	if err, data := s.viewUtils.View2Data(v); err != nil {
 		return err
 	} else {
-		tx := global.GOrmDao.Begin()
+		tx := global.GormDao.Begin()
 		if err := s.sysRoleDao.Update(tx, data); err != nil {
 			tx.Rollback()
 			return err

@@ -35,21 +35,21 @@ func (dao *TableColumnDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
 // Update 更新TableColumn记录
 // Author
 func (dao *TableColumnDao) Update(genTableColumn model.TableColumn) (err error) {
-	err = global.GOrmDao.Updates(&genTableColumn).Error
+	err = global.GormDao.Updates(&genTableColumn).Error
 	return err
 }
 
 // Get 根据id获取TableColumn记录
 // Author
 func (dao *TableColumnDao) Get(id string) (err error, genTableColumn *model.TableColumn) {
-	err = global.GOrmDao.Where("id = ?", id).First(&genTableColumn).Error
+	err = global.GormDao.Where("id = ?", id).First(&genTableColumn).Error
 	return
 }
 
 // Page 分页获取TableColumn记录
 // Author
 func (dao *TableColumnDao) Page(param *view.TableColumnPageView) (err error, page *common.PageInfo) {
-	db := global.GOrmDao.Model(&model.TableColumn{})
+	db := global.GormDao.Model(&model.TableColumn{})
 	// 如果有条件搜索 下方会自动创建搜索语句
 	//if param.Id != "" {
 	//	db.Where("ID = ?", param.Id)
@@ -71,7 +71,7 @@ func (dao *TableColumnDao) Page(param *view.TableColumnPageView) (err error, pag
 // List 获取TableColumn记录
 // Author
 func (dao *TableColumnDao) List(v *view.TableColumnQueryView) (err error, dataList []*model.TableColumn) {
-	db := global.GOrmDao.Model(&model.TableColumn{})
+	db := global.GormDao.Model(&model.TableColumn{})
 	// TODO 输入查询条件
 	//if data.Id != "" {
 	//    db.Where("id = ?", data.Id)
@@ -98,6 +98,6 @@ func (dao *TableColumnDao) DeleteByTableIds(tx *gorm.DB, tableIds []string) erro
 // GetColumnListByTableId 根据表id获取列信息
 func (dao *TableColumnDao) GetColumnListByTableId(tableId string) (error, []*model.TableColumn) {
 	var columns []*model.TableColumn
-	err := global.GOrmDao.Table("gen_table_column").Where("table_id = ?", tableId).Order("sort").Find(&columns).Error
+	err := global.GormDao.Table("gen_table_column").Where("table_id = ?", tableId).Order("sort").Find(&columns).Error
 	return err, columns
 }

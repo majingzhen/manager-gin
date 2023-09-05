@@ -102,7 +102,7 @@ func (s *DeptService) Update(id string, deptView *view.DeptView) (err error) {
 			oldAncestors := oldDept.Ancestors
 			dept.Ancestors = newAncestors
 			// 更新子部门的祖级列表
-			tx := global.GOrmDao.Begin()
+			tx := global.GormDao.Begin()
 			err = s.updateDeptChildren(tx, dept.Id, newAncestors, oldAncestors)
 			if err != nil {
 				tx.Rollback()

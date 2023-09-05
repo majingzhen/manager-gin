@@ -12,18 +12,18 @@ import (
 func InitTable(genTable *model.Table, operName string) *model.Table {
 	genTable.CreateBy = operName
 	genTable.StructName = convertStructName(genTable.Name)
-	genTable.PackageName = global.GVA_VP.GetString("gen.package_name")
-	genTable.ModuleName = genModuleName(global.GVA_VP.GetString("gen.package_name"))
+	genTable.PackageName = global.Viper.GetString("gen.package_name")
+	genTable.ModuleName = genModuleName(global.Viper.GetString("gen.package_name"))
 	genTable.BusinessName = getBusinessName(genTable.Name)
 	genTable.FunctionName = genTable.TableComment
-	genTable.FunctionAuthor = global.GVA_VP.GetString("gen.author")
+	genTable.FunctionAuthor = global.Viper.GetString("gen.author")
 	return genTable
 }
 
 // convertStructName 转换struct名称
 func convertStructName(tableName string) string {
-	autoRemovePre := global.GVA_VP.GetBool("gen.auto_remove_pre")
-	tablePrefix := global.GVA_VP.GetString("gen.table_prefix")
+	autoRemovePre := global.Viper.GetBool("gen.auto_remove_pre")
+	tablePrefix := global.Viper.GetString("gen.table_prefix")
 	if autoRemovePre && tablePrefix != "" {
 		searchList := strings.Split(tablePrefix, ",")
 		tableName = replaceFirst(tableName, searchList)
@@ -131,7 +131,7 @@ func getColumnLength(columnType string) int {
 // getColumnType 获取列类型
 func getColumnType(columnType string) string {
 	if strings.Contains(columnType, "(") {
-		return columnType[:strings.Index(columnType, "(")-1]
+		return columnType[:strings.Index(columnType, "(")]
 	} else {
 		return columnType
 	}

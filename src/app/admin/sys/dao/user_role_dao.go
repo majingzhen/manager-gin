@@ -29,19 +29,19 @@ func (dao *UserRoleDao) DeleteByUserIds(tx *gorm.DB, ids []string) error {
 // CountUserRoleByRoleId 根据角色id查询用户数量
 func (dao *UserRoleDao) CountUserRoleByRoleId(id string) (error, int64) {
 	var total int64
-	err := global.GOrmDao.Model(&model.UserRole{}).Where("role_id = ?", id).Count(&total).Error
+	err := global.GormDao.Model(&model.UserRole{}).Where("role_id = ?", id).Count(&total).Error
 	return err, total
 
 }
 
 // DeleteUserRoleInfo 根据用户id和角色id删除用户角色关联数据
 func (dao *UserRoleDao) DeleteUserRoleInfo(userId, roleId string) error {
-	return global.GOrmDao.Delete(&model.UserRole{}, "user_id = ? and role_id = ?", userId, roleId).Error
+	return global.GormDao.Delete(&model.UserRole{}, "user_id = ? and role_id = ?", userId, roleId).Error
 }
 
 // DeleteUsersRoleInfo 根据用户id集合和角色id删除用户角色关联数据
 func (dao *UserRoleDao) DeleteUsersRoleInfo(roleId string, userIds []string) error {
-	return global.GOrmDao.Delete(&model.UserRole{}, "user_id in ? and role_id = ?", userIds, roleId).Error
+	return global.GormDao.Delete(&model.UserRole{}, "user_id in ? and role_id = ?", userIds, roleId).Error
 }
 
 // InsertUsersRoleInfo 批量插入用户角色关联数据
@@ -50,5 +50,5 @@ func (dao *UserRoleDao) InsertUsersRoleInfo(roleId string, userIds []string) err
 	for _, userId := range userIds {
 		userRoles = append(userRoles, model.UserRole{RoleId: roleId, UserId: userId})
 	}
-	return global.GOrmDao.Create(&userRoles).Error
+	return global.GormDao.Create(&userRoles).Error
 }

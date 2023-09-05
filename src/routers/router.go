@@ -16,7 +16,7 @@ type Routers struct {
 // InitRouter 初始化路由
 func (routers *Routers) InitRouter() *gin.Engine {
 	r := gin.New()
-	r.Use(gin.Logger())
+	r.Use(middleware.GinLogger())
 	r.Use(gin.Recovery())
 
 	// 跨域处理

@@ -41,14 +41,14 @@ func (dao *UserDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
 // Update 更新User记录
 // Author
 func (dao *UserDao) Update(sysUser model.User) (err error) {
-	err = global.GOrmDao.Updates(&sysUser).Error
+	err = global.GormDao.Updates(&sysUser).Error
 	return err
 }
 
 // Get 根据id获取User记录
 // Author
 func (dao *UserDao) Get(id string) (err error, sysUser *model.User) {
-	err = global.GOrmDao.Where("id = ?", id).First(&sysUser).Error
+	err = global.GormDao.Where("id = ?", id).First(&sysUser).Error
 	return
 }
 
@@ -56,7 +56,7 @@ func (dao *UserDao) Get(id string) (err error, sysUser *model.User) {
 // Author
 func (dao *UserDao) Page(param *view.UserPageView) (err error, page *common.PageInfo) {
 	// 创建model
-	db := global.GOrmDao.Table("sys_user u")
+	db := global.GormDao.Table("sys_user u")
 	db.Select("distinct u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
 	db.Joins("left join sys_dept d on u.dept_id = d.id")
 	// 如果有条件搜索 下方会自动创建搜索语句
@@ -96,7 +96,7 @@ func (dao *UserDao) Page(param *view.UserPageView) (err error, page *common.Page
 // Author
 func (dao *UserDao) List(data *model.User) (err error, datas []*model.User) {
 	var rows []*model.User
-	model := global.GOrmDao.Table("sys_user u")
+	model := global.GormDao.Table("sys_user u")
 	model.Select("distinct u.id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phone_number, u.sex, u.status, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark")
 	model.Joins("left join sys_dept d on u.dept_id = d.id")
 	if data.Id != "" {
@@ -125,27 +125,27 @@ func (dao *UserDao) List(data *model.User) (err error, datas []*model.User) {
 
 // GetByUserName 根据用户名获取User记录
 func (dao *UserDao) GetByUserName(name string) (err error, sysUser *model.User) {
-	err = global.GOrmDao.Where("user_name = ?", name).First(&sysUser).Error
+	err = global.GormDao.Where("user_name = ?", name).First(&sysUser).Error
 	return
 }
 
 // GetByDeptId 根据部门id获取User记录
 func (dao *UserDao) GetByDeptId(deptId string) (err error, sysUser []*model.User) {
-	err = global.GOrmDao.Where("dept_id = ?", deptId).Find(&sysUser).Error
+	err = global.GormDao.Where("dept_id = ?", deptId).Find(&sysUser).Error
 	return
 }
 
 // CheckFieldUnique 判断指定字段是否为空
 func (dao *UserDao) CheckFieldUnique(fieldName, value string) (error, int64) {
 	var count int64
-	err := global.GOrmDao.Model(&model.User{}).Where(fieldName+" = ?", value).Count(&count).Error
+	err := global.GormDao.Model(&model.User{}).Where(fieldName+" = ?", value).Count(&count).Error
 	return err, count
 }
 
 // SelectByField 根据指定字段查询数据
 func (dao *UserDao) SelectByField(fieldName string, value string) (error, *model.User) {
 	var users []*model.User
-	if err := global.GOrmDao.Model(&model.User{}).Where(fieldName+" = ?", value).Find(&users).Error; err != nil {
+	if err := global.GormDao.Model(&model.User{}).Where(fieldName+" = ?", value).Find(&users).Error; err != nil {
 		return err, nil
 	} else {
 		if users != nil && len(users) > 0 {
@@ -159,7 +159,7 @@ func (dao *UserDao) SelectByField(fieldName string, value string) (error, *model
 // SelectAllocatedList 获取已分配用户角色的用户列表
 func (dao *UserDao) SelectAllocatedList(param *view.UserPageView) (err error, page *common.PageInfo) {
 	// 创建model
-	db := global.GOrmDao.Table("sys_user u")
+	db := global.GormDao.Table("sys_user u")
 	db.Select("distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time")
 	db.Joins("left join sys_dept d on u.dept_id = d.id")
 	db.Joins("left join sys_user_role ur on u.id = ur.user_id")
@@ -192,7 +192,7 @@ func (dao *UserDao) SelectAllocatedList(param *view.UserPageView) (err error, pa
 // SelectUnallocatedList 获取未分配用户角色的用户列表
 func (dao *UserDao) SelectUnallocatedList(param *view.UserPageView) (err error, page *common.PageInfo) {
 	// 创建model
-	db := global.GOrmDao.Table("sys_user u")
+	db := global.GormDao.Table("sys_user u")
 	db.Select("distinct u.id, u.dept_id, u.user_name, u.nick_name, u.email, u.phone_number, u.status, u.create_time")
 	db.Joins("left join sys_dept d on u.dept_id = d.id")
 	db.Joins("left join sys_user_role ur on u.id = ur.user_id")

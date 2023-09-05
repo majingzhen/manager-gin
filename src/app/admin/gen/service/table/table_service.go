@@ -29,14 +29,14 @@ func (s *Service) Create(tableView *view.TableView) error {
 	if err, table := s.viewUtils.View2Data(tableView); err != nil {
 		return err
 	} else {
-		return s.tableDao.Create(global.GOrmDao, table)
+		return s.tableDao.Create(global.GormDao, table)
 	}
 }
 
 // DeleteByIds 批量删除Table记录
 // Author
 func (s *Service) DeleteByIds(ids []string) (err error) {
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	if err = s.tableDao.DeleteByIds(tx, ids); err != nil {
 		tx.Rollback()
 		return err
@@ -121,7 +121,7 @@ func (s *Service) ImportGenTable(tables []*model.Table, loginUser string) error 
 	if len(tables) == 0 {
 		return nil
 	}
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	for _, table := range tables {
 		table = utils.InitTable(table, loginUser)
 		table.Id = utils.GenUID()

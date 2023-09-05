@@ -19,28 +19,28 @@ type ConfigDao struct{}
 // Create 创建Config记录
 // Author
 func (dao *ConfigDao) Create(sysConfig model.Config) (err error) {
-	err = global.GOrmDao.Create(&sysConfig).Error
+	err = global.GormDao.Create(&sysConfig).Error
 	return err
 }
 
 // DeleteByIds 批量删除Config记录
 // Author
 func (dao *ConfigDao) DeleteByIds(ids []string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.Config{}, "id in ?", ids).Error
+	err = global.GormDao.Delete(&[]model.Config{}, "id in ?", ids).Error
 	return err
 }
 
 // Update 更新Config记录
 // Author
 func (dao *ConfigDao) Update(sysConfig model.Config) (err error) {
-	err = global.GOrmDao.Updates(&sysConfig).Error
+	err = global.GormDao.Updates(&sysConfig).Error
 	return err
 }
 
 // Get 根据id获取Config记录
 // Author
 func (dao *ConfigDao) Get(id string) (err error, sysConfig *model.Config) {
-	err = global.GOrmDao.Where("id = ?", id).First(&sysConfig).Error
+	err = global.GormDao.Where("id = ?", id).First(&sysConfig).Error
 	return
 }
 
@@ -48,7 +48,7 @@ func (dao *ConfigDao) Get(id string) (err error, sysConfig *model.Config) {
 // Author
 func (dao *ConfigDao) Page(param *view.ConfigPageView) (err error, res *common.PageInfo) {
 	// 创建db
-	db := global.GOrmDao.Model(&model.Config{})
+	db := global.GormDao.Model(&model.Config{})
 	// 如果有条件搜索 下方会自动创建搜索语句
 	if param.ConfigName != "" {
 		db.Where("config_name like ?", "%"+param.ConfigName+"%")
@@ -78,7 +78,7 @@ func (dao *ConfigDao) Page(param *view.ConfigPageView) (err error, res *common.P
 // Author
 func (dao *ConfigDao) List(data *model.Config) (err error, datas []*model.Config) {
 	var rows []*model.Config
-	db := global.GOrmDao.Model(&model.Config{})
+	db := global.GormDao.Model(&model.Config{})
 	// TODO 输入查询条件
 	//if data.Id != "" {
 	//    db.Where("id = ?", data.Id)
@@ -92,7 +92,7 @@ func (dao *ConfigDao) List(data *model.Config) (err error, datas []*model.Config
 // SelectConfigByKey 根据key查询Config记录
 func (dao *ConfigDao) SelectConfigByKey(key string) (error, *model.Config) {
 	var rows []*model.Config
-	db := global.GOrmDao.Model(&model.Config{})
+	db := global.GormDao.Model(&model.Config{})
 	db.Where("config_key = ?", key)
 	err := db.Find(&rows).Error
 	if rows != nil && len(rows) > 0 {

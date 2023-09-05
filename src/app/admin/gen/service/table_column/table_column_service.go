@@ -21,7 +21,7 @@ type TableColumnService struct {
 // DeleteByIds 批量删除TableColumn记录
 // Author
 func (s *TableColumnService) DeleteByIds(ids []string) (err error) {
-	err = s.tableColumnDao.DeleteByIds(global.GOrmDao, ids)
+	err = s.tableColumnDao.DeleteByIds(global.GormDao, ids)
 	return err
 }
 

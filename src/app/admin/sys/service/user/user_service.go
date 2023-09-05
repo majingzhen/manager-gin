@@ -37,7 +37,7 @@ func (s *UserService) Create(userView *view.UserView) (err error) {
 	if err1 != nil {
 		return err1
 	}
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	if err = s.userDao.Create(tx, *user); err != nil {
 		return err
 	} else {
@@ -94,7 +94,7 @@ func (s *UserService) DeleteByIds(ids []string, loginUserId string) (err error) 
 			return err
 		}
 	}
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	// 删除用户角色关联数据
 	if err = s.userRoleDao.DeleteByUserIds(tx, ids); err != nil {
 		tx.Rollback()
@@ -271,7 +271,7 @@ func (s *UserService) ChangeStatus(v *view.UserView) error {
 
 // AuthRole	角色授权
 func (s *UserService) AuthRole(v *view.UserView) error {
-	tx := global.GOrmDao.Begin()
+	tx := global.GormDao.Begin()
 	// 删除用户角色关联数据
 	if err := s.userRoleDao.DeleteByUserIds(tx, []string{v.Id}); err != nil {
 		tx.Rollback()

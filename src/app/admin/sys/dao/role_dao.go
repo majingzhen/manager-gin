@@ -29,7 +29,7 @@ func (dao *RoleDao) Create(tx *gorm.DB, sysRole model.Role) (err error) {
 // Delete 删除Role记录
 // Author
 func (dao *RoleDao) Delete(id string) (err error) {
-	err = global.GOrmDao.Delete(&[]model.Role{}, "id = ?", id).Error
+	err = global.GormDao.Delete(&[]model.Role{}, "id = ?", id).Error
 	return err
 }
 
@@ -50,7 +50,7 @@ func (dao *RoleDao) Update(tx *gorm.DB, sysRole *model.Role) (err error) {
 // Get 根据id获取Role记录
 // Author
 func (dao *RoleDao) Get(id string) (err error, sysRole *model.Role) {
-	err = global.GOrmDao.Where("id = ?", id).First(&sysRole).Error
+	err = global.GormDao.Where("id = ?", id).First(&sysRole).Error
 	return
 }
 
@@ -58,7 +58,7 @@ func (dao *RoleDao) Get(id string) (err error, sysRole *model.Role) {
 // Author
 func (dao *RoleDao) Page(param *view.RolePageView) (err error, page *common.PageInfo) {
 	// 创建model
-	db := global.GOrmDao.Table("sys_role r")
+	db := global.GormDao.Table("sys_role r")
 	db.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
 	db.Joins("left join sys_user_role ur on ur.role_id = r.id")
 	db.Joins("left join sys_user u on u.id = ur.user_id")
@@ -97,7 +97,7 @@ func (dao *RoleDao) Page(param *view.RolePageView) (err error, page *common.Page
 // Author
 func (dao *RoleDao) List(data *model.Role) (err error, datas []*model.Role) {
 	var rows []*model.Role
-	model := global.GOrmDao.Table("sys_role r")
+	model := global.GormDao.Table("sys_role r")
 	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
 	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
 	model.Joins("left join sys_user u on u.id = ur.user_id")
@@ -126,7 +126,7 @@ func (dao *RoleDao) List(data *model.Role) (err error, datas []*model.Role) {
 // GetRoleByUserId 根据用户获取角色集合
 func (dao *RoleDao) GetRoleByUserId(userId string) (err error, roles []*model.Role) {
 	var tmp []*model.Role
-	model := global.GOrmDao.Table("sys_role r")
+	model := global.GormDao.Table("sys_role r")
 	model.Select("distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark ")
 	model.Joins("left join sys_user_role ur on ur.role_id = r.id")
 	model.Where("ur.user_id = ? and r.status = ?", userId, constants.STATUS_NORMAL)
@@ -138,7 +138,7 @@ func (dao *RoleDao) GetRoleByUserId(userId string) (err error, roles []*model.Ro
 // CheckRoleNameUnique 校验角色名称是否唯一
 func (dao *RoleDao) CheckRoleNameUnique(name string) (error, *model.Role) {
 	var data []*model.Role
-	if err := global.GOrmDao.Table("sys_role").Where("role_name = ?", name).Find(&data).Error; err != nil {
+	if err := global.GormDao.Table("sys_role").Where("role_name = ?", name).Find(&data).Error; err != nil {
 		return err, nil
 	} else {
 		if data != nil && len(data) > 0 {
@@ -152,7 +152,7 @@ func (dao *RoleDao) CheckRoleNameUnique(name string) (error, *model.Role) {
 // CheckRoleKeyUnique 校验角色权限是否唯一
 func (dao *RoleDao) CheckRoleKeyUnique(key string) (error, *model.Role) {
 	var data []*model.Role
-	if err := global.GOrmDao.Table("sys_role").Where("role_key = ?", key).Find(&data).Error; err != nil {
+	if err := global.GormDao.Table("sys_role").Where("role_key = ?", key).Find(&data).Error; err != nil {
 		return err, nil
 	} else {
 		if data != nil && len(data) > 0 {

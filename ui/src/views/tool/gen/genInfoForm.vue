@@ -15,7 +15,7 @@
         <el-form-item prop="packageName">
           <span slot="label">
             生成包路径
-            <el-tooltip content="生成在哪个java包下，例如 com.ruoyi.system" placement="top">
+            <el-tooltip content="生成在哪个包下" placement="top">
               <i class="el-icon-question"></i>
             </el-tooltip>
           </span>
@@ -61,7 +61,7 @@
 
       <el-col :span="12">
         <el-form-item>
-          <span slot="label">
+          <span slot="label">normalizer
             上级菜单
             <el-tooltip content="分配到指定菜单下，例如 系统管理" placement="top">
               <i class="el-icon-question"></i>
@@ -268,7 +268,7 @@ export default {
         delete node.children;
       }
       return {
-        id: node.menuId,
+        id: node.id,
         label: node.menuName,
         children: node.children
       };
