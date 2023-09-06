@@ -32,16 +32,16 @@ func InitDataSource() {
 		Logger.Error("MySQL启动异常", zap.Error(err))
 		panic(err)
 	} else {
-		Logger.Info("Connect to database success")
-		// 全局禁用表名复数
-		tmp = tmp.Set("gorm:table_options", "ENGINE=InnoDB")
-		// 全局设置表前缀
-		sqlDB, _ := tmp.DB()
-		sqlDB.SetMaxIdleConns(10)
-		sqlDB.SetMaxOpenConns(100)
-		sqlDB.SetConnMaxLifetime(10)
-		DbList = make(map[string]*gorm.DB)
-		DbList[Viper.GetString("datasource.db_name")] = GormDao
+		//Logger.Info("Connect to database success")
+		//// 全局禁用表名复数
+		//tmp = tmp.Set("gorm:table_options", "ENGINE=InnoDB")
+		//// 全局设置表前缀
+		//sqlDB, _ := tmp.DB()
+		//sqlDB.SetMaxIdleConns(10)
+		//sqlDB.SetMaxOpenConns(100)
+		//sqlDB.SetConnMaxLifetime(10)
+		//DbList = make(map[string]*gorm.DB)
+		//DbList[Viper.GetString("datasource.db_name")] = GormDao
 		GormDao = tmp
 	}
 }

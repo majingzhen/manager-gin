@@ -40,7 +40,7 @@ func (dao *DeptDao) Update(tx *gorm.DB, sysDept model.Dept) (err error) {
 // Get 根据id获取Dept记录
 // Author
 func (dao *DeptDao) Get(id string) (err error, sysDept *model.Dept) {
-	err = global.GormDao.Where("id = ?", id).First(&sysDept).Error
+	err = global.GormDao.Table("sys_dept").Where("id = ?", id).First(&sysDept).Error
 	return
 }
 

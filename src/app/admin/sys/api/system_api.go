@@ -25,7 +25,7 @@ import (
 
 type SystemApi struct {
 	basic.BasicApi
-	userService user.UserService
+	userService user.Service
 	roleService role.RoleService
 	menuService menu.MenuService
 }
@@ -50,21 +50,21 @@ func (api *SystemApi) Login(c *gin.Context) {
 		response.FailWithMessage("账号密码不能为空", c)
 		return
 	}
-	err, userView := api.userService.GetByUserName(loginUserView.UserName)
-	if err != nil || userView == nil {
+	err, byUserName := api.userService.GetByUserName(loginUserView.UserName)
+	if err != nil || byUserName == nil {
 		global.Logger.Error("用户不存在", zap.Error(err))
 		response.FailWithMessage("用户不存在", c)
 		return
 	}
 	// 取加密密码
-	hashedPassword := utils.EncryptionPassword(loginUserView.Password, userView.Salt)
-	if hashedPassword != userView.Password {
+	hashedPassword := utils.EncryptionPassword(loginUserView.Password, byUserName.Salt)
+	if hashedPassword != byUserName.Password {
 		global.Logger.Error("登录失败")
 		response.FailWithMessage("登录失败", c)
 		return
 	} else {
 		// 判断是否分配角色
-		_, userView := api.userService.Get(userView.Id)
+		_, userView := api.userService.Get(byUserName.Id)
 		if userView.Roles == nil || len(userView.Roles) == 0 {
 			global.Logger.Error("用户不存在", zap.Error(err))
 			response.FailWithMessage("用户不存在", c)

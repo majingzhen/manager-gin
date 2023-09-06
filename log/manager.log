@@ -1,5 +1,6 @@
-2023-09-05T14:52:23.264+0800	[34mINFO[0m	Connect to database success
-2023-09-05T14:52:23.283+0800	[34mINFO[0m	Connected to MongoDB!
-2023-09-05T14:52:25.358+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "OPTIONS", "path": "/api/captchaImage", "ip": "127.0.0.1", "latency": "0s"}
-2023-09-05T14:52:25.366+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/captchaImage", "ip": "127.0.0.1", "latency": "5.2961ms"}
-2023-09-05T14:52:28.723+0800	[34mINFO[0m	系统信号中断
+2023-09-06T09:56:48.496+0800	[34mINFO[0m	Connected to MongoDB!
+2023-09-06T09:57:02.596+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/getInfo", "ip": "127.0.0.1", "latency": "4.1641ms"}
+2023-09-06T09:57:02.685+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/getRouters", "ip": "127.0.0.1", "latency": "2.3416ms"}
+2023-09-06T09:57:03.008+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/sys/dictType/optionSelect", "ip": "127.0.0.1", "latency": "2.9908ms"}
+2023-09-06T09:57:03.033+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/sys/menu/list", "ip": "127.0.0.1", "latency": "24.6183ms"}
+2023-09-06T09:57:03.046+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/gen/table/get/142c368dc0714c73a788631ed5e5bef4", "ip": "127.0.0.1", "latency": "41.3189ms"}

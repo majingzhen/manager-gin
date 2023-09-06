@@ -14,10 +14,10 @@ datasource:
   db_name: manager
   table_prefix: ""
   log_mode: true
-  mongodb:
-    host: 127.0.0.1
-    port: 27017
-    db_name: manager
+#  mongodb:
+#    host: 127.0.0.1
+#    port: 27017
+#    db_name: manager
 
 # 代码生成
 gen:

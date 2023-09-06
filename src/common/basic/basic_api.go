@@ -9,7 +9,7 @@ import (
 )
 
 type BasicApi struct {
-	userService user.UserService
+	userService user.Service
 }
 
 // GetLoginUser 获取当前登录用户

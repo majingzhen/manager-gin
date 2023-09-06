@@ -21,7 +21,7 @@ import (
 	"manager-gin/src/utils"
 )
 
-type UserService struct {
+type Service struct {
 	userDao     dao.UserDao
 	viewUtils   view.UserViewUtils
 	deptService dept.DeptService
@@ -32,7 +32,7 @@ type UserService struct {
 
 // Create 创建User记录
 // Author
-func (s *UserService) Create(userView *view.UserView) (err error) {
+func (s *Service) Create(userView *view.UserView) (err error) {
 	err1, user := s.viewUtils.View2Data(userView)
 	if err1 != nil {
 		return err1
@@ -60,7 +60,7 @@ func (s *UserService) Create(userView *view.UserView) (err error) {
 }
 
 // insertUserPost 插入用户岗位关联数据
-func (s *UserService) insertUserPost(tx *gorm.DB, id string, ids []string) error {
+func (s *Service) insertUserPost(tx *gorm.DB, id string, ids []string) error {
 	var userPosts []model.UserPost
 	for _, postId := range ids {
 		userPosts = append(userPosts, model.UserPost{
@@ -72,7 +72,7 @@ func (s *UserService) insertUserPost(tx *gorm.DB, id string, ids []string) error
 }
 
 // insertUserRole 插入用户角色关联数据
-func (s *UserService) insertUserRole(tx *gorm.DB, userId string, roleIds []string) error {
+func (s *Service) insertUserRole(tx *gorm.DB, userId string, roleIds []string) error {
 	var userRoles []model.UserRole
 	for _, roleId := range roleIds {
 		userRoles = append(userRoles, model.UserRole{
@@ -85,7 +85,7 @@ func (s *UserService) insertUserRole(tx *gorm.DB, userId string, roleIds []strin
 
 // DeleteByIds 批量删除User记录
 // Author
-func (s *UserService) DeleteByIds(ids []string, loginUserId string) (err error) {
+func (s *Service) DeleteByIds(ids []string, loginUserId string) (err error) {
 	for _, id := range ids {
 		if constants.SYSTEM_ADMIN_ID == id {
 			return errors.New("不允许操作超级管理员用户")
@@ -115,7 +115,7 @@ func (s *UserService) DeleteByIds(ids []string, loginUserId string) (err error) 
 
 // Update 更新User记录
 // Author
-func (s *UserService) Update(id string, userView *view.UserView) (err error) {
+func (s *Service) Update(id string, userView *view.UserView) (err error) {
 	userView.Id = id
 	err1, user := s.viewUtils.View2Data(userView)
 	if err1 != nil {
@@ -127,7 +127,7 @@ func (s *UserService) Update(id string, userView *view.UserView) (err error) {
 
 // Get 根据id获取User记录
 // Author
-func (s *UserService) Get(id string) (err error, userView *view.UserView) {
+func (s *Service) Get(id string) (err error, userView *view.UserView) {
 	if id == "" {
 		return nil, nil
 	}
@@ -155,7 +155,7 @@ func (s *UserService) Get(id string) (err error, userView *view.UserView) {
 
 // Page 分页获取User记录
 // Author
-func (s *UserService) Page(pageInfo *view.UserPageView, user *view.UserView) (err error, res *common.PageInfo) {
+func (s *Service) Page(pageInfo *view.UserPageView, user *view.UserView) (err error, res *common.PageInfo) {
 	pageInfo.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
 	if err, res = s.userDao.Page(pageInfo); err != nil {
 		return err, res
@@ -179,7 +179,7 @@ func (s *UserService) Page(pageInfo *view.UserPageView, user *view.UserView) (er
 }
 
 // List 获取User记录
-func (s *UserService) List(v *view.UserView) (err error, views []*view.UserView) {
+func (s *Service) List(v *view.UserView) (err error, views []*view.UserView) {
 	err, data := s.viewUtils.View2Data(v)
 	if err != nil {
 		return err, nil
@@ -195,7 +195,7 @@ func (s *UserService) List(v *view.UserView) (err error, views []*view.UserView)
 
 // GetByUserName 根据userName获取User记录
 // Author
-func (s *UserService) GetByUserName(userName string) (err error, userView *view.UserView) {
+func (s *Service) GetByUserName(userName string) (err error, userView *view.UserView) {
 	err1, user := s.userDao.GetByUserName(userName)
 	if err1 != nil {
 		return err1, nil
@@ -209,7 +209,7 @@ func (s *UserService) GetByUserName(userName string) (err error, userView *view.
 
 // CheckFieldUnique 校验字段是否唯一
 // Author
-func (s *UserService) CheckFieldUnique(fieldName, value, id string) error {
+func (s *Service) CheckFieldUnique(fieldName, value, id string) error {
 	if fieldName == "" || value == "" {
 		return nil
 	}
@@ -224,7 +224,7 @@ func (s *UserService) CheckFieldUnique(fieldName, value, id string) error {
 }
 
 // CheckUserDataScope 校验数据权限
-func (s *UserService) CheckUserDataScope(userId, loginUserId string) error {
+func (s *Service) CheckUserDataScope(userId, loginUserId string) error {
 	if constants.SYSTEM_ADMIN_ID != loginUserId {
 		err, userView := s.Get(userId)
 		if err != nil {
@@ -249,7 +249,7 @@ func (s *UserService) CheckUserDataScope(userId, loginUserId string) error {
 }
 
 // ResetPwd 重置密码
-func (s *UserService) ResetPwd(v *view.UserView) error {
+func (s *Service) ResetPwd(v *view.UserView) error {
 	err, user := s.viewUtils.View2Data(v)
 	if err != nil {
 		return err
@@ -261,7 +261,7 @@ func (s *UserService) ResetPwd(v *view.UserView) error {
 }
 
 // ChangeStatus 更新状态
-func (s *UserService) ChangeStatus(v *view.UserView) error {
+func (s *Service) ChangeStatus(v *view.UserView) error {
 	err, user := s.viewUtils.View2Data(v)
 	if err != nil {
 		return err
@@ -270,7 +270,7 @@ func (s *UserService) ChangeStatus(v *view.UserView) error {
 }
 
 // AuthRole	角色授权
-func (s *UserService) AuthRole(v *view.UserView) error {
+func (s *Service) AuthRole(v *view.UserView) error {
 	tx := global.GormDao.Begin()
 	// 删除用户角色关联数据
 	if err := s.userRoleDao.DeleteByUserIds(tx, []string{v.Id}); err != nil {
@@ -287,7 +287,7 @@ func (s *UserService) AuthRole(v *view.UserView) error {
 }
 
 // SelectAllocatedList 获取已分配用户角色的用户列表
-func (s *UserService) SelectAllocatedList(pageInfo *view.UserPageView, user *view.UserView) (err error, res *common.PageInfo) {
+func (s *Service) SelectAllocatedList(pageInfo *view.UserPageView, user *view.UserView) (err error, res *common.PageInfo) {
 	pageInfo.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
 	if err, res = s.userDao.SelectAllocatedList(pageInfo); err != nil {
 		return err, nil
@@ -311,7 +311,7 @@ func (s *UserService) SelectAllocatedList(pageInfo *view.UserPageView, user *vie
 }
 
 // SelectUnallocatedList 获取未分配用户角色的用户列表
-func (s *UserService) SelectUnallocatedList(pageInfo *view.UserPageView, user *view.UserView) (err error, res *common.PageInfo) {
+func (s *Service) SelectUnallocatedList(pageInfo *view.UserPageView, user *view.UserView) (err error, res *common.PageInfo) {
 	pageInfo.DataScopeSql = aspect.DataScopeFilter(user, "d", "u", "")
 	if err, res = s.userDao.SelectUnallocatedList(pageInfo); err != nil {
 		return err, nil
@@ -335,7 +335,7 @@ func (s *UserService) SelectUnallocatedList(pageInfo *view.UserPageView, user *v
 }
 
 // GetByDeptId 根据部门id获取User记录
-func (s *UserService) GetByDeptId(deptId string) (err error, userView []*view.UserView) {
+func (s *Service) GetByDeptId(deptId string) (err error, userView []*view.UserView) {
 	err1, user := s.userDao.GetByDeptId(deptId)
 	if err1 != nil {
 		return err1, nil

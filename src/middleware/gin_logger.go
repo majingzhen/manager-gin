@@ -23,6 +23,9 @@ func GinLogger() gin.HandlerFunc {
 		method := c.Request.Method
 		path := c.Request.URL.Path
 
+		if method == "OPTIONS" { // 跨域请求会先发送一个OPTIONS请求，这里不做处理
+			return
+		}
 		// 将日志输出到Zap
 		global.Logger.Info("Gin request",
 			zap.Int("status", statusCode),

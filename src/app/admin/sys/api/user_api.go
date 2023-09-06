@@ -24,7 +24,7 @@ import (
 
 type UserApi struct {
 	basic.BasicApi
-	userService user.UserService
+	userService user.Service
 	roleService role.RoleService
 	postService post.PostService
 }
