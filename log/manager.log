@@ -1,6 +1,50 @@
-2023-09-06T09:56:48.496+0800	[34mINFO[0m	Connected to MongoDB!
-2023-09-06T09:57:02.596+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/getInfo", "ip": "127.0.0.1", "latency": "4.1641ms"}
-2023-09-06T09:57:02.685+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/getRouters", "ip": "127.0.0.1", "latency": "2.3416ms"}
-2023-09-06T09:57:03.008+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/sys/dictType/optionSelect", "ip": "127.0.0.1", "latency": "2.9908ms"}
-2023-09-06T09:57:03.033+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/sys/menu/list", "ip": "127.0.0.1", "latency": "24.6183ms"}
-2023-09-06T09:57:03.046+0800	[34mINFO[0m	Gin request	{"status": 200, "method": "GET", "path": "/api/gen/table/get/142c368dc0714c73a788631ed5e5bef4", "ip": "127.0.0.1", "latency": "41.3189ms"}
+{"level":"info","time":"2023-09-08T13:02:50.194+0800","msg":"Gin request","status":200,"method":"GET","path":"/api/getInfo","ip":"127.0.0.1","latency":0.0287369}
+{"level":"info","time":"2023-09-08T13:02:50.208+0800","msg":"Gin request","status":200,"method":"POST","path":"/api/logout","ip":"127.0.0.1","latency":0}
+{"level":"info","time":"2023-09-08T13:02:50.261+0800","msg":"Gin request","status":200,"method":"GET","path":"/api/captchaImage","ip":"127.0.0.1","latency":0.0054769}
+{"level":"debug","time":"2023-09-08T13:02:58.640+0800","msg":"Database Query","sql":"SELECT * FROM `sys_user` WHERE user_name = 'admin' ORDER BY `sys_user`.`id` LIMIT 1","time":"1.28ms","rows":1}
+{"level":"debug","time":"2023-09-08T13:03:01.688+0800","msg":"Database Query","sql":"SELECT * FROM `sys_user` WHERE id = '1' ORDER BY `sys_user`.`id` LIMIT 1","time":"0.52ms","rows":1}
+{"level":"debug","time":"2023-09-08T13:03:01.689+0800","msg":"Database Query","sql":"SELECT * FROM `sys_dept` WHERE id = '103' ORDER BY `sys_dept`.`id` LIMIT 1","time":"1.61ms","rows":1}
+{"level":"debug","time":"2023-09-08T13:03:01.692+0800","msg":"Database Query","sql":"SELECT distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark  FROM sys_role r left join sys_user_role ur on ur.role_id = r.id left join sys_user u on u.id = ur.user_id left join sys_dept d on u.dept_id = d.id ORDER BY create_time desc","time":"2.25ms","rows":2}
+{"level":"debug","time":"2023-09-08T13:03:01.693+0800","msg":"Database Query","sql":"SELECT distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark  FROM sys_role r left join sys_user_role ur on ur.role_id = r.id WHERE ur.user_id = '1' and r.status = 0","time":"1.04ms","rows":1}
+{"level":"info","time":"2023-09-08T13:03:01.693+0800","msg":"Gin request","status":200,"method":"POST","path":"/api/login","ip":"127.0.0.1","latency":3.0559476}
+{"level":"debug","time":"2023-09-08T13:03:01.707+0800","msg":"Database Query","sql":"SELECT * FROM `sys_user` WHERE id = '1' ORDER BY `sys_user`.`id` LIMIT 1","time":"1.28ms","rows":1}
+{"level":"debug","time":"2023-09-08T13:03:01.709+0800","msg":"Database Query","sql":"SELECT * FROM `sys_dept` WHERE id = '103' ORDER BY `sys_dept`.`id` LIMIT 1","time":"0.97ms","rows":1}
+{"level":"debug","time":"2023-09-08T13:03:01.711+0800","msg":"Database Query","sql":"SELECT distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark  FROM sys_role r left join sys_user_role ur on ur.role_id = r.id left join sys_user u on u.id = ur.user_id left join sys_dept d on u.dept_id = d.id ORDER BY create_time desc","time":"0.51ms","rows":2}
+{"level":"debug","time":"2023-09-08T13:03:01.712+0800","msg":"Database Query","sql":"SELECT distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark  FROM sys_role r left join sys_user_role ur on ur.role_id = r.id WHERE ur.user_id = '1' and r.status = 0","time":"0.91ms","rows":1}
+{"level":"info","time":"2023-09-08T13:03:01.713+0800","msg":"Gin request","status":200,"method":"GET","path":"/api/getInfo","ip":"127.0.0.1","latency":0.0074029}
+{"level":"debug","time":"2023-09-08T13:03:01.725+0800","msg":"Database Query","sql":"SELECT * FROM `sys_menu` WHERE status = 0 and menu_type in ('M', 'C')","time":"2.29ms","rows":24}
+{"level":"info","time":"2023-09-08T13:03:01.725+0800","msg":"Gin request","status":200,"method":"GET","path":"/api/getRouters","ip":"127.0.0.1","latency":0.0038611}
+2023-09-08T13:04:01.380+0800	debug	Database Query	{"sql": "SELECT * FROM `sys_user` WHERE id = '1' ORDER BY `sys_user`.`id` LIMIT 1", "time": "17.46ms", "rows": 1}
+2023-09-08T13:04:01.382+0800	debug	Database Query	{"sql": "SELECT * FROM `sys_dept` WHERE id = '103' ORDER BY `sys_dept`.`id` LIMIT 1", "time": "1.41ms", "rows": 1}
+2023-09-08T13:04:01.384+0800	debug	Database Query	{"sql": "SELECT distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark  FROM sys_role r left join sys_user_role ur on ur.role_id = r.id left join sys_user u on u.id = ur.user_id left join sys_dept d on u.dept_id = d.id ORDER BY create_time desc", "time": "0.50ms", "rows": 2}
+2023-09-08T13:04:01.385+0800	debug	Database Query	{"sql": "SELECT distinct r.id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.menu_check_strictly, r.dept_check_strictly,r.status, r.create_time, r.remark  FROM sys_role r left join sys_user_role ur on ur.role_id = r.id WHERE ur.user_id = '1' and r.status = 0", "time": "0.50ms", "rows": 1}
+2023-09-08T13:04:01.385+0800	info	Gin request	{"status": 200, "method": "GET", "path": "/api/getInfo", "ip": "127.0.0.1", "latency": 0.0233155}
+2023-09-08T13:04:01.431+0800	debug	Database Query	{"sql": "SELECT * FROM `sys_menu` WHERE status = 0 and menu_type in ('M', 'C')", "time": "2.19ms", "rows": 24}
+2023-09-08T13:04:01.432+0800	info	Gin request	{"status": 200, "method": "GET", "path": "/api/getRouters", "ip": "127.0.0.1", "latency": 0.0027317}
+2023-09-08T13:07:41.194+0800	info	Shutting down server...
+2023-09-08T13:07:41.211+0800	info	Server exiting
+2023-09-08T13:08:30.448+0800	info	Shutting down server...
+2023-09-08T13:08:30.465+0800	info	Server exiting
+2023-09-08T13:09:09.991+0800	info	Shutting down server...
+2023-09-08T13:09:10.007+0800	info	Server exiting
+2023-09-08T13:09:28.920+0800	info	Shutting down server...
+2023-09-08T13:09:28.936+0800	info	Server exiting
+2023-09-08T13:09:39.274+0800	info	系统启动成功,服务运行在 http://153.153.234.222:8080
+2023-09-08T13:10:08.460+0800	info	Shutting down server...
+2023-09-08T13:10:08.461+0800	info	Server exiting
+2023-09-08T13:10:12.276+0800	info	系统启动成功,服务运行在 http://153.153.234.222:8080
+2023-09-08T13:10:39.956+0800	info	Shutting down server...
+2023-09-08T13:10:39.957+0800	info	Server exiting
+2023-09-08T13:10:55.395+0800	info	系统启动成功,服务运行在 http://153.153.234.222:8080
+2023-09-08T13:11:01.046+0800	info	Shutting down server...
+2023-09-08T13:11:01.047+0800	info	Server exiting
+2023-09-08T13:11:03.507+0800	error	failed to initialize database, got error Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2023-09-08T13:11:03.522+0800	error	MySQL启动异常	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2023-09-08T13:12:48.587+0800	error	failed to initialize database, got error Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2023-09-08T13:12:48.602+0800	error	MySQL启动异常	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2023-09-08T13:13:57.353+0800	error	failed to initialize database, got error Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2023-09-08T13:13:57.368+0800	error	MySQL启动异常	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2023-09-08T13:14:17.816+0800	error	failed to initialize database, got error Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2023-09-08T13:14:17.833+0800	error	MySQL启动异常	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2023-09-08T13:14:24.528+0800	error	failed to initialize database, got error Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
+2023-09-08T13:14:24.543+0800	error	MySQL启动异常	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}

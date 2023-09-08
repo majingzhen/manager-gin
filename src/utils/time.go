@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"strings"
 	"time"
 )
@@ -35,4 +36,9 @@ func Str2Time(str string) *time.Time {
 	}
 	t, _ := time.Parse(layout, str)
 	return &t
+}
+
+// MicrosecondsStr 将时间转换为毫秒字符串
+func MicrosecondsStr(d time.Duration) string {
+	return fmt.Sprintf("%.2fms", float64(d.Microseconds())/1000)
 }

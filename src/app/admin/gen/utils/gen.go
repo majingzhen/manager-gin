@@ -4,6 +4,7 @@ import (
 	"manager-gin/src/app/admin/gen/model"
 	"manager-gin/src/common/constants"
 	"manager-gin/src/global"
+	"manager-gin/src/utils"
 	"strconv"
 	"strings"
 )
@@ -28,7 +29,7 @@ func convertStructName(tableName string) string {
 		searchList := strings.Split(tablePrefix, ",")
 		tableName = replaceFirst(tableName, searchList)
 	}
-	return ToTitle(tableName)
+	return utils.ToTitle(tableName)
 }
 
 // replaceFirst 批量替换前缀
@@ -49,26 +50,26 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	columnName := column.ColumnName
 	column.TableId = table.Id
 	column.CreateBy = table.CreateBy
-	column.CreateTime = GetCurTime()
+	column.CreateTime = utils.GetCurTime()
 	// 设置结构体字段名
-	column.GoField = ToCamelCase(columnName)
+	column.GoField = utils.ToCamelCase(columnName)
 	// 设置默认类型
 	column.GoType = constants.TYPE_STRING
 	column.QueryType = constants.QUERY_EQ
-	if Contains(constants.COLUMN_TYPE_STR, dataType) || Contains(constants.COLUMN_TYPE_TEXT, dataType) {
+	if utils.Contains(constants.COLUMN_TYPE_STR, dataType) || utils.Contains(constants.COLUMN_TYPE_TEXT, dataType) {
 		columnLength := getColumnLength(column.ColumnType)
-		if columnLength >= 500 || Contains(constants.COLUMN_TYPE_TEXT, dataType) {
+		if columnLength >= 500 || utils.Contains(constants.COLUMN_TYPE_TEXT, dataType) {
 			column.HtmlType = constants.HTML_TEXTAREA
 		} else {
 			column.HtmlType = constants.HTML_INPUT
 		}
-	} else if Contains(constants.COLUMN_TYPE_TIME, dataType) {
+	} else if utils.Contains(constants.COLUMN_TYPE_TIME, dataType) {
 		column.HtmlType = constants.HTML_DATETIME
 		column.GoType = constants.TYPE_DATE
-	} else if Contains(constants.COLUMN_TYPE_NUMBER, dataType) {
+	} else if utils.Contains(constants.COLUMN_TYPE_NUMBER, dataType) {
 		column.HtmlType = constants.HTML_INPUT
 		column.GoType = constants.TYPE_INTEGER
-	} else if Contains(constants.COLUMN_TYPE_FLOAT, dataType) {
+	} else if utils.Contains(constants.COLUMN_TYPE_FLOAT, dataType) {
 		column.HtmlType = constants.HTML_INPUT
 		column.GoType = constants.TYPE_FLOAT
 	}
@@ -76,30 +77,30 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	column.IsInsert = constants.REQUIRE
 
 	// 编辑字段
-	if !Contains(constants.COLUMN_NAME_NOT_EDIT, columnName) && column.IsPk != "1" {
+	if !utils.Contains(constants.COLUMN_NAME_NOT_EDIT, columnName) && column.IsPk != "1" {
 		column.IsEdit = constants.REQUIRE
 	}
 	// 列表字段
-	if !Contains(constants.COLUMN_NAME_NOT_LIST, columnName) && column.IsPk != "1" {
+	if !utils.Contains(constants.COLUMN_NAME_NOT_LIST, columnName) && column.IsPk != "1" {
 		column.IsList = constants.REQUIRE
 	}
 	// 查询字段
-	if !Contains(constants.COLUMN_NAME_NOT_QUERY, columnName) && column.IsPk != "1" {
+	if !utils.Contains(constants.COLUMN_NAME_NOT_QUERY, columnName) && column.IsPk != "1" {
 		column.IsQuery = constants.REQUIRE
 	}
 	// 状态字段设置单选框
-	if EndsWithIgnoreCase(columnName, "status") || EndsWithIgnoreCase(columnName, "flag") || BeginsWithIgnoreCase(columnName, "is") {
+	if utils.EndsWithIgnoreCase(columnName, "status") || utils.EndsWithIgnoreCase(columnName, "flag") || utils.BeginsWithIgnoreCase(columnName, "is") {
 		column.HtmlType = constants.HTML_RADIO
-	} else if EndsWithIgnoreCase(columnName, "type") || EndsWithIgnoreCase(columnName, "sex") {
+	} else if utils.EndsWithIgnoreCase(columnName, "type") || utils.EndsWithIgnoreCase(columnName, "sex") {
 		// 类型&性别字段设置下拉框
 		column.HtmlType = constants.HTML_SELECT
-	} else if EndsWithIgnoreCase(columnName, "image") {
+	} else if utils.EndsWithIgnoreCase(columnName, "image") {
 		// 图片字段设置图片上传控件
 		column.HtmlType = constants.HTML_IMAGE_UPLOAD
-	} else if EndsWithIgnoreCase(columnName, "file") {
+	} else if utils.EndsWithIgnoreCase(columnName, "file") {
 		// 文件字段设置文件上传控件
 		column.HtmlType = constants.HTML_FILE_UPLOAD
-	} else if EndsWithIgnoreCase(columnName, "content") {
+	} else if utils.EndsWithIgnoreCase(columnName, "content") {
 		// 内容字段设置富文本控件
 		column.HtmlType = constants.HTML_EDITOR
 	}

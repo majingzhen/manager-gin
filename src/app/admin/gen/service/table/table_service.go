@@ -10,6 +10,7 @@ import (
 	"manager-gin/src/app/admin/gen/dao"
 	"manager-gin/src/app/admin/gen/model"
 	"manager-gin/src/app/admin/gen/service/table/view"
+	utils2 "manager-gin/src/app/admin/gen/utils"
 	"manager-gin/src/common"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -123,7 +124,7 @@ func (s *Service) ImportGenTable(tables []*model.Table, loginUser string) error 
 	}
 	tx := global.GormDao.Begin()
 	for _, table := range tables {
-		table = utils.InitTable(table, loginUser)
+		table = utils2.InitTable(table, loginUser)
 		table.Id = utils.GenUID()
 		if err := s.tableDao.Create(tx, table); err != nil {
 			tx.Rollback()
@@ -135,7 +136,7 @@ func (s *Service) ImportGenTable(tables []*model.Table, loginUser string) error 
 			return err
 		} else {
 			for _, column := range tableColumns {
-				column = utils.InitColumnField(column, table)
+				column = utils2.InitColumnField(column, table)
 				column.Id = utils.GenUID()
 				if err := s.columnDao.Create(tx, column); err != nil {
 					tx.Rollback()

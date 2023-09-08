@@ -3,6 +3,15 @@ server:
   port: 8080
 
 logger:
+  # 日志级别
+    # debug -1
+    # info  0
+    # warn  1
+    # error 2
+    # dPanic 3
+    # panic 4
+    # fatal 5
+  level: -1
   file_path: ./log/manager.log
 
 # 数据库配置

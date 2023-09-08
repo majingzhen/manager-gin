@@ -19,19 +19,21 @@ func InitDataSource() {
 		Viper.GetString("datasource.db_name"))
 	gcf := &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
-			TablePrefix:   Viper.GetString("database.table_prefix"), // 控制表前缀
+			TablePrefix:   Viper.GetString("datasource.table_prefix"), // 控制表前缀
 			SingularTable: true,
 		},
 		Logger: logger.Default, // 控制是否sql输出，默认是不输出
 	}
-	if Viper.GetBool("database.log_mode") {
-		gcf.Logger = logger.Default.LogMode(logger.Info) // logger.Info 就会输出sql
+	if Viper.GetBool("datasource.log_mode") {
+		gcf.Logger = NewGormLogger() // 使用zap进行日志输出
 	}
 
 	if tmp, err := gorm.Open(mysql.Open(dsn), gcf); err != nil {
 		Logger.Error("MySQL启动异常", zap.Error(err))
 		panic(err)
 	} else {
+		// 设置delete_at字段类型
+		tmp.Set("gorm:softDelete", "is_del")
 		//Logger.Info("Connect to database success")
 		//// 全局禁用表名复数
 		//tmp = tmp.Set("gorm:table_options", "ENGINE=InnoDB")
