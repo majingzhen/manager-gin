@@ -7,6 +7,9 @@
 package api
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/mojocn/base64Captcha"
+	"go.uber.org/zap"
 	"image/color"
 	"manager-gin/src/app/admin/sys/service/menu"
 	"manager-gin/src/app/admin/sys/service/role"
@@ -17,10 +20,6 @@ import (
 	"manager-gin/src/framework"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
-
-	"github.com/gin-gonic/gin"
-	"github.com/mojocn/base64Captcha"
-	"go.uber.org/zap"
 )
 
 type SystemApi struct {
@@ -114,12 +113,13 @@ func (api *SystemApi) CaptchaImage(c *gin.Context) {
 	var driver base64Captcha.Driver
 	//创建一个字符串类型的验证码驱动DriverString, DriverChinese :中文驱动
 	driverString := base64Captcha.DriverString{
-		Height:          40,                                    //高度
-		Width:           100,                                   //宽度
-		NoiseCount:      0,                                     //干扰数
-		ShowLineOptions: 2 | 4,                                 //展示个数
-		Length:          4,                                     //长度
-		Source:          "1234567890qwertyuiplkjhgfdsazxcvbnm", //验证码随机字符串来源
+		Height:          40,    //高度
+		Width:           100,   //宽度
+		NoiseCount:      0,     //干扰数
+		ShowLineOptions: 2 | 4, //展示个数
+		Length:          4,     //长度
+		// Source:          "1234567890qwertyuiplkjhgfdsazxcvbnm", //验证码随机字符串来源
+		Source: "1234567890", //验证码随机字符串来源
 		BgColor: &color.RGBA{ // 背景颜色
 			R: 3,
 			G: 102,

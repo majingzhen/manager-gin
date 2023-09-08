@@ -16,7 +16,7 @@ var ZpCore zapcore.Core
 func InitLogger() {
 	logPath := Viper.GetString("logger.file_path")
 	if logPath == "" {
-		logPath = "./log/manager.log"
+		logPath = "./log/manager.log" // 如果未配置日志路径，则默认在项目根目录下创建log目录
 	}
 	// 设置日志文件的位置、文件名、最大大小、最大备份数量和压缩
 	hook := lumberjack.Logger{

@@ -48,3 +48,10 @@
 2023-09-08T13:14:17.833+0800	error	MySQL启动异常	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
 2023-09-08T13:14:24.528+0800	error	failed to initialize database, got error Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)
 2023-09-08T13:14:24.543+0800	error	MySQL启动异常	{"error": "Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
+2023-09-08T13:15:25.965+0800	info	系统启动成功,服务运行在 http://153.153.234.222:8080
+2023-09-08T16:21:10.680+0800	info	Gin request	{"status": 200, "method": "GET", "path": "/api/getInfo", "ip": "127.0.0.1", "latency": 0.0063711}
+2023-09-08T16:21:10.693+0800	info	Gin request	{"status": 200, "method": "POST", "path": "/api/logout", "ip": "127.0.0.1", "latency": 0.0006894}
+2023-09-08T16:21:10.767+0800	info	Gin request	{"status": 200, "method": "GET", "path": "/api/captchaImage", "ip": "127.0.0.1", "latency": 0.0109884}
+2023-09-08T16:27:56.571+0800	info	Gin request	{"status": 200, "method": "GET", "path": "/api/captchaImage", "ip": "127.0.0.1", "latency": 0.0074712}
+2023-09-08T16:28:37.265+0800	info	Shutting down server...
+2023-09-08T16:28:37.266+0800	info	Server exiting
