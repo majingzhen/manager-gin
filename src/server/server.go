@@ -41,6 +41,5 @@ func Run() {
 	<-quit
 	global.Logger.Info("Shutting down server...")
 	global.Logger.Info("Server exiting")
-	global.CloseLogger()
 
 }

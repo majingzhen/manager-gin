@@ -193,7 +193,7 @@ export default {
           };
           updateGenTable(genTable).then(res => {
             this.$modal.msgSuccess(res.msg);
-            if (res.code === 200) {
+            if (res.code === 0) {
               this.close();
             }
           });

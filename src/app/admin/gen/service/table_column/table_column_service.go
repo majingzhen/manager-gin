@@ -7,6 +7,7 @@
 package table_column
 
 import (
+	"gorm.io/gorm"
 	"manager-gin/src/app/admin/gen/dao"
 	"manager-gin/src/app/admin/gen/service/table_column/view"
 	"manager-gin/src/common"
@@ -27,12 +28,15 @@ func (s *TableColumnService) DeleteByIds(ids []string) (err error) {
 
 // Update 更新TableColumn记录
 // Author
-func (s *TableColumnService) Update(id string, tableColumnView *view.TableColumnView) error {
-	tableColumnView.Id = id
+func (s *TableColumnService) Update(tableColumnView *view.TableColumnView, tx ...*gorm.DB) error {
 	if err, tableColumn := s.viewUtils.View2Data(tableColumnView); err != nil {
 		return err
 	} else {
-		return s.tableColumnDao.Update(*tableColumn)
+		if tx != nil {
+			return s.tableColumnDao.Update(tx[0], tableColumn)
+		} else {
+			return s.tableColumnDao.Update(global.GormDao, tableColumn)
+		}
 	}
 }
 

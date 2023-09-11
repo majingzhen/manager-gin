@@ -10,13 +10,10 @@ import (
 func GinLogger() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		start := time.Now()
-
 		// 处理请求
 		c.Next()
-
 		// 计算请求处理时间
 		latency := time.Since(start)
-
 		// 获取相关信息
 		statusCode := c.Writer.Status()
 		clientIP := c.ClientIP()

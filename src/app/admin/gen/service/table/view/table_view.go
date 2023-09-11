@@ -35,10 +35,11 @@ type TableView struct {
 	UpdateBy       string                  `json:"updateBy" form:"updateBy"`
 	UpdateTime     string                  `json:"updateTime" form:"updateTime"`
 	ColumnList     []*view.TableColumnView `json:"columnList" form:"columnList"`
+	TableViewOptions
+}
 
-	/**
-	 * 以下是Options 扩展字段
-	 */
+// TableViewOptions Options 扩展字段
+type TableViewOptions struct {
 	TreeCode       string `json:"treeCode" form:"treeCode" gorm:"column:tree_code;comment:树编码;"`
 	TreeParentCode string `json:"treeParentCode" form:"treeParentCode" gorm:"column:tree_parent_code;comment:树父编码;"`
 	TreeName       string `json:"treeName" form:"treeName" gorm:"column:tree_name;comment:树名称;"`

@@ -5,12 +5,7 @@ import (
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
 	"os"
-	"sync"
 )
-
-var once sync.Once
-var file *os.File
-var ZpCore zapcore.Core
 
 // InitLogger 初始化日志
 func InitLogger() {
@@ -53,18 +48,4 @@ func InitLogger() {
 	).With([]zap.Field{})
 	// 初始化logger
 	Logger = zap.New(writer)
-	ZpCore = writer
-}
-
-// CloseLogger 关闭日志
-func CloseLogger() {
-	once.Do(func() {
-		_ = Logger.Sync()
-		if file != nil {
-			err := file.Close()
-			if err != nil {
-				panic(err)
-			}
-		}
-	})
 }

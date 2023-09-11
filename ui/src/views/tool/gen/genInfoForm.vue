@@ -61,7 +61,7 @@
 
       <el-col :span="12">
         <el-form-item>
-          <span slot="label">normalizer
+          <span slot="label">
             上级菜单
             <el-tooltip content="分配到指定菜单下，例如 系统管理" placement="top">
               <i class="el-icon-question"></i>
@@ -74,6 +74,7 @@
             :normalizer="normalizer"
             :show-count="true"
             placeholder="请选择系统菜单"
+            noOptionsText=""
           />
         </el-form-item>
       </el-col>
@@ -212,6 +213,8 @@
     </el-row>
   </el-form>
 </template>
+
+
 
 <script>
 import Treeselect from "@riophae/vue-treeselect";

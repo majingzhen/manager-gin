@@ -71,14 +71,14 @@ func (api *TableApi) Update(c *gin.Context) {
 		response.FailWithMessage("参数解析错误", c)
 		return
 	}
-	id := tableView.Id
-	if id == "" {
-		response.FailWithMessage("参数解析错误", c)
+	// validateEdit
+	if err := api.tableService.ValidateEdit(&tableView); err != nil {
+		response.FailWithMessage("参数解析错误"+err.Error(), c)
 		return
 	}
 	tableView.UpdateTime = utils.GetCurTimeStr()
 	tableView.UpdateBy = api.GetLoginUserName(c)
-	if err := api.tableService.Update(id, &tableView); err != nil {
+	if err := api.tableService.Update(&tableView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {

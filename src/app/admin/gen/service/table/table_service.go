@@ -7,11 +7,16 @@
 package table
 
 import (
+	"errors"
+	"github.com/goccy/go-json"
+	"go.uber.org/zap"
 	"manager-gin/src/app/admin/gen/dao"
 	"manager-gin/src/app/admin/gen/model"
 	"manager-gin/src/app/admin/gen/service/table/view"
+	columm_service "manager-gin/src/app/admin/gen/service/table_column"
 	utils2 "manager-gin/src/app/admin/gen/utils"
 	"manager-gin/src/common"
+	"manager-gin/src/common/constants"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
@@ -19,9 +24,10 @@ import (
 
 // Service 结构体
 type Service struct {
-	tableDao  dao.TableDao
-	viewUtils view.TableViewUtils
-	columnDao dao.TableColumnDao
+	tableDao      dao.TableDao
+	viewUtils     view.TableViewUtils
+	columnDao     dao.TableColumnDao
+	columnService columm_service.TableColumnService
 }
 
 // Create 创建Table记录
@@ -55,12 +61,39 @@ func (s *Service) DeleteByIds(ids []string) (err error) {
 
 // Update 更新Table记录
 // Author
-func (s *Service) Update(id string, tableView *view.TableView) error {
-	tableView.Id = id
-	if err, table := s.viewUtils.View2Data(tableView); err != nil {
+func (s *Service) Update(tableView *view.TableView) error {
+	tx := global.GormDao.Begin()
+	// 更新
+	options := view.TableViewOptions{
+		TreeCode:       tableView.TreeCode,
+		TreeParentCode: tableView.TreeParentCode,
+		TreeName:       tableView.TreeName,
+		ParentMenuId:   tableView.ParentMenuId,
+		ParentMenuName: tableView.ParentMenuName,
+	}
+	if jsonBytes, err := json.Marshal(options); err != nil {
+		tx.Rollback()
 		return err
 	} else {
-		return s.tableDao.Update(*table)
+		tableView.Options = string(jsonBytes)
+	}
+	if err, table := s.viewUtils.View2Data(tableView); err != nil {
+		tx.Rollback()
+		return err
+	} else {
+		if err := s.tableDao.Update(tx, table); err != nil {
+			tx.Rollback()
+			return err
+		}
+		// 修改列信息
+		for _, columnView := range tableView.ColumnList {
+			if err := s.columnService.Update(columnView, tx); err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+		tx.Commit()
+		return nil
 	}
 }
 
@@ -72,6 +105,19 @@ func (s *Service) Get(id string) (err error, tableView *view.TableView) {
 		return err1, nil
 	}
 	err, tableView = s.viewUtils.Data2View(table)
+	// options 转字段
+	if tableView != nil && tableView.Options != "" {
+		var tableOption view.TableViewOptions
+		if err := json.Unmarshal([]byte(tableView.Options), &tableOption); err != nil {
+			global.Logger.Error("TableOption Convert is error ", zap.Error(err))
+		} else {
+			tableView.TreeCode = tableOption.TreeCode
+			tableView.TreeParentCode = tableOption.TreeParentCode
+			tableView.TreeName = tableOption.TreeName
+			tableView.ParentMenuId = tableOption.ParentMenuId
+			tableView.ParentMenuName = tableOption.ParentMenuName
+		}
+	}
 	return
 }
 
@@ -146,5 +192,28 @@ func (s *Service) ImportGenTable(tables []*model.Table, loginUser string) error 
 		}
 	}
 	tx.Commit()
+	return nil
+}
+
+// ValidateEdit 表单验证
+func (s *Service) ValidateEdit(v *view.TableView) error {
+	if v.TplCategory == constants.TPL_TREE {
+		if v.TreeCode == "" {
+			return errors.New("树编码不能为空")
+		}
+		if v.TreeName == "" {
+			return errors.New("树名称不能为空")
+		}
+		if v.TreeParentCode == "" {
+			return errors.New("树父编码不能为空")
+		}
+	} else if v.TplCategory == constants.TPL_SUB {
+		if v.SubTableName == "" {
+			return errors.New("子表名称不能为空")
+		}
+		if v.SubTableFkName == "" {
+			return errors.New("子表外键名称不能为空")
+		}
+	}
 	return nil
 }

@@ -34,8 +34,8 @@ func (dao *TableColumnDao) DeleteByIds(tx *gorm.DB, ids []string) (err error) {
 
 // Update 更新TableColumn记录
 // Author
-func (dao *TableColumnDao) Update(genTableColumn model.TableColumn) (err error) {
-	err = global.GormDao.Updates(&genTableColumn).Error
+func (dao *TableColumnDao) Update(tx *gorm.DB, genTableColumn *model.TableColumn) (err error) {
+	err = tx.Updates(genTableColumn).Error
 	return err
 }
 

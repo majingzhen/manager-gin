@@ -28,7 +28,7 @@ export function getGenTable(tableId) {
 // 修改代码生成信息
 export function updateGenTable(data) {
   return request({
-    url: '/gen',
+    url: '/gen/table/update',
     method: 'put',
     data: data
   })

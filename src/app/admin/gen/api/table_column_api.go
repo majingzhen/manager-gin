@@ -51,14 +51,9 @@ func (api *TableColumnApi) Update(c *gin.Context) {
 		response.FailWithMessage("参数解析错误", c)
 		return
 	}
-	id := tableColumnView.Id
-	if id == "" {
-		response.FailWithMessage("参数解析错误", c)
-		return
-	}
 	tableColumnView.UpdateTime = utils.GetCurTimeStr()
 	tableColumnView.UpdateBy = api.GetLoginUserName(c)
-	if err := api.tableColumnService.Update(id, &tableColumnView); err != nil {
+	if err := api.tableColumnService.Update(&tableColumnView); err != nil {
 		global.Logger.Error("更新持久化失败!", zap.Error(err))
 		response.FailWithMessage("更新失败", c)
 	} else {
