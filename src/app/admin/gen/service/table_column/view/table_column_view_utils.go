@@ -33,6 +33,10 @@ func (viewUtils *TableColumnViewUtils) Data2View(data *model.TableColumn) (err e
 
 	tmp.ColumnType = data.ColumnType
 
+	tmp.ColumnLength = data.ColumnLength
+
+	tmp.DataType = data.DataType
+
 	tmp.CreateBy = data.CreateBy
 
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
@@ -88,6 +92,10 @@ func (viewUtils *TableColumnViewUtils) View2Data(view *TableColumnView) (err err
 	tmp.ColumnName = view.ColumnName
 
 	tmp.ColumnType = view.ColumnType
+
+	tmp.ColumnLength = view.ColumnLength
+
+	tmp.DataType = view.DataType
 
 	tmp.CreateBy = view.CreateBy
 

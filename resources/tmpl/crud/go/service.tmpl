@@ -1,0 +1,79 @@
+// Package {{.PackageName}} 自动生成模板 {{.StructName}}Service
+// @description <TODO description class purpose>
+// @author {{.Author}}
+// @File: {{.FileName}}
+// @version 1.0.0
+// @create {{.DateTime}}
+package {{.PackageName}}
+
+import (
+    "errors"
+    "{{.ImportPath}}/common"
+    "{{.ImportPath}}/{{.CodePath}}/{{.ModuleName}}/{{.FileName}}/model"
+    "{{.ImportPath}}/{{.CodePath}}/{{.ModuleName}}/{{.FileName}}/service/view"
+)
+
+type {{.StructName}}Service struct {
+   {{.ObjectName}}Dao model.{{.StructName}}Dao
+   viewUtils view.{{.StructName}}ViewUtils
+}
+
+// Create 创建{{.StructName}}记录
+// Author {{.Author}}
+func (s *{{.StructName}}Service) Create({{.ObjectName}}View *view.{{.StructName}}View) error {
+    if err, {{.ObjectName}} := s.viewUtils.View2Data({{.ObjectName}}View); err != nil {
+        return err
+    } else {
+        return s.{{.ObjectName}}Dao.Create(*{{.ObjectName}})
+    }
+}
+
+// DeleteByIds 批量删除{{.StructName}}记录
+// Author {{.Author}}
+func (s *{{.StructName}}Service) DeleteByIds(ids []string) (err error) {
+    err = s.{{.ObjectName}}Dao.DeleteByIds(ids)
+    return err
+}
+
+// Update 更新{{.StructName}}记录
+// Author {{.Author}}
+func (s *{{.StructName}}Service) Update(id string, {{.ObjectName}}View *view.{{.StructName}}View) error {
+    {{.ObjectName}}View.Id = id
+    if err, {{.ObjectName}} := s.viewUtils.View2Data({{.ObjectName}}View); err != nil {
+        return err
+    } else {
+        return s.{{.ObjectName}}Dao.Update(*{{.ObjectName}})
+    }
+}
+
+// Get 根据id获取{{.StructName}}记录
+// Author {{.Author}}
+func (s *{{.StructName}}Service) Get(id string) (err error, {{.ObjectName}}View *view.{{.StructName}}View) {
+    err1, {{.ObjectName}} := s.{{.ObjectName}}Dao.Get(id)
+    if err1 != nil {
+        return err1, nil
+    }
+    err, {{.ObjectName}}View = s.viewUtils.Data2View({{.ObjectName}})
+    return
+}
+
+
+// Page 分页获取{{.StructName}}记录
+// Author {{.Author}}
+func (s *{{.StructName}}Service) Page(pageInfo *view.{{.StructName}}PageView) (err error, res *common.PageInfo) {
+    if err, res = s.{{.ObjectName}}Dao.Page(pageInfo); err != nil {
+        return err, nil
+    } else {
+        return s.viewUtils.PageData2ViewList(res)
+    }
+}
+
+// List 获取{{.StructName}}列表
+// Author {{.Author}}
+func (s *{{.StructName}}Service) List(v *view.{{.StructName}}QueryView) (error, []*view.{{.StructName}}View) {
+    if err, dataList := s.{{.ObjectName}}Dao.List(v); err != nil {
+        return err, nil
+    } else {
+        return s.viewUtils.Data2ViewList(dataList)
+    }
+}

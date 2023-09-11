@@ -1,0 +1,22 @@
+// Package model 自动生成模板 {{.StructName}}
+// @description <TODO description class purpose>
+// @author {{.Author}}
+// @version 1.0.0
+// @create {{.CreateTime}}
+package model
+
+import (
+    "time"
+)
+
+// {{.StructName}} 结构体
+type {{.StructName}} struct {
+{{range .ColumnList}}
+    {{.GoField}} {{.GoType}} `gorm:"column:{{.ColumnName}};comment:{{.ColumnComment}};"`
+{{end}}
+}
+
+// TableName {{.StructName}} 表名
+func ({{.StructName}}) TableName() string {
+  return "{{.TableName}}"
+}

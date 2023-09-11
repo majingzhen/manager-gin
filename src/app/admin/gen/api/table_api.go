@@ -99,12 +99,6 @@ func (api *TableApi) Get(c *gin.Context) {
 		global.Logger.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {
-		// 通过id查询列信息
-		if err, tableView.ColumnList = api.columnService.GetColumnListByTableId(id); err != nil {
-			global.Logger.Error("查询失败!", zap.Error(err))
-			response.FailWithMessage("查询失败", c)
-			return
-		}
 		response.OkWithData(tableView, c)
 	}
 }
@@ -182,5 +176,23 @@ func (api *TableApi) ImportTable(c *gin.Context) {
 		response.FailWithMessage("导入失败", c)
 	} else {
 		response.OkWithMessage("导入成功", c)
+	}
+}
+
+// Preview 预览代码
+// @Summary 预览代码
+// @Router /table/preview [get]
+func (api *TableApi) Preview(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		global.Logger.Error("参数解析失败!")
+		response.FailWithMessage("参数解析失败", c)
+		return
+	}
+	if err, code := api.tableService.PreviewCode(id); err != nil {
+		global.Logger.Error("预览失败!", zap.Error(err))
+		response.FailWithMessage("预览失败", c)
+	} else {
+		response.OkWithDetailed(code, "预览成功", c)
 	}
 }

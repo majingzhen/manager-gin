@@ -31,5 +31,6 @@ func (r *TableRouter) InitTableRouter(Router *gin.RouterGroup) {
 		tableRouterWithoutRecord.GET("page", r.tableApi.Page)                 // 分页获取Table列表
 		tableRouterWithoutRecord.GET("db/page", r.tableApi.SelectDbTablePage) // 分页获取未导入的Table列表
 		tableRouterWithoutRecord.GET("list", r.tableApi.List)                 // 分页获取Table列表
+		tableRouterWithoutRecord.GET("preview/:id", r.tableApi.Preview)       // 预览代码
 	}
 }

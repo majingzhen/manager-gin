@@ -149,3 +149,17 @@ func genModuleName(packageName string) string {
 	lastIndex := strings.LastIndex(packageName, "/")
 	return packageName[lastIndex+1:]
 }
+
+// GenTemplatePath 获取模板路径
+func GenTemplatePath(tplCategory string) []string {
+	return []string{
+		"./resources/tmpl/" + tplCategory + "/go/model.go.txt",
+		"./resources/tmpl/" + tplCategory + "/go/dao.go.txt",
+		//"./resources/tmpl/" + tplCategory + "/go/service.txt",
+		//"./resources/tmpl/" + tplCategory + "/go/view.txt",
+		//"./resources/tmpl/" + tplCategory + "/go/view_utils.txt",
+		//"./resources/tmpl/" + tplCategory + "/go/api.txt",
+		//"./resources/tmpl/" + tplCategory + "/go/router.txt",
+	}
+
+}

@@ -18,6 +18,10 @@ type TableColumn struct {
 
 	ColumnType string `json:"columnType" form:"columnType" gorm:"column:column_type;comment:列类型;"`
 
+	DataType string `json:"dataType" form:"dataType" gorm:"column:data_type;comment:数据类型;"`
+
+	ColumnLength int `json:"columnLength" form:"columnLength" gorm:"column:column_length;comment:列长度;"`
+
 	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
 
 	CreateTime *time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`

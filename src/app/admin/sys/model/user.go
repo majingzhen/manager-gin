@@ -7,15 +7,19 @@
 package model
 
 import (
-	"manager-gin/src/global"
 	"time"
 )
 
 // User 结构体
 
 type User struct {
-	global.GvaModel
-	DeptId string `json:"orgId" form:"orgId" gorm:"column:dept_id;comment:部门ID;"`
+	Id         string     `json:"id" gorm:"id"` // 主键ID
+	CreateBy   string     `json:"createBy" gorm:"create_by"`
+	UpdateBy   string     `json:"updateBy" gorm:"update_by"`
+	CreateTime *time.Time `json:"createTime" gorm:"create_time"` // 创建时间
+	UpdateTime *time.Time `json:"updateTime" gorm:"update_time"` // 更新时间
+	IsDel      int        `gorm:"index" json:"-"`                // 删除记录
+	DeptId     string     `json:"orgId" form:"orgId" gorm:"column:dept_id;comment:部门ID;"`
 
 	UserName string `json:"userName" form:"userName" gorm:"column:user_name;comment:用户账号;"`
 

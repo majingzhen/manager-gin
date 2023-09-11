@@ -14,6 +14,8 @@ type TableColumnView struct {
 	ColumnComment string `json:"columnComment" form:"columnComment"`
 	ColumnName    string `json:"columnName" form:"columnName"`
 	ColumnType    string `json:"columnType" form:"columnType"`
+	DataType      string `json:"dataType" form:"dataType"`
+	ColumnLength  int    `json:"columnLength" form:"columnLength"`
 	CreateBy      string `json:"createBy" form:"createBy"`
 	CreateTime    string `json:"createTime" form:"createTime"`
 	DictType      string `json:"dictType" form:"dictType"`
@@ -41,6 +43,8 @@ type TableColumnPageView struct {
 	ColumnComment string `json:"columnComment" form:"columnComment"`
 	ColumnName    string `json:"columnName" form:"columnName"`
 	ColumnType    string `json:"columnType" form:"columnType"`
+	DataType      string `json:"dataType" form:"dataType"`
+	ColumnLength  int    `json:"columnLength" form:"columnLength"`
 	CreateBy      string `json:"createBy" form:"createBy"`
 	CreateTime    string `json:"createTime" form:"createTime"`
 	DictType      string `json:"dictType" form:"dictType"`
@@ -67,6 +71,8 @@ type TableColumnQueryView struct {
 	ColumnComment string `json:"columnComment" form:"columnComment"`
 	ColumnName    string `json:"columnName" form:"columnName"`
 	ColumnType    string `json:"columnType" form:"columnType"`
+	DataType      string `json:"dataType" form:"dataType"`
+	ColumnLength  int    `json:"columnLength" form:"columnLength"`
 	CreateBy      string `json:"createBy" form:"createBy"`
 	CreateTime    string `json:"createTime" form:"createTime"`
 	DictType      string `json:"dictType" form:"dictType"`

@@ -7,19 +7,22 @@
 package table
 
 import (
+	"bytes"
 	"errors"
 	"github.com/goccy/go-json"
 	"go.uber.org/zap"
+	"html/template"
 	"manager-gin/src/app/admin/gen/dao"
 	"manager-gin/src/app/admin/gen/model"
 	"manager-gin/src/app/admin/gen/service/table/view"
 	columm_service "manager-gin/src/app/admin/gen/service/table_column"
-	utils2 "manager-gin/src/app/admin/gen/utils"
+	genutils "manager-gin/src/app/admin/gen/utils"
 	"manager-gin/src/common"
 	"manager-gin/src/common/constants"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
+	"time"
 )
 
 // Service 结构体
@@ -116,6 +119,10 @@ func (s *Service) Get(id string) (err error, tableView *view.TableView) {
 			tableView.TreeName = tableOption.TreeName
 			tableView.ParentMenuId = tableOption.ParentMenuId
 			tableView.ParentMenuName = tableOption.ParentMenuName
+			// 通过id查询列信息
+			if err, tableView.ColumnList = s.columnService.GetColumnListByTableId(id); err != nil {
+				return err, nil
+			}
 		}
 	}
 	return
@@ -170,7 +177,7 @@ func (s *Service) ImportGenTable(tables []*model.Table, loginUser string) error 
 	}
 	tx := global.GormDao.Begin()
 	for _, table := range tables {
-		table = utils2.InitTable(table, loginUser)
+		table = genutils.InitTable(table, loginUser)
 		table.Id = utils.GenUID()
 		if err := s.tableDao.Create(tx, table); err != nil {
 			tx.Rollback()
@@ -182,7 +189,7 @@ func (s *Service) ImportGenTable(tables []*model.Table, loginUser string) error 
 			return err
 		} else {
 			for _, column := range tableColumns {
-				column = utils2.InitColumnField(column, table)
+				column = genutils.InitColumnField(column, table)
 				column.Id = utils.GenUID()
 				if err := s.columnDao.Create(tx, column); err != nil {
 					tx.Rollback()
@@ -216,4 +223,45 @@ func (s *Service) ValidateEdit(v *view.TableView) error {
 		}
 	}
 	return nil
+}
+
+// PreviewCode 预览代码
+func (s *Service) PreviewCode(id string) (err error, dataMap map[string]string) {
+	if err, tableView := s.Get(id); err != nil {
+		return err, nil
+	} else {
+		if tableView.TplCategory == constants.TPL_TREE {
+			if err, dataMap = s.PreviewTreeCode(tableView); err != nil {
+				return err, nil
+			}
+		} else if tableView.TplCategory == constants.TPL_SUB || tableView.TplCategory == constants.TPL_CRUD {
+			if err, dataMap = s.PreviewSubTable(tableView); err != nil {
+				return err, nil
+			}
+		}
+		return nil, dataMap
+	}
+}
+
+// PreviewTreeCode 预览树编码
+func (s *Service) PreviewTreeCode(tableView *view.TableView) (err error, dataMap map[string]string) {
+	return nil, nil
+}
+
+// PreviewSubTable 预览子表
+func (s *Service) PreviewSubTable(tableView *view.TableView) (err error, dataMap map[string]string) {
+	dataMap = make(map[string]string)
+	var templatePath = genutils.GenTemplatePath(tableView.TplCategory)
+	// 塞入作者
+	tableView.Author = global.Viper.GetString("gen.author")
+	tableView.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+	for _, path := range templatePath {
+		tmpl := template.Must(template.ParseFiles(path))
+		var buf bytes.Buffer
+		if err = tmpl.Execute(&buf, tableView); err != nil {
+			return err, nil
+		}
+		dataMap[path] = buf.String()
+	}
+	return
 }

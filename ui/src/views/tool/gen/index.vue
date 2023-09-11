@@ -162,8 +162,8 @@
       <el-tabs v-model="preview.activeName">
         <el-tab-pane
           v-for="(value, key) in preview.data"
-          :label="key.substring(key.lastIndexOf('/')+1,key.indexOf('.vm'))"
-          :name="key.substring(key.lastIndexOf('/')+1,key.indexOf('.vm'))"
+          :label="key.substring(key.lastIndexOf('/')+1,key.indexOf('.txt'))"
+          :name="key.substring(key.lastIndexOf('/')+1,key.indexOf('.txt'))"
           :key="key"
         >
           <el-link :underline="false" icon="el-icon-document-copy" v-clipboard:copy="value" v-clipboard:success="clipboardSuccess" style="float:right">复制</el-link>
@@ -180,7 +180,7 @@ import { listTable, previewTable, delTable, genCode, synchDb } from "@/api/tool/
 import importTable from "./importTable";
 import hljs from "highlight.js/lib/highlight";
 import "highlight.js/styles/github-gist.css";
-hljs.registerLanguage("java", require("highlight.js/lib/languages/java"));
+hljs.registerLanguage("go", require("highlight.js/lib/languages/go"));
 hljs.registerLanguage("xml", require("highlight.js/lib/languages/xml"));
 hljs.registerLanguage("html", require("highlight.js/lib/languages/xml"));
 hljs.registerLanguage("vue", require("highlight.js/lib/languages/xml"));
@@ -294,12 +294,12 @@ export default {
       previewTable(row.id).then(response => {
         this.preview.data = response.data;
         this.preview.open = true;
-        this.preview.activeName = "domain.java";
+        this.preview.activeName = "model.go";
       });
     },
     /** 高亮显示 */
     highlightedCode(code, key) {
-      const vmName = key.substring(key.lastIndexOf("/") + 1, key.indexOf(".vm"));
+      const vmName = key.substring(key.lastIndexOf("/") + 1, key.indexOf(".txt"));
       var language = vmName.substring(vmName.indexOf(".") + 1, vmName.length);
       const result = hljs.highlight(language, code || "", true);
       return result.value || '&nbsp;';

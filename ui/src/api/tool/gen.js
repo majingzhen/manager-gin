@@ -46,7 +46,7 @@ export function importTable(data) {
 // 预览生成代码
 export function previewTable(tableId) {
   return request({
-    url: '/gen/preview/' + tableId,
+    url: '/gen/table/preview/' + tableId,
     method: 'get'
   })
 }

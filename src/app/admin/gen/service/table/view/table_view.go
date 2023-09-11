@@ -35,6 +35,7 @@ type TableView struct {
 	UpdateBy       string                  `json:"updateBy" form:"updateBy"`
 	UpdateTime     string                  `json:"updateTime" form:"updateTime"`
 	ColumnList     []*view.TableColumnView `json:"columnList" form:"columnList"`
+	Author         string                  `json:"author" form:"author"`
 	TableViewOptions
 }
 

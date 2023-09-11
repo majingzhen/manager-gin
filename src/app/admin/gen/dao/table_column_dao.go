@@ -83,7 +83,7 @@ func (dao *TableColumnDao) List(v *view.TableColumnQueryView) (err error, dataLi
 
 func (dao *TableColumnDao) SelectDbTableColumns(tx *gorm.DB, tableName string) (err error, dataList []*model.TableColumn) {
 	db := tx.Table("information_schema.columns")
-	db.Select("COLUMN_NAME column_name,( CASE WHEN ( IS_NULLABLE = 'no' && COLUMN_KEY != 'PRI' ) THEN '1' ELSE NULL END ) AS is_required,( CASE WHEN COLUMN_KEY = 'PRI' THEN '1' ELSE '0' END ) AS is_pk,ORDINAL_POSITION AS sort,COLUMN_COMMENT column_comment,( CASE WHEN extra = 'AUTO_INCREMENT' THEN '1' ELSE '0' END ) AS is_increment,COLUMN_TYPE column_type,DATA_TYPE data_type,CHARACTER_MAXIMUM_LENGTH character_maximum_length")
+	db.Select("COLUMN_NAME column_name,( CASE WHEN ( IS_NULLABLE = 'no' && COLUMN_KEY != 'PRI' ) THEN '1' ELSE NULL END ) AS is_required,( CASE WHEN COLUMN_KEY = 'PRI' THEN '1' ELSE '0' END ) AS is_pk,ORDINAL_POSITION AS sort,COLUMN_COMMENT column_comment,( CASE WHEN extra = 'AUTO_INCREMENT' THEN '1' ELSE '0' END ) AS is_increment,DATA_TYPE data_type, COLUMN_TYPE column_type, CHARACTER_MAXIMUM_LENGTH column_length")
 	db.Where("table_schema = (SELECT DATABASE())")
 	db.Where("table_name = ?", tableName).Find(&dataList)
 	err = db.Find(&dataList).Error
