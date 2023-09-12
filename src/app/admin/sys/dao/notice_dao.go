@@ -2,5 +2,93 @@
 // @description <TODO description class purpose>
 // @author matuto
 // @version 1.0.0
-// @create 2023-09-11 17:58:01
+// @create 2023-09-12 13:45:22
 package dao
+
+import (
+	"manager-gin/src/app/admin/sys/model"
+	"manager-gin/src/app/admin/sys/service/notice/view"
+	"manager-gin/src/common"
+	"manager-gin/src/global"
+)
+
+// NoticeDao 结构体
+type NoticeDao struct{}
+
+// Create 新增通知公告表记录
+// Author matuto
+func (dao *NoticeDao) Create(notice *view.NoticeCreateView) (err error) {
+	return global.GormDao.Create(notice).Error
+}
+
+// DeleteByIds 批量删除通知公告表记录
+// Author matuto
+func (dao *NoticeDao) DeleteByIds(ids []string) (err error) {
+	return global.GormDao.Delete(&[]model.Notice{}, "id in ?", ids).Error
+}
+
+// Update 更新通知公告表记录
+// Author matuto
+func (dao *NoticeDao) Update(notice *view.NoticeEditView) (err error) {
+	return global.GormDao.Updates(notice).Error
+}
+
+// Get 根据id获取通知公告表记录
+// Author matuto
+func (dao *NoticeDao) Get(id string) (err error, notice *model.Notice) {
+	err = global.GormDao.Where("id = ?", id).First(notice).Error
+	return
+}
+
+// Page 分页获取通知公告表记录
+// Author matuto
+func (dao *NoticeDao) Page(param *view.NoticePageView) (err error, page *common.PageInfo) {
+	db := global.GormDao.Model(&model.Notice{})
+
+	if param.NoticeTitle != "" {
+		db.Where("NoticeTitle is like ?", "%"+param.NoticeTitle+"%")
+	}
+	if param.NoticeType != "" {
+		db.Where("NoticeType = ?", param.NoticeType)
+	}
+	if param.NoticeContent != "" {
+		db.Where("NoticeContent is like ?", "%"+param.NoticeContent+"%")
+	}
+	if param.Status != "" {
+		db.Where("Status is like ?", "%"+param.Status+"%")
+	}
+	page = common.CreatePageInfo(param.PageNum, param.PageSize)
+	if err = db.Count(&page.Total).Error; err != nil {
+		return
+	}
+	// 生成排序信息
+	if param.OrderByColumn != "" {
+		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
+	}
+	var dataList []*model.Notice
+	err = db.Limit(page.Limit).Offset(page.Offset).Find(&dataList).Error
+	page.Rows = dataList
+	return err, page
+}
+
+// List 获取通知公告表记录
+// Author matuto
+func (dao *NoticeDao) List(param *view.NoticeQueryView) (err error, dataList []*model.Notice) {
+	db := global.GormDao.Model(&model.Notice{})
+
+	if param.NoticeTitle != "" {
+		db.Where("NoticeTitle is like ?", "%"+param.NoticeTitle+"%")
+	}
+	if param.NoticeType != "" {
+		db.Where("NoticeType = ?", param.NoticeType)
+	}
+	if param.NoticeContent != "" {
+		db.Where("NoticeContent is like ?", "%"+param.NoticeContent+"%")
+	}
+	if param.Status != "" {
+		db.Where("Status is like ?", "%"+param.Status+"%")
+	}
+	db.Order("create_time desc")
+	err = db.Find(&dataList).Error
+	return err, dataList
+}
