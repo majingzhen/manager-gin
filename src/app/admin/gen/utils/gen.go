@@ -52,26 +52,34 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	column.CreateBy = table.CreateBy
 	column.CreateTime = utils.GetCurTime()
 	// 设置结构体字段名
-	column.GoField = utils.ToCamelCase(columnName)
-	// 设置默认类型
-	column.GoType = constants.TYPE_STRING
+	column.GoField = utils.ToTitle(columnName)
+	column.JsonField = utils.ToCamelCase(columnName)
+	column.GoType = constants.TYPE_INTERFACE
+	column.DefaultValue = constants.DEFAULT_INTERFACE
 	column.QueryType = constants.QUERY_EQ
 	if utils.Contains(constants.COLUMN_TYPE_STR, dataType) || utils.Contains(constants.COLUMN_TYPE_TEXT, dataType) {
 		columnLength := getColumnLength(column.ColumnType)
 		if columnLength >= 500 || utils.Contains(constants.COLUMN_TYPE_TEXT, dataType) {
 			column.HtmlType = constants.HTML_TEXTAREA
+			column.GoType = constants.TYPE_STRING
+			column.DefaultValue = constants.DEFAULT_STR
 		} else {
 			column.HtmlType = constants.HTML_INPUT
+			column.GoType = constants.TYPE_STRING
+			column.DefaultValue = constants.DEFAULT_STR
 		}
 	} else if utils.Contains(constants.COLUMN_TYPE_TIME, dataType) {
 		column.HtmlType = constants.HTML_DATETIME
 		column.GoType = constants.TYPE_DATE
+		column.DefaultValue = constants.DEFAULT_INTERFACE
 	} else if utils.Contains(constants.COLUMN_TYPE_NUMBER, dataType) {
 		column.HtmlType = constants.HTML_INPUT
 		column.GoType = constants.TYPE_INTEGER
+		column.DefaultValue = constants.DEFAULT_NUM
 	} else if utils.Contains(constants.COLUMN_TYPE_FLOAT, dataType) {
 		column.HtmlType = constants.HTML_INPUT
 		column.GoType = constants.TYPE_FLOAT
+		column.DefaultValue = constants.DEFAULT_NUM
 	}
 	// 插入字段
 	column.IsInsert = constants.REQUIRE
@@ -140,8 +148,13 @@ func getColumnType(columnType string) string {
 
 // getBusinessName 获取业务名称
 func getBusinessName(name string) string {
-	lastIndex := strings.LastIndex(name, "_")
-	return name[lastIndex+1:]
+	autoRemovePre := global.Viper.GetBool("gen.auto_remove_pre")
+	tablePrefix := global.Viper.GetString("gen.table_prefix")
+	if autoRemovePre && tablePrefix != "" {
+		return strings.ReplaceAll(name, tablePrefix, "")
+	} else {
+		return name
+	}
 }
 
 // genModuleName 获取模块名称
@@ -152,14 +165,16 @@ func genModuleName(packageName string) string {
 
 // GenTemplatePath 获取模板路径
 func GenTemplatePath(tplCategory string) []string {
+	if tplCategory == "" {
+		tplCategory = constants.TPL_CRUD
+	}
 	return []string{
 		"./resources/tmpl/" + tplCategory + "/go/model.go.txt",
 		"./resources/tmpl/" + tplCategory + "/go/dao.go.txt",
-		//"./resources/tmpl/" + tplCategory + "/go/service.txt",
-		//"./resources/tmpl/" + tplCategory + "/go/view.txt",
-		//"./resources/tmpl/" + tplCategory + "/go/view_utils.txt",
-		//"./resources/tmpl/" + tplCategory + "/go/api.txt",
-		//"./resources/tmpl/" + tplCategory + "/go/router.txt",
+		"./resources/tmpl/" + tplCategory + "/go/service.go.txt",
+		"./resources/tmpl/" + tplCategory + "/go/view.go.txt",
+		"./resources/tmpl/" + tplCategory + "/go/view_utils.go.txt",
+		"./resources/tmpl/" + tplCategory + "/go/api.go.txt",
+		"./resources/tmpl/" + tplCategory + "/go/router.go.txt",
 	}
-
 }

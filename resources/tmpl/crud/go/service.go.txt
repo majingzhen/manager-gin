@@ -1,0 +1,65 @@
+// Package {{.BusinessName}} 自动生成模板 {{.StructName}}Service
+// @description <TODO description class purpose>
+// @author {{.Author}}
+// @version 1.0.0
+// @create {{.CreateTime}}
+package {{.BusinessName}}
+
+import (
+    "{{.PackageName}}/dao"
+    "{{.PackageName}}/service/{{.BusinessName}}/view"
+    "manager-gin/src/common"
+)
+
+type Service struct {
+   {{.BusinessName}}Dao dao.{{.StructName}}Dao
+   viewUtils view.{{.StructName}}ViewUtils
+}
+
+// Create 创建{{.FunctionName}}记录
+// Author {{.FunctionAuthor}}
+func (s *Service) Create({{.BusinessName}} *view.{{.StructName}}CreateView) error {
+   return s.{{.BusinessName}}Dao.Create({{.BusinessName}})
+}
+
+// DeleteByIds 批量删除{{.FunctionName}}记录
+// Author {{.FunctionAuthor}}
+func (s *Service) DeleteByIds(ids []string) error {
+    return s.{{.BusinessName}}Dao.DeleteByIds(ids)
+}
+
+// Update 更新{{.FunctionName}}记录
+// Author {{.FunctionAuthor}}
+func (s *Service) Update({{.BusinessName}} *view.{{.StructName}}EditView) error {
+    return s.{{.BusinessName}}Dao.Update({{.BusinessName}})
+}
+
+// Get 根据id获取{{.FunctionName}}记录
+// Author {{.FunctionAuthor}}
+func (s *Service) Get(id string) (error, *view.{{.StructName}}View) {
+    if err, {{.BusinessName}} := s.{{.BusinessName}}Dao.Get(id);err != nil {
+        return err, nil
+    } else {
+        return s.viewUtils.Data2View({{.BusinessName}})
+    }
+}
+
+// Page 分页获取{{.FunctionName}}记录
+// Author {{.FunctionAuthor}}
+func (s *Service) Page(pageInfo *view.{{.StructName}}PageView) (error, *common.PageInfo) {
+    if err, res := s.{{.BusinessName}}Dao.Page(pageInfo); err != nil {
+        return err, nil
+    } else {
+        return s.viewUtils.PageData2ViewList(res)
+    }
+}
+
+// List 获取{{.FunctionName}}列表
+// Author {{.FunctionAuthor}}
+func (s *Service) List(v *view.{{.StructName}}QueryView) (error, []*view.{{.StructName}}View) {
+    if err, dataList := s.{{.BusinessName}}Dao.List(v); err != nil {
+        return err, nil
+    } else {
+        return s.viewUtils.Data2ViewList(dataList)
+    }
+}

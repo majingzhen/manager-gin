@@ -47,6 +47,10 @@ func (viewUtils *TableColumnViewUtils) Data2View(data *model.TableColumn) (err e
 
 	tmp.GoType = data.GoType
 
+	tmp.DefaultValue = data.DefaultValue
+
+	tmp.JsonField = data.JsonField
+
 	tmp.HtmlType = data.HtmlType
 
 	tmp.Id = data.Id
@@ -106,6 +110,10 @@ func (viewUtils *TableColumnViewUtils) View2Data(view *TableColumnView) (err err
 	tmp.GoField = view.GoField
 
 	tmp.GoType = view.GoType
+
+	tmp.DefaultValue = view.DefaultValue
+
+	tmp.JsonField = view.JsonField
 
 	tmp.HtmlType = view.HtmlType
 

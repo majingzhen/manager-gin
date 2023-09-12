@@ -24,6 +24,8 @@ type TableColumn struct {
 
 	CreateBy string `json:"createBy" form:"createBy" gorm:"column:create_by;comment:创建者;"`
 
+	JsonField string `json:"jsonField" form:"jsonField" gorm:"column:json_field;comment:json字段名;"`
+
 	CreateTime *time.Time `json:"createTime" form:"createTime" gorm:"column:create_time;comment:创建时间;"`
 
 	DictType string `json:"dictType" form:"dictType" gorm:"column:dict_type;comment:字典类型;"`
@@ -31,6 +33,8 @@ type TableColumn struct {
 	GoField string `json:"goField" form:"goField" gorm:"column:go_field;comment:字段名;"`
 
 	GoType string `json:"goType" form:"goType" gorm:"column:go_type;comment:类型;"`
+
+	DefaultValue string `json:"defaultValue" form:"defaultValue" gorm:"column:default_value;comment:默认值;"`
 
 	HtmlType string `json:"htmlType" form:"htmlType" gorm:"column:html_type;comment:显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）;"`
 

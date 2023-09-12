@@ -7,6 +7,7 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
+	"time"
 )
 
 // InitDataSource 初始化数据库
@@ -38,12 +39,12 @@ func InitDataSource() {
 		//// 全局禁用表名复数
 		//tmp = tmp.Set("gorm:table_options", "ENGINE=InnoDB")
 		//// 全局设置表前缀
-		//sqlDB, _ := tmp.DB()
-		//sqlDB.SetMaxIdleConns(10)
-		//sqlDB.SetMaxOpenConns(100)
-		//sqlDB.SetConnMaxLifetime(10)
-		//DbList = make(map[string]*gorm.DB)
-		//DbList[Viper.GetString("datasource.db_name")] = GormDao
+		sqlDB, _ := tmp.DB()
+		sqlDB.SetMaxIdleConns(10)
+		sqlDB.SetMaxOpenConns(100)
+		sqlDB.SetConnMaxLifetime(60 * time.Second)
+		// DbList = make(map[string]*gorm.DB)
+		// DbList[Viper.GetString("datasource.db_name")] = GormDao
 		GormDao = tmp
 	}
 }

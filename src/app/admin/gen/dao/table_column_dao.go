@@ -101,3 +101,41 @@ func (dao *TableColumnDao) GetColumnListByTableId(tableId string) (error, []*mod
 	err := global.GormDao.Table("gen_table_column").Where("table_id = ?", tableId).Order("sort").Find(&columns).Error
 	return err, columns
 }
+
+// SelectPkColumn 根据表id获取主键列
+func (dao *TableColumnDao) SelectPkColumn(tableId string) (err error, genTableColumn *model.TableColumn) {
+	tx := global.GormDao.Table("gen_table_column")
+	tx.Where("table_id = ?", tableId)
+	tx.Where("is_pk = ?", "1")
+	err = tx.First(&genTableColumn).Error
+	return
+}
+
+// SelectSearchColumn 根据表id获取搜索列
+func (dao *TableColumnDao) SelectSearchColumn(id string) (error, []*model.TableColumn) {
+	var columns []*model.TableColumn
+	err := global.GormDao.Table("gen_table_column").Where("table_id = ?", id).Where("is_query = ?", "1").Order("sort").Find(&columns).Error
+	return err, columns
+
+}
+
+// SelectInsertColumn 根据表id获取插入列
+func (dao *TableColumnDao) SelectInsertColumn(id string) (error, []*model.TableColumn) {
+	var columns []*model.TableColumn
+	err := global.GormDao.Table("gen_table_column").Where("table_id = ?", id).Where("is_insert = ?", "1").Order("sort").Find(&columns).Error
+	return err, columns
+}
+
+// SelectEditColumn 根据表id获取编辑列
+func (dao *TableColumnDao) SelectEditColumn(id string) (error, []*model.TableColumn) {
+	var columns []*model.TableColumn
+	err := global.GormDao.Table("gen_table_column").Where("table_id = ?", id).Where("is_edit = ?", "1").Order("sort").Find(&columns).Error
+	return err, columns
+}
+
+// SelectListColumn 根据表id获取列表列
+func (dao *TableColumnDao) SelectListColumn(id string) (error, []*model.TableColumn) {
+	var columns []*model.TableColumn
+	err := global.GormDao.Table("gen_table_column").Where("table_id = ?", id).Where("is_list = ?", "1").Order("sort").Find(&columns).Error
+	return err, columns
+}

@@ -108,6 +108,10 @@ func (s *Service) Get(id string) (err error, tableView *view.TableView) {
 		return err1, nil
 	}
 	err, tableView = s.viewUtils.Data2View(table)
+	// 通过id查询列信息
+	if err, tableView.ColumnList = s.columnService.GetColumnListByTableId(id); err != nil {
+		global.Logger.Error("GetColumnListByTableId is error ", zap.Error(err))
+	}
 	// options 转字段
 	if tableView != nil && tableView.Options != "" {
 		var tableOption view.TableViewOptions
@@ -119,10 +123,6 @@ func (s *Service) Get(id string) (err error, tableView *view.TableView) {
 			tableView.TreeName = tableOption.TreeName
 			tableView.ParentMenuId = tableOption.ParentMenuId
 			tableView.ParentMenuName = tableOption.ParentMenuName
-			// 通过id查询列信息
-			if err, tableView.ColumnList = s.columnService.GetColumnListByTableId(id); err != nil {
-				return err, nil
-			}
 		}
 	}
 	return
@@ -227,14 +227,14 @@ func (s *Service) ValidateEdit(v *view.TableView) error {
 
 // PreviewCode 预览代码
 func (s *Service) PreviewCode(id string) (err error, dataMap map[string]string) {
-	if err, tableView := s.Get(id); err != nil {
+	if err, tableView := s.SelectGenTableById(id); err != nil {
 		return err, nil
 	} else {
 		if tableView.TplCategory == constants.TPL_TREE {
 			if err, dataMap = s.PreviewTreeCode(tableView); err != nil {
 				return err, nil
 			}
-		} else if tableView.TplCategory == constants.TPL_SUB || tableView.TplCategory == constants.TPL_CRUD {
+		} else if tableView.TplCategory == constants.TPL_SUB || tableView.TplCategory == constants.TPL_CRUD || tableView.TplCategory == "" {
 			if err, dataMap = s.PreviewSubTable(tableView); err != nil {
 				return err, nil
 			}
@@ -248,6 +248,46 @@ func (s *Service) PreviewTreeCode(tableView *view.TableView) (err error, dataMap
 	return nil, nil
 }
 
+// SelectGenTableById 根据id获取GenTable包含各种列信息
+func (s *Service) SelectGenTableById(id string) (err error, tableView *view.TableView) {
+	err, v := s.Get(id)
+	if err != nil {
+		return err, nil
+	} else {
+		// 查询主键列
+		err, pkColumn := s.columnService.SelectPkColumn(id)
+		if err != nil {
+			return err, nil
+		}
+		// 查询列
+		err, searchColumn := s.columnService.SelectSearchColumn(id)
+		if err != nil {
+			return err, nil
+		}
+		// 新增列
+		err, insertColumn := s.columnService.SelectInsertColumn(id)
+		if err != nil {
+			return err, nil
+		}
+		// 修改列
+		err, editColumn := s.columnService.SelectEditColumn(id)
+		if err != nil {
+			return err, nil
+		}
+		// 列表列
+		err, listColumn := s.columnService.SelectListColumn(id)
+		if err != nil {
+			return err, nil
+		}
+		v.PKColumn = pkColumn
+		v.SearchColumn = searchColumn
+		v.InsertColumn = insertColumn
+		v.EditColumn = editColumn
+		v.ListColumn = listColumn
+		return nil, v
+	}
+}
+
 // PreviewSubTable 预览子表
 func (s *Service) PreviewSubTable(tableView *view.TableView) (err error, dataMap map[string]string) {
 	dataMap = make(map[string]string)
@@ -256,6 +296,14 @@ func (s *Service) PreviewSubTable(tableView *view.TableView) (err error, dataMap
 	tableView.Author = global.Viper.GetString("gen.author")
 	tableView.CreateTime = time.Now().Format("2006-01-02 15:04:05")
 	for _, path := range templatePath {
+		//tmpl := template.New("").Funcs(
+		//	template.FuncMap{
+		//		"Contains": func(s, t string) bool {
+		//			return strings.Contains(s, t)
+		//		},
+		//	},
+		//)
+		//tmpl = template.Must(tmpl.ParseFiles(path))
 		tmpl := template.Must(template.ParseFiles(path))
 		var buf bytes.Buffer
 		if err = tmpl.Execute(&buf, tableView); err != nil {

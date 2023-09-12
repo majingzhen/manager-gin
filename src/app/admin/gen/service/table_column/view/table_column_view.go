@@ -9,7 +9,6 @@ package view
 import "manager-gin/src/common"
 
 // TableColumnView 结构体
-
 type TableColumnView struct {
 	ColumnComment string `json:"columnComment" form:"columnComment"`
 	ColumnName    string `json:"columnName" form:"columnName"`
@@ -21,6 +20,8 @@ type TableColumnView struct {
 	DictType      string `json:"dictType" form:"dictType"`
 	GoField       string `json:"goField" form:"goField"`
 	GoType        string `json:"goType" form:"goType"`
+	DefaultValue  string `json:"defaultValue" form:"defaultValue"`
+	JsonField     string `json:"jsonField" form:"jsonField"`
 	HtmlType      string `json:"htmlType" form:"htmlType"`
 	Id            string `json:"id" form:"id"`
 	IsEdit        string `json:"isEdit" form:"isEdit"`

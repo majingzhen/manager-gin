@@ -16,7 +16,7 @@ func ToTitle(underscoreName string) string {
 }
 func ToCamelCase(underscoreName string) string {
 	words := strings.Split(strings.ToLower(underscoreName), "_")
-	for i := 0; i < len(words); i++ {
+	for i := 1; i < len(words); i++ {
 		words[i] = strings.Title(words[i])
 	}
 	return strings.Join(words, "")
@@ -72,4 +72,9 @@ func EndsWithIgnoreCase(s, t string) bool {
 // BeginsWithIgnoreCase 判断字符串s是否以字符串t开头，忽略大小写
 func BeginsWithIgnoreCase(s, t string) bool {
 	return strings.HasPrefix(strings.ToLower(s), strings.ToLower(t))
+}
+
+// StrContains 判断字符串s是否包含字符串t
+func StrContains(s, t string) bool {
+	return strings.Contains(s, t)
 }

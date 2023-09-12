@@ -1,0 +1,34 @@
+// Package router 自动生成模板 {{.StructName}}Router
+// @description <TODO description class purpose>
+// @author {{.Author}}
+// @version 1.0.0
+// @create {{.CreateTime}}
+package router
+
+import (
+    "github.com/gin-gonic/gin"
+    "{{.PackageName}}/api"
+    "manager-gin/src/middleware"
+)
+
+// {{.StructName}}Router 结构体
+type {{.StructName}}Router struct {
+    {{.BusinessName}}Api api.{{.StructName}}Api
+}
+
+
+// Init{{.StructName}}Router 初始化 {{.StructName}} 路由信息
+func (r *{{.StructName}}Router) Init{{.StructName}}Router(Router *gin.RouterGroup) {
+    {{.BusinessName}}Router := Router.Group("{{.BusinessName}}").Use(middleware.JWTAuthFilter())
+    {{.BusinessName}}RouterWithoutRecord := Router.Group("{{.BusinessName}}").Use(middleware.JWTAuthFilter())
+    {
+        {{.BusinessName}}Router.POST("create", r.{{.BusinessName}}Api.Create)             // 新建{{.StructName}}
+        {{.BusinessName}}Router.DELETE("delete/:ids", r.{{.BusinessName}}Api.Delete)           // 删除{{.StructName}}
+        {{.BusinessName}}Router.PUT("update", r.{{.BusinessName}}Api.Update)              // 更新{{.StructName}}
+    }
+    {
+        {{.BusinessName}}RouterWithoutRecord.GET("get/:{{.PKColumn.JsonField}}", r.{{.BusinessName}}Api.Get)   // 根据ID获取{{.StructName}}
+        {{.BusinessName}}RouterWithoutRecord.GET("page", r.{{.BusinessName}}Api.Page) // 分页获取{{.StructName}}列表
+        {{.BusinessName}}RouterWithoutRecord.GET("list", r.{{.BusinessName}}Api.List) // 分页获取{{.StructName}}列表
+    }
+}

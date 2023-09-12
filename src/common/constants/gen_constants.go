@@ -47,6 +47,21 @@ const (
 	// TYPE_STRING 字符串类型
 	TYPE_STRING = "string"
 
+	// TYPE_INTERFACE 接口类型
+	TYPE_INTERFACE = "interface{}"
+
+	// DEFAULT_STR 字符串默认值
+	DEFAULT_STR = ""
+
+	// DEFAULT_NUM 数字默认值
+	DEFAULT_NUM = "0"
+
+	// DEFAULT_BOOL 布尔值默认值
+	DEFAULT_BOOL = "false"
+
+	// DEFAULT_INTERFACE 接口默认值
+	DEFAULT_INTERFACE = "nil"
+
 	// TYPE_INTEGER 整型
 	TYPE_INTEGER = "int"
 
@@ -73,7 +88,7 @@ var (
 	// COLUMN_TYPE_STR  数据库字符串类型
 	COLUMN_TYPE_STR = []string{"char", "varchar", "nvarchar", "varchar2"}
 	// COLUMN_TYPE_TEXT 数据库文本类型
-	COLUMN_TYPE_TEXT = []string{"tinytext", "text", "mediumtext", "longtext"}
+	COLUMN_TYPE_TEXT = []string{"tinytext", "text", "mediumtext", "longtext", "longblob"}
 	// COLUMN_TYPE_TIME 数据库时间类型
 	COLUMN_TYPE_TIME = []string{"datetime", "time", "date", "timestamp"}
 	// COLUMN_TYPE_NUMBER 数据库数字类型

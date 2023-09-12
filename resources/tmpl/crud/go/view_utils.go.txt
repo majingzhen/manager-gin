@@ -1,23 +1,22 @@
-// Package {{.PackageName}}
+// Package view 自动生成模板 {{.StructName}}ViewUtils
 // @description <TODO description class purpose>
 // @author {{.Author}}
-// @File: {{.FileName}}
 // @version 1.0.0
-// @create {{.DateTime}}
-package {{.PackageName}}
+// @create {{.CreateTime}}
+package view
 
 import (
     "fmt"
     "go.uber.org/zap"
-    "{{.ImportPath}}/{{.CodePath}}/{{.ModuleName}}/{{.FileName}}/model"
-    "{{.ImportPath}}/global"
-    "{{.ImportPath}}/utils"
-    "{{.ImportPath}}/common"
+    "{{.PackageName}}/model"
+    "manager-gin/src/global"
+    "manager-gin/src/utils"
+    "manager-gin/src/common"
 )
 
 type {{.StructName}}ViewUtils struct {}
 
-
+// Data2View Do转Vo
 func (viewUtils *{{.StructName}}ViewUtils) Data2View(data *model.{{.StructName}}) (err error, view *{{.StructName}}View) {
     defer func() {
         if e := recover(); e != nil {
@@ -26,11 +25,12 @@ func (viewUtils *{{.StructName}}ViewUtils) Data2View(data *model.{{.StructName}}
             zap.Any("error", e))
         }
     }()
-    var tmp {{.StructName}}View
-    {{range .Table.Columns}}{{if eq .FieldType "time.Time"}}tmp.{{.FieldName}} = utils.Time2Str(data.{{.FieldName}}){{else}}tmp.{{.FieldName}} = data.{{.FieldName}}{{end}}{{end}}
-    view = &tmp
+    {{range .ColumnList}}{{if eq .GoType "*time.Time"}}view.{{.GoField}} = utils.Time2Str(data.{{.GoField}}){{else}}view.{{.GoField}} = data.{{.GoField}}{{end}}
+    {{end}}
     return
 }
+
+// View2Data Vo转Do
 func (viewUtils *{{.StructName}}ViewUtils) View2Data(view *{{.StructName}}View) (err error, data *model.{{.StructName}}) {
     defer func() {
         if e := recover(); e != nil {
@@ -39,12 +39,12 @@ func (viewUtils *{{.StructName}}ViewUtils) View2Data(view *{{.StructName}}View) 
             zap.Any("error", e))
         }
     }()
-    var tmp model.{{.StructName}}
-    {{range .Table.Columns}}{{if eq .FieldType "time.Time"}}tmp.{{.FieldName}} = utils.Str2Time(view.{{.FieldName}}){{else}}tmp.{{.FieldName}} = view.{{.FieldName}}{{end}}{{end}}
-    data = &tmp
+    {{range .ColumnList}}{{if eq .GoType "*time.Time"}}data.{{.GoField}} = utils.Str2Time(view.{{.GoField}}){{else}}data.{{.GoField}} = view.{{.GoField}}{{end}}
+    {{end}}
     return
 }
 
+// View2DataList VoList转DoList
 func (viewUtils *{{.StructName}}ViewUtils) View2DataList(viewList []*{{.StructName}}View) (err error, dataList []*model.{{.StructName}}) {
     defer func() {
         if e := recover(); e != nil {
@@ -67,7 +67,8 @@ func (viewUtils *{{.StructName}}ViewUtils) View2DataList(viewList []*{{.StructNa
     return
 }
 
-func (ViewUtils *{{.StructName}}ViewUtils) Data2ViewList(dataList []*model.{{.StructName}}) (err error, viewList []*{{.StructName}}View) {
+// Data2ViewList DoList转VoList
+func (viewUtils *{{.StructName}}ViewUtils) Data2ViewList(dataList []*model.{{.StructName}}) (err error, viewList []*{{.StructName}}View) {
     defer func() {
         if e := recover(); e != nil {
             err = fmt.Errorf("{{.StructName}}ViewUtils Data2ViewList error: %v", e)
@@ -79,7 +80,7 @@ func (ViewUtils *{{.StructName}}ViewUtils) Data2ViewList(dataList []*model.{{.St
         var viewTmpList []*{{.StructName}}View
         for i := range dataList {
             data := dataList[i]
-            err, view := {{.ObjectName}}ViewUtils.Data2View(data)
+            err, view := viewUtils.Data2View(data)
             if err == nil {
                 viewTmpList = append(viewTmpList, view)
             }
@@ -89,6 +90,7 @@ func (ViewUtils *{{.StructName}}ViewUtils) Data2ViewList(dataList []*model.{{.St
     return
 }
 
+// PageData2ViewList 分页数据转换
 func (viewUtils *{{.StructName}}ViewUtils) PageData2ViewList(pageInfo *common.PageInfo) (err error, res *common.PageInfo) {
     defer func() {
         if e := recover(); e != nil {
