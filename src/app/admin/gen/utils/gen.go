@@ -176,5 +176,7 @@ func GenTemplatePath(tplCategory string) []string {
 		"./resources/tmpl/" + tplCategory + "/go/view_utils.go.txt",
 		"./resources/tmpl/" + tplCategory + "/go/api.go.txt",
 		"./resources/tmpl/" + tplCategory + "/go/router.go.txt",
+		"./resources/tmpl/" + tplCategory + "/js/api.js.txt",
+		"./resources/tmpl/" + tplCategory + "/vue/index.vue.txt",
 	}
 }

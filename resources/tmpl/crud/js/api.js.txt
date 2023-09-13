@@ -1,0 +1,44 @@
+import request from '@/utils/request'
+
+// 查询{{.FunctionName}}列表
+export function list{{.StructName}}(query) {
+  return request({
+    url: '/{{.ModuleName}}/{{.BusinessName}}/page',
+    method: 'get',
+    params: query
+  })
+}
+
+// 查询{{.FunctionName}}详细
+export function get{{.StructName}}({{.PKColumn.JsonField}}) {
+  return request({
+    url: '/{{.ModuleName}}/{{.BusinessName}}/get/' + {{.PKColumn.JsonField}},
+    method: 'get'
+  })
+}
+
+// 新增{{.FunctionName}}
+export function add{{.StructName}}(data) {
+  return request({
+    url: '/{{.ModuleName}}/{{.BusinessName}}/create',
+    method: 'post',
+    data: data
+  })
+}
+
+// 修改{{.FunctionName}}
+export function update{{.StructName}}(data) {
+  return request({
+    url: '/{{.ModuleName}}/{{.BusinessName}}/update',
+    method: 'put',
+    data: data
+  })
+}
+
+// 删除{{.FunctionName}}
+export function del{{.StructName}}({{.PKColumn.JsonField}}) {
+  return request({
+    url: '/{{.ModuleName}}/{{.BusinessName}}/delete/' + {{.PKColumn.JsonField}},
+    method: 'delete'
+  })
+}
