@@ -2885,3 +2885,8 @@
 2023-09-13T16:18:42.991+0800	debug	Database Query	{"sql": "SELECT * FROM `gen_table_column` WHERE table_id = '39b2503067e348ad97688e24481707c9' AND is_edit = '1' ORDER BY sort", "time": "0.83ms", "rows": 7}
 2023-09-13T16:18:42.992+0800	debug	Database Query	{"sql": "SELECT * FROM `gen_table_column` WHERE table_id = '39b2503067e348ad97688e24481707c9' AND is_list = '1' ORDER BY sort", "time": "0.58ms", "rows": 5}
 2023-09-13T16:18:42.998+0800	info	Gin request	{"status": 200, "method": "GET", "path": "/api/gen/table/preview/39b2503067e348ad97688e24481707c9", "ip": "153.153.234.81", "latency": 0.0125501}
+2023-09-13T16:34:30.062+0800	info	Shutting down server...
+2023-09-13T16:34:30.062+0800	info	Server exiting
+2023-09-13T16:34:32.687+0800	info	系统启动成功,服务运行在 http://169.254.186.35:8081
+2023-09-13T16:34:45.962+0800	info	Shutting down server...
+2023-09-13T16:34:45.962+0800	info	Server exiting
