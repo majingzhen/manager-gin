@@ -26,7 +26,5 @@ func (r *TableColumnRouter) InitTableColumnRouter(Router *gin.RouterGroup) {
 	}
 	{
 		tableColumnRouterWithoutRecord.GET("get/:id", r.tableColumnApi.Get) // 根据ID获取TableColumn
-		tableColumnRouterWithoutRecord.GET("page", r.tableColumnApi.Page)   // 分页获取TableColumn列表
-		tableColumnRouterWithoutRecord.GET("list", r.tableColumnApi.List)   // 分页获取TableColumn列表
 	}
 }

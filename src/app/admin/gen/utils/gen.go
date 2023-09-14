@@ -19,6 +19,7 @@ func InitTable(genTable *model.Table, operName string) *model.Table {
 	genTable.BusinessName = getBusinessName(genTable.Name)
 	genTable.FunctionName = genTable.TableComment
 	genTable.FunctionAuthor = global.Viper.GetString("gen.author")
+	genTable.TableComment = strings.Replace(genTable.TableComment, "表", "", 1)
 	return genTable
 }
 
@@ -55,6 +56,7 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	// 设置结构体字段名
 	column.GoField = utils.ToTitle(columnName)
 	column.JsonField = utils.ToCamelCase(columnName)
+	column.ShowLabel = clearBracket(column.ColumnComment)
 	column.GoType = constants.TYPE_INTERFACE
 	column.DefaultValue = constants.DEFAULT_INTERFACE
 	column.QueryType = constants.QUERY_EQ
@@ -127,6 +129,19 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	return column
 }
 
+// clearBracket 清除括号内容
+func clearBracket(comment string) string {
+	eIndex := strings.Index(comment, "(")
+	cIndex := strings.Index(comment, "（")
+	if eIndex > 0 {
+		comment = comment[:eIndex]
+	}
+	if cIndex > 0 {
+		comment = comment[:cIndex]
+	}
+	return comment
+}
+
 // getColumnByTableName 根据表名获取列信息
 func getColumnLength(columnType string) int {
 	if strings.Contains(columnType, "(") {
@@ -187,10 +202,12 @@ func GetDictList(table *view.TableView) []string {
 	dicts := make([]string, 0)
 	if table != nil && table.ColumnList != nil {
 		for _, columnView := range table.ColumnList {
-			if (!utils.Contains(constants.BASE_ENTITY, columnView.JsonField) && !utils.Contains(constants.TREE_ENTITY, columnView.ColumnName)) && columnView.DictType != "" && utils.Contains([]string{constants.HTML_SELECT, constants.HTML_RADIO, constants.HTML_CHECKBOX}, columnView.DictType) {
-				dicts = append(dicts, columnView.DictType)
+			if (!utils.Contains(constants.BASE_ENTITY, columnView.JsonField) && !utils.Contains(constants.TREE_ENTITY, columnView.ColumnName)) && columnView.DictType != "" && utils.Contains(constants.DICT_HTML_TYPE, columnView.HtmlType) {
+				dicts = append(dicts, "'"+columnView.DictType+"'")
 			}
 		}
 	}
 	return dicts
 }
+
+//

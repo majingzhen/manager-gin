@@ -41,6 +41,8 @@ func (viewUtils *TableColumnViewUtils) Data2View(data *model.TableColumn) (err e
 
 	tmp.CreateTime = utils.Time2Str(data.CreateTime)
 
+	tmp.ShowLabel = data.ShowLabel
+
 	tmp.DictType = data.DictType
 
 	tmp.GoField = data.GoField
@@ -100,6 +102,8 @@ func (viewUtils *TableColumnViewUtils) View2Data(view *TableColumnView) (err err
 	tmp.ColumnLength = view.ColumnLength
 
 	tmp.DataType = view.DataType
+
+	tmp.ShowLabel = view.ShowLabel
 
 	tmp.CreateBy = view.CreateBy
 

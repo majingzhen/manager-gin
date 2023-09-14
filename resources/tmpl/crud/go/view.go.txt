@@ -13,21 +13,29 @@ type {{.StructName}}View struct {
 
 // {{.StructName}}PageView 结构体
 type {{.StructName}}PageView struct {
-   common.PageView
-   {{range .SearchColumn}}{{.GoField}} {{if eq .GoType "*time.Time"}}string{{else}}{{.GoType}}{{end}} `json:"{{.JsonField}}" form:"{{.JsonField}}"`
-   {{end}}
+   common.PageView{{range .SearchColumn}}{{if eq .QueryType "BETWEEN"}}Begin{{.GoField}} string `json:"begin{{.JsonField}}" form:"begin{{.JsonField}}"`
+   End{{.GoField}} string `json:"end{{.JsonField}}" form:"end{{.JsonField}}"`
+   {{else if eq .GoType "*time.Time"}}
+   {{.GoField}} string `json:"{{.JsonField}}" form:"{{.JsonField}}"`
+   {{else}}
+   {{.GoField}} {{.GoType}} `json:"{{.JsonField}}" form:"{{.JsonField}}"`{{end}}{{end}}
 }
 
 // {{.StructName}}QueryView 结构体
 type {{.StructName}}QueryView struct {
-    {{range .SearchColumn}}{{.GoField}} {{if eq .GoType "*time.Time"}}string{{else}}{{.GoType}}{{end}} `json:"{{.JsonField}}" form:"{{.JsonField}}"`
-    {{end}}
-    }
+    {{range .SearchColumn}}{{if eq .QueryType "BETWEEN"}}Begin{{.GoField}} string `json:"begin{{.JsonField}}" form:"begin{{.JsonField}}"`
+    End{{.GoField}} string `json:"end{{.JsonField}}" form:"end{{.JsonField}}"`
+    {{else if eq .GoType "*time.Time"}}{{.GoField}} string `json:"{{.JsonField}}" form:"{{.JsonField}}"`
+    {{else}}{{.GoField}} {{.GoType}} `json:"{{.JsonField}}" form:"{{.JsonField}}"`
+    {{end}}{{end}}
+}
+
 // {{.StructName}}CreateView 结构体
 type {{.StructName}}CreateView struct {
     {{range .InsertColumn}}{{.GoField}} {{if eq .GoType "*time.Time"}}string{{else}}{{.GoType}}{{end}} `json:"{{.JsonField}}" form:"{{.JsonField}}"`
     {{end}}
 }
+
 // {{.StructName}}EditView 结构体
 type {{.StructName}}EditView struct {
     {{.PKColumn.GoField}} {{.PKColumn.GoType}} `json:"{{.PKColumn.JsonField}}" form:"{{.PKColumn.JsonField}}"`

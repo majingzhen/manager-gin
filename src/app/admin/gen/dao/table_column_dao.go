@@ -9,8 +9,6 @@ package dao
 import (
 	"gorm.io/gorm"
 	"manager-gin/src/app/admin/gen/model"
-	"manager-gin/src/app/admin/gen/service/table_column/view"
-	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
 
@@ -44,41 +42,6 @@ func (dao *TableColumnDao) Update(tx *gorm.DB, genTableColumn *model.TableColumn
 func (dao *TableColumnDao) Get(id string) (err error, genTableColumn *model.TableColumn) {
 	err = global.GormDao.Where("id = ?", id).First(&genTableColumn).Error
 	return
-}
-
-// Page 分页获取TableColumn记录
-// Author
-func (dao *TableColumnDao) Page(param *view.TableColumnPageView) (err error, page *common.PageInfo) {
-	db := global.GormDao.Model(&model.TableColumn{})
-	// 如果有条件搜索 下方会自动创建搜索语句
-	//if param.Id != "" {
-	//	db.Where("ID = ?", param.Id)
-	//}
-	page = common.CreatePageInfo(param.PageNum, param.PageSize)
-	if err = db.Count(&page.Total).Error; err != nil {
-		return
-	}
-	// 生成排序信息
-	if param.OrderByColumn != "" {
-		db.Order(param.OrderByColumn + " " + param.IsAsc + " ")
-	}
-	var dataList []*model.TableColumn
-	err = db.Limit(page.Limit).Offset(page.Offset).Find(&dataList).Error
-	page.Rows = dataList
-	return err, page
-}
-
-// List 获取TableColumn记录
-// Author
-func (dao *TableColumnDao) List(v *view.TableColumnQueryView) (err error, dataList []*model.TableColumn) {
-	db := global.GormDao.Model(&model.TableColumn{})
-	// TODO 输入查询条件
-	//if data.Id != "" {
-	//    db.Where("id = ?", data.Id)
-	//}
-	// db.Order("create_time desc")
-	err = db.Find(&dataList).Error
-	return err, dataList
 }
 
 func (dao *TableColumnDao) SelectDbTableColumns(tx *gorm.DB, tableName string) (err error, dataList []*model.TableColumn) {

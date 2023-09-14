@@ -46,9 +46,31 @@ func (dao *{{.StructName}}Dao) Get({{.PKColumn.JsonField}} {{.PKColumn.GoType}})
 func (dao *{{.StructName}}Dao) Page(param *view.{{.StructName}}PageView) (err error, page *common.PageInfo) {
     db := global.GormDao.Model(&model.{{.StructName}}{})
     {{range .SearchColumn}}
-    if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}}{
-        {{if eq .QueryType "LIKE"}}db.Where("{{.GoField}} is like ?", "%"+param.{{.GoField}}+"%"){{else}}db.Where("{{.GoField}} = ?", param.{{.GoField}}){{end}}
-    }{{end}}
+    {{if eq .QueryType "LIKE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+        db.Where("{{.ColumnName}} like ?", "%"+param.{{.GoField}}+"%")
+    }
+    {{else if eq .QueryType "EQ"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+        db.Where("{{.ColumnName}} = ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "NE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} != ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "GT"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} > ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "GTE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} >= ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "LT"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} < ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "LTE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} <= ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "BETWEEN"}}if param.Begin{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} && param.End{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} between ? and ?", param.Begin{{.GoField}}, param.End{{.GoField}})
+    }
+    {{end}}{{end}}
     page = common.CreatePageInfo(param.PageNum, param.PageSize)
     if err = db.Count(&page.Total).Error; err != nil {
         return
@@ -68,9 +90,31 @@ func (dao *{{.StructName}}Dao) Page(param *view.{{.StructName}}PageView) (err er
 func (dao *{{.StructName}}Dao) List(param *view.{{.StructName}}QueryView) (err error, dataList []*model.{{.StructName}}) {
     db := global.GormDao.Model(&model.{{.StructName}}{})
     {{range .SearchColumn}}
-    if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
-        {{if eq .QueryType "LIKE"}}db.Where("{{.GoField}} is like ?", "%"+param.{{.GoField}}+"%"){{else}}db.Where("{{.GoField}} = ?", param.{{.GoField}}){{end}}
-    }{{end}}
+    {{if eq .QueryType "LIKE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+        db.Where("{{.ColumnName}} like ?", "%"+param.{{.GoField}}+"%")
+    }
+    {{else if eq .QueryType "EQ"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+        db.Where("{{.ColumnName}} = ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "NE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} != ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "GT"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} > ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "GTE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} >= ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "LT"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} < ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "LTE"}}if param.{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} <= ?", param.{{.GoField}})
+    }
+    {{else if eq .QueryType "BETWEEN"}}if param.Begin{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} && param.End{{.GoField}} != {{if eq .DefaultValue ""}}""{{else}}{{.DefaultValue}}{{end}} {
+       db.Where("{{.ColumnName}} between ? and ?", param.Begin{{.GoField}}, param.End{{.GoField}})
+    }
+    {{end}}{{end}}
     db.Order("create_time desc")
     err = db.Find(&dataList).Error
     return err, dataList

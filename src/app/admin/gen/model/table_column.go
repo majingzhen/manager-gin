@@ -32,6 +32,8 @@ type TableColumn struct {
 
 	GoField string `json:"goField" form:"goField" gorm:"column:go_field;comment:字段名;"`
 
+	ShowLabel string `json:"showLabel" form:"showLabel" gorm:"column:show_label;comment:显示标题;"`
+
 	GoType string `json:"goType" form:"goType" gorm:"column:go_type;comment:类型;"`
 
 	DefaultValue string `json:"defaultValue" form:"defaultValue" gorm:"column:default_value;comment:默认值;"`

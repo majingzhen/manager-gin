@@ -13,6 +13,7 @@ type SysRouter struct {
 	roleRouter     RoleRouter
 	dictTypeRouter DictTypeRouter
 	dictDataRouter DictDataRouter
+	noticeRouter   NoticeRouter
 }
 
 // var jobRouter job.JobRouter
@@ -28,7 +29,7 @@ func (r *SysRouter) InitSysRouter(Router *gin.RouterGroup) {
 		r.roleRouter.InitRoleRouter(sys)
 		r.dictTypeRouter.InitDictTypeRouter(sys)
 		r.dictDataRouter.InitDictDataRouter(sys)
-		//noticeRouter.InitNoticeRouter(sys)
+		r.noticeRouter.InitNoticeRouter(sys)
 		//operLogRouter.InitOperLogRouter(sys)
 		r.postRouter.InitPostRouter(sys)
 		r.configRouter.InitConfigRouter(sys)

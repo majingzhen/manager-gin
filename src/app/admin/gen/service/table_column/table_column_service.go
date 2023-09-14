@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 	"manager-gin/src/app/admin/gen/dao"
 	"manager-gin/src/app/admin/gen/service/table_column/view"
-	"manager-gin/src/common"
 	"manager-gin/src/global"
 )
 
@@ -49,26 +48,6 @@ func (s *TableColumnService) Get(id string) (err error, tableColumnView *view.Ta
 	}
 	err, tableColumnView = s.viewUtils.Data2View(tableColumn)
 	return
-}
-
-// Page 分页获取TableColumn记录
-// Author
-func (s *TableColumnService) Page(pageInfo *view.TableColumnPageView) (err error, res *common.PageInfo) {
-	if err, res = s.tableColumnDao.Page(pageInfo); err != nil {
-		return err, nil
-	} else {
-		return s.viewUtils.PageData2ViewList(res)
-	}
-}
-
-// List 获取TableColumn列表
-// Author
-func (s *TableColumnService) List(v *view.TableColumnQueryView) (error, []*view.TableColumnView) {
-	if err, dataList := s.tableColumnDao.List(v); err != nil {
-		return err, nil
-	} else {
-		return s.viewUtils.Data2ViewList(dataList)
-	}
 }
 
 // GetColumnListByTableId 根据tableId获取TableColumn列表

@@ -111,4 +111,6 @@ var (
 
 	// TREE_ENTITY Tree基类字段
 	TREE_ENTITY = []string{"parentName", "parentId", "orderNum", "ancestors", "children"}
+
+	DICT_HTML_TYPE = []string{HTML_SELECT, HTML_RADIO, HTML_CHECKBOX}
 )

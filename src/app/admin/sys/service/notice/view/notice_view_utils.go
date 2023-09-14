@@ -25,10 +25,11 @@ func (viewUtils *NoticeViewUtils) Data2View(data *model.Notice) (err error, view
 				zap.Any("error", e))
 		}
 	}()
+	view = &NoticeView{}
 	view.Id = data.Id
 	view.NoticeTitle = data.NoticeTitle
 	view.NoticeType = data.NoticeType
-	view.NoticeContent = data.NoticeContent
+	view.NoticeContent = string(data.NoticeContent)
 	view.Status = data.Status
 	view.CreateBy = data.CreateBy
 	view.CreateTime = utils.Time2Str(data.CreateTime)
@@ -48,10 +49,11 @@ func (viewUtils *NoticeViewUtils) View2Data(view *NoticeView) (err error, data *
 				zap.Any("error", e))
 		}
 	}()
+	data = &model.Notice{}
 	data.Id = view.Id
 	data.NoticeTitle = view.NoticeTitle
 	data.NoticeType = view.NoticeType
-	data.NoticeContent = view.NoticeContent
+	data.NoticeContent = []byte(view.NoticeContent)
 	data.Status = view.Status
 	data.CreateBy = view.CreateBy
 	data.CreateTime = utils.Str2Time(view.CreateTime)

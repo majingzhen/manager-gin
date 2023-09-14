@@ -2,7 +2,7 @@
 // @description <TODO description class purpose>
 // @author matuto
 // @version 1.0.0
-// @create 2023-09-12 13:45:22
+// @create 2023-09-14 15:32:04
 package dao
 
 import (
@@ -46,17 +46,25 @@ func (dao *NoticeDao) Page(param *view.NoticePageView) (err error, page *common.
 	db := global.GormDao.Model(&model.Notice{})
 
 	if param.NoticeTitle != "" {
-		db.Where("NoticeTitle is like ?", "%"+param.NoticeTitle+"%")
+		db.Where("notice_title like ?", "%"+param.NoticeTitle+"%")
 	}
+
 	if param.NoticeType != "" {
-		db.Where("NoticeType = ?", param.NoticeType)
+		db.Where("notice_type = ?", param.NoticeType)
 	}
-	if param.NoticeContent != "" {
-		db.Where("NoticeContent is like ?", "%"+param.NoticeContent+"%")
-	}
+
 	if param.Status != "" {
-		db.Where("Status is like ?", "%"+param.Status+"%")
+		db.Where("status = ?", param.Status)
 	}
+
+	if param.CreateTime != "" {
+		db.Where("create_time = ?", param.CreateTime)
+	}
+
+	if param.BeginUpdateTime != "" && param.EndUpdateTime != "" {
+		db.Where("update_time between ? and ?", param.BeginUpdateTime, param.EndUpdateTime)
+	}
+
 	page = common.CreatePageInfo(param.PageNum, param.PageSize)
 	if err = db.Count(&page.Total).Error; err != nil {
 		return
@@ -77,17 +85,25 @@ func (dao *NoticeDao) List(param *view.NoticeQueryView) (err error, dataList []*
 	db := global.GormDao.Model(&model.Notice{})
 
 	if param.NoticeTitle != "" {
-		db.Where("NoticeTitle is like ?", "%"+param.NoticeTitle+"%")
+		db.Where("notice_title like ?", "%"+param.NoticeTitle+"%")
 	}
+
 	if param.NoticeType != "" {
-		db.Where("NoticeType = ?", param.NoticeType)
+		db.Where("notice_type = ?", param.NoticeType)
 	}
-	if param.NoticeContent != "" {
-		db.Where("NoticeContent is like ?", "%"+param.NoticeContent+"%")
-	}
+
 	if param.Status != "" {
-		db.Where("Status is like ?", "%"+param.Status+"%")
+		db.Where("status = ?", param.Status)
 	}
+
+	if param.CreateTime != "" {
+		db.Where("create_time = ?", param.CreateTime)
+	}
+
+	if param.BeginUpdateTime != "" && param.EndUpdateTime != "" {
+		db.Where("update_time between ? and ?", param.BeginUpdateTime, param.EndUpdateTime)
+	}
+
 	db.Order("create_time desc")
 	err = db.Find(&dataList).Error
 	return err, dataList

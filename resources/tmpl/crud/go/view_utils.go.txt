@@ -25,6 +25,7 @@ func (viewUtils *{{.StructName}}ViewUtils) Data2View(data *model.{{.StructName}}
             zap.Any("error", e))
         }
     }()
+    view = &{{.StructName}}View{}
     {{range .ColumnList}}{{if eq .GoType "*time.Time"}}view.{{.GoField}} = utils.Time2Str(data.{{.GoField}}){{else}}view.{{.GoField}} = data.{{.GoField}}{{end}}
     {{end}}
     return
@@ -39,6 +40,7 @@ func (viewUtils *{{.StructName}}ViewUtils) View2Data(view *{{.StructName}}View) 
             zap.Any("error", e))
         }
     }()
+    data = &model.{{.StructName}}{}
     {{range .ColumnList}}{{if eq .GoType "*time.Time"}}data.{{.GoField}} = utils.Str2Time(view.{{.GoField}}){{else}}data.{{.GoField}} = view.{{.GoField}}{{end}}
     {{end}}
     return

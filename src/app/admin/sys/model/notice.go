@@ -17,7 +17,7 @@ type Notice struct {
 
 	NoticeType string `gorm:"column:notice_type;comment:公告类型（1通知 2公告）;"`
 
-	NoticeContent string `gorm:"column:notice_content;comment:公告内容;"`
+	NoticeContent []byte `gorm:"column:notice_content;comment:公告内容;"`
 
 	Status string `gorm:"column:status;comment:公告状态（0正常 1关闭）;"`
 

@@ -2,10 +2,12 @@
 // @description <TODO description class purpose>
 // @author matuto
 // @version 1.0.0
-// @create 2023-09-12 13:40:27
+// @create 2023-09-14 14:18:43
 package view
 
-import "manager-gin/src/common"
+import (
+	"manager-gin/src/common"
+)
 
 // NoticeView 结构体
 type NoticeView struct {
@@ -24,18 +26,30 @@ type NoticeView struct {
 // NoticePageView 结构体
 type NoticePageView struct {
 	common.PageView
-	NoticeTitle   string `json:"noticeTitle" form:"noticeTitle"`
-	NoticeType    string `json:"noticeType" form:"noticeType"`
-	NoticeContent string `json:"noticeContent" form:"noticeContent"`
-	Status        string `json:"status" form:"status"`
+
+	NoticeTitle     string `json:"noticeTitle" form:"noticeTitle"`
+	NoticeType      string `json:"noticeType" form:"noticeType"`
+	NoticeContent   string `json:"noticeContent" form:"noticeContent"`
+	Status          string `json:"status" form:"status"`
+	CreateTime      string `json:"createTime" form:"createTime"`
+	BeginUpdateTime string `json:"beginUpdateTime" form:"beginUpdateTime"`
+	EndUpdateTime   string `json:"endUpdateTime" form:"endUpdateTime"`
 }
 
 // NoticeQueryView 结构体
 type NoticeQueryView struct {
-	NoticeTitle   string `json:"noticeTitle" form:"noticeTitle"`
-	NoticeType    string `json:"noticeType" form:"noticeType"`
+	NoticeTitle string `json:"noticeTitle" form:"noticeTitle"`
+
+	NoticeType string `json:"noticeType" form:"noticeType"`
+
 	NoticeContent string `json:"noticeContent" form:"noticeContent"`
-	Status        string `json:"status" form:"status"`
+
+	Status string `json:"status" form:"status"`
+
+	CreateTime string `json:"createTime" form:"createTime"`
+
+	BeginUpdateTime string `json:"beginUpdateTime" form:"beginUpdateTime"`
+	EndUpdateTime   string `json:"endUpdateTime" form:"endUpdateTime"`
 }
 
 // NoticeCreateView 结构体
@@ -54,12 +68,19 @@ type NoticeCreateView struct {
 
 // NoticeEditView 结构体
 type NoticeEditView struct {
-	Id            string `json:"id" form:"id"`
-	NoticeTitle   string `json:"noticeTitle" form:"noticeTitle"`
-	NoticeType    string `json:"noticeType" form:"noticeType"`
+	Id string `json:"id" form:"id"`
+
+	NoticeTitle string `json:"noticeTitle" form:"noticeTitle"`
+
+	NoticeType string `json:"noticeType" form:"noticeType"`
+
 	NoticeContent string `json:"noticeContent" form:"noticeContent"`
-	Status        string `json:"status" form:"status"`
-	UpdateBy      string `json:"updateBy" form:"updateBy"`
-	UpdateTime    string `json:"updateTime" form:"updateTime"`
-	Remark        string `json:"remark" form:"remark"`
+
+	Status string `json:"status" form:"status"`
+
+	UpdateBy string `json:"updateBy" form:"updateBy"`
+
+	UpdateTime string `json:"updateTime" form:"updateTime"`
+
+	Remark string `json:"remark" form:"remark"`
 }
