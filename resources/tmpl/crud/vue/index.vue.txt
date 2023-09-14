@@ -9,8 +9,7 @@
           clearable
           @keyup.enter.native="handleQuery"
         />
-     </el-form-item>
-     {{else if and ( or (eq .HtmlType "select") (eq .HtmlType "radio")) (ne .DictType "")}}
+     </el-form-item>{{else if and ( or (eq .HtmlType "select") (eq .HtmlType "radio")) (ne .DictType "")}}
     <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
         <el-select v-model="queryParams.{{.JsonField}}" placeholder="请选择{{.ColumnComment}}" clearable>
           <el-option
@@ -20,14 +19,12 @@
             :value="dict.value"
           />
         </el-select>
-    </el-form-item>
-     {{else if and ( or (eq .HtmlType "select") (eq .HtmlType "radio")) (eq .DictType "")}}
+    </el-form-item>{{else if and ( or (eq .HtmlType "select") (eq .HtmlType "radio")) (eq .DictType "")}}
      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
          <el-select v-model="queryParams.{{.JsonField}}" placeholder="请选择{{.ColumnComment}}" clearable>
             <el-option label="请选择字典生成" value="" />
          </el-select>
-     </el-form-item>
-     {{else if and (eq .HtmlType "datetime") (ne .QueryType "BETWEEN")}}
+     </el-form-item>{{else if and (eq .HtmlType "datetime") (ne .QueryType "BETWEEN")}}
     <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
         <el-date-picker clearable
           v-model="queryParams.{{.JsonField}}"
@@ -35,8 +32,7 @@
           value-format="yyyy-MM-dd"
           placeholder="请选择{{.ColumnComment}}">
         </el-date-picker>
-      </el-form-item>
-     {{else if and (eq .HtmlType "datetime") (eq .QueryType "BETWEEN")}}
+      </el-form-item>{{else if and (eq .HtmlType "datetime") (eq .QueryType "BETWEEN")}}
      <el-form-item label="{{.ColumnComment}}">
          <el-date-picker
            v-model="daterange{{.GoField}}"
@@ -103,29 +99,25 @@
     <el-table v-loading="loading" :data="{{.BusinessName}}List" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="{{.PKColumn.ColumnComment}}" align="center" prop="{{.PKColumn.JsonField}}" width="100" />
-      {{range .ColumnList}}{{if eq .HtmlType "datetime"}}
+      {{range .ListColumn}}{{if eq .HtmlType "datetime"}}
        <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" width="180">
         <template slot-scope="scope">
           <span>{{"{{"}} parseTime(scope.row.{{.JsonField}}, '{y}-{m}-{d}') {{"}}"}}</span>
         </template>
-       </el-table-column>
-      {{else if eq .HtmlType "imageUpload"}}
+       </el-table-column>{{else if eq .HtmlType "imageUpload"}}
       <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" width="100">
           <template slot-scope="scope">
             <image-preview :src="scope.row.{{.JsonField}}" :width="50" :height="50"/>
           </template>
-        </el-table-column>
-      {{else if ne .DictType ""}}
+        </el-table-column>{{else if ne .DictType ""}}
        <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}">
            <template slot-scope="scope">
            {{if eq .HtmlType "checkbox"}}
              <dict-tag :options="dict.type.{{.DictType}}" :value="scope.row.{{.JsonField}} ? scope.row.{{.JsonField}}.split(',') : []"/>{{else}}
              <dict-tag :options="dict.type.{{.DictType}}" :value="scope.row.{{.JsonField}}"/>{{end}}
            </template>
-         </el-table-column>
-       {{else}}
-       <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" />
-      {{end}}{{end}}
+         </el-table-column>{{else}}
+       <el-table-column label="{{.ColumnComment}}" align="center" prop="{{.JsonField}}" />{{end}}{{end}}
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -154,44 +146,85 @@
       @pagination="getList"
     />
 
-    <!-- 添加或修改公告对话框 -->
+    <!-- 添加或修改{{.FunctionName}}对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="780px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-        <el-row>
-          <el-col :span="12">
-            <el-form-item label="公告标题" prop="noticeTitle">
-              <el-input v-model="form.noticeTitle" placeholder="请输入公告标题" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="公告类型" prop="noticeType">
-              <el-select v-model="form.noticeType" placeholder="请选择公告类型">
-                <el-option
-                  v-for="dict in dict.type.sys_notice_type"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="状态">
-              <el-radio-group v-model="form.status">
-                <el-radio
-                  v-for="dict in dict.type.sys_notice_status"
-                  :key="dict.value"
-                  :label="dict.value"
-                >{{"{{"}}dict.label{{"}}"}}</el-radio>
-              </el-radio-group>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <el-form-item label="内容">
-              <editor v-model="form.noticeContent" :min-height="192"/>
-            </el-form-item>
-          </el-col>
-        </el-row>
+      {{range .InsertColumn}}{{if eq .HtmlType "input"}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <el-input v-model="form.{{.JsonField}}" placeholder="请输入{{.ColumnComment}}" />
+      </el-form-item>{{else if eq .HtmlType "imageUpload"}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <image-upload v-model="form.{{.JsonField}}"/>
+      </el-form-item>{{else if eq .HtmlType "fileUpload"}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <file-upload v-model="form.{{.JsonField}}"/>
+      </el-form-item>{{else if eq .HtmlType "editor"}}
+      <el-form-item label="{{.ColumnComment}}">
+        <editor v-model="form.{{.JsonField}}" :min-height="192"/>
+      </el-form-item>{{else if and (eq .HtmlType "editor") (ne .DictType "")}}
+      <el-form-item label="{{.ColumnComment}}" prop="${field}">
+        <el-select v-model="form.{{.JsonField}}" placeholder="请选择{{.ColumnComment}}">
+          <el-option
+            v-for="dict in dict.type.{{.DictType}}"
+            :key="dict.value"
+            :label="dict.label"
+            {{if or (eq .GoType "int32") (eq .GoType "int 64")}}
+            :value="parseInt(dict.value)"
+            {{else}}
+            :value="dict.value"
+            {{end}}
+          ></el-option>
+        </el-select>
+      </el-form-item>{{else if and (eq .HtmlType "select") (eq .DictType "")}}
+      <el-form-item label="{{.ColumnComment}}" prop="${field}">
+        <el-select v-model="form.{{.JsonField}}" placeholder="请选择{{.ColumnComment}}">
+          <el-option label="请选择字典生成" value="" />
+        </el-select>
+      </el-form-item>{{else if and (eq .HtmlType "checkbox") (ne .DictType "")}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <el-checkbox-group v-model="form.${field}">
+          <el-checkbox
+            v-for="dict in dict.type.{{.DictType}}"
+            :key="dict.value"
+            :label="dict.value">
+            {{"{{"}}dict.label{{"}}"}}
+          </el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>{{else if and (eq .HtmlType "checkbox") (eq .DictType "")}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <el-checkbox-group v-model="form.{{.JsonField}}">
+          <el-checkbox>请选择字典生成</el-checkbox>
+        </el-checkbox-group>
+      </el-form-item>{{else if and (eq .HtmlType "radio") (ne .DictType "")}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <el-radio-group v-model="form.{{.JsonField}}">
+          <el-radio
+            v-for="dict in dict.type.{{.DictType}}"
+            :key="dict.value"
+            {{if or (eq .GoType "int32") (eq .GoType "int 64")}}
+            :value="parseInt(dict.value)"
+            {{else}}
+            :value="dict.value"
+            {{end}}
+          >{{"{{"}}dict.label{{"}}"}}</el-radio>
+        </el-radio-group>
+      </el-form-item>{{else if and (eq .HtmlType "radio") (eq .DictType "")}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <el-radio-group v-model="form.{{.JsonField}}">
+          <el-radio label="1">请选择字典生成</el-radio>
+        </el-radio-group>
+      </el-form-item>{{else if eq .HtmlType "datetime"}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <el-date-picker clearable
+          v-model="form.{{.JsonField}}"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择{{.ColumnComment}}">
+        </el-date-picker>
+      </el-form-item>{{else if eq .HtmlType "textarea"}}
+      <el-form-item label="{{.ColumnComment}}" prop="{{.JsonField}}">
+        <el-input v-model="form.{{.JsonField}}" type="textarea" placeholder="请输入内容" />
+      </el-form-item>{{end}}{{end}}
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
@@ -202,11 +235,13 @@
 </template>
 
 <script>
-import { listNotice, getNotice, delNotice, addNotice, updateNotice } from "@/api/system/notice";
+import { list{{.StructName}}, get{{.StructName}}, del{{.StructName}}, add{{.StructName}}, update{{.StructName}} } from "@/api/{{.ModuleName}}/{{.BusinessName}}";
 
 export default {
-  name: "Notice",
-  dicts: ['sys_notice_status', 'sys_notice_type'],
+  name: "{{.StructName}}",
+  {{if ne .Dicts ""}}
+  dicts: [{{.Dicts}}],
+  {{end}}
   data() {
     return {
       // 遮罩层
@@ -221,30 +256,30 @@ export default {
       showSearch: true,
       // 总条数
       total: 0,
-      // 公告表格数据
-      noticeList: [],
+      // {{.FunctionName}}表格数据
+      {{.BusinessName}}List: [],
       // 弹出层标题
       title: "",
       // 是否显示弹出层
       open: false,
+      {{range .SearchColumn}}{{if and (eq .HtmlType "datetime") (eq .QueryType "BETWEEN")}}
+      // {{.ColumnComment}}时间范围
+      daterange{{.GoField}}: [],{{end}}{{end}}
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        noticeTitle: undefined,
-        createBy: undefined,
-        status: undefined
+        {{range .SearchColumn}}
+        {{.JsonField}}: null{{end}}
       },
       // 表单参数
       form: {},
       // 表单校验
       rules: {
-        noticeTitle: [
-          { required: true, message: "公告标题不能为空", trigger: "blur" }
-        ],
-        noticeType: [
-          { required: true, message: "公告类型不能为空", trigger: "change" }
-        ]
+        {{range .SearchColumn}}{{if eq .IsRequired "1"}}
+        {{.JsonField}}: [
+          { required: true, message: "{{.ColumnComment}}不能为空", trigger: {{if or (eq .HtmlType "select") (eq .HtmlType "radio")}}"change"{{else}}"blur"{{end}} }
+        ],{{end}}{{end}}
       }
     };
   },
@@ -252,12 +287,19 @@ export default {
     this.getList();
   },
   methods: {
-    /** 查询公告列表 */
+    /** 查询{{.FunctionName}}列表 */
     getList() {
       this.loading = true;
-      listNotice(this.queryParams).then(response => {
-        this.noticeList = response.rows;
-        this.total = response.total;
+      {{$break := false}}{{range .SearchColumn}}{{if not $break}}{{if and (eq .HtmlType "datetime") (eq .QueryType "BETWEEN")}}
+      this.queryParams.params = {};{{$break = true}}{{end}}{{end}}{{end}}
+      {{range .SearchColumn}}{{if and (eq .HtmlType "datetime") (eq .QueryType "BETWEEN")}}
+      if (null != this.daterange{{.GoField}} && '' != this.daterange{{.GoField}}) {
+        this.queryParams.params["begin{{.GoField}}"] = this.daterange{{.GoField}}[0];
+        this.queryParams.params["end{{.GoField}}"] = this.daterange{{.GoField}}[1];
+      }{{end}}{{end}}
+      list{{.StructName}}(this.queryParams).then(res => {
+        this.noticeList = res.data.rows;
+        this.total = res.data.total;
         this.loading = false;
       });
     },
@@ -269,11 +311,9 @@ export default {
     // 表单重置
     reset() {
       this.form = {
-        noticeId: undefined,
-        noticeTitle: undefined,
-        noticeType: undefined,
-        noticeContent: undefined,
-        status: "0"
+        {{range .InsertColumn}}{{if eq .HtmlType "checkbox"}}
+        {{.JsonField}}: []{{else}}{{.JsonField}}: null
+        {{end}}{{end}}
       };
       this.resetForm("form");
     },
@@ -284,12 +324,14 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+    {{range .SearchColumn}}{{if and (eq .HtmlType "datetime") (eq .QueryType "BETWEEN")}}
+      this.daterange{{.GoField}} = [];{{end}}{{end}}
       this.resetForm("queryForm");
       this.handleQuery();
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.noticeId)
+      this.ids = selection.map(item => item.{{.PKColumn.JsonField}})
       this.single = selection.length!=1
       this.multiple = !selection.length
     },
@@ -297,30 +339,34 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
-      this.title = "添加公告";
+      this.title = "添加{{.FunctionName}}";
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
       this.reset();
-      const noticeId = row.noticeId || this.ids
-      getNotice(noticeId).then(response => {
+      const {{.PKColumn.JsonField}} = row.{{.PKColumn.JsonField}} || this.ids
+      get{{.StructName}}({{.PKColumn.JsonField}}).then(response => {
+        {{range .ColumnList}}{{if eq .HtmlType "checkbox"}}
+        this.form.{{.JsonField}} = this.form.{{.JsonField}}.split(",");{{end}}{{end}}
         this.form = response.data;
         this.open = true;
-        this.title = "修改公告";
+        this.title = "修改{{.FunctionName}}";
       });
     },
     /** 提交按钮 */
     submitForm: function() {
       this.$refs["form"].validate(valid => {
         if (valid) {
-          if (this.form.noticeId != undefined) {
-            updateNotice(this.form).then(response => {
+          {{range .ColumnList}}{{if eq .HtmlType "checkbox"}}
+          this.form.{{.JsonField}} = this.form.{{.JsonField}}.split(",");{{end}}{{end}}
+          if (this.form.{{.PKColumn.JsonField}} != undefined) {
+            update{{.StructName}}(this.form).then(response => {
               this.$modal.msgSuccess("修改成功");
               this.open = false;
               this.getList();
             });
           } else {
-            addNotice(this.form).then(response => {
+            add{{.StructName}}(this.form).then(response => {
               this.$modal.msgSuccess("新增成功");
               this.open = false;
               this.getList();
@@ -331,13 +377,19 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const noticeIds = row.noticeId || this.ids
-      this.$modal.confirm('是否确认删除公告编号为"' + noticeIds + '"的数据项？').then(function() {
-        return delNotice(noticeIds);
+      const {{.PKColumn.JsonField}}s = row.{{.PKColumn.JsonField}} || this.ids
+      this.$modal.confirm('是否确认删除数据项？').then(function() {
+        return del{{.StructName}}({{.PKColumn.JsonField}}s);
       }).then(() => {
         this.getList();
         this.$modal.msgSuccess("删除成功");
       }).catch(() => {});
+    }
+    /** 导出按钮操作 */
+    handleExport() {
+      this.download('{{.ModuleName}}/{{.BusinessName}}/export', {
+        ...this.queryParams
+      }, {{.BusinessName}}_#[[${new Date().getTime()}]]#.xlsx`)
     }
   }
 };

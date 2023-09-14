@@ -11,7 +11,6 @@ import (
 	"errors"
 	"github.com/goccy/go-json"
 	"go.uber.org/zap"
-	"html/template"
 	"manager-gin/src/app/admin/gen/dao"
 	"manager-gin/src/app/admin/gen/model"
 	"manager-gin/src/app/admin/gen/service/table/view"
@@ -22,6 +21,7 @@ import (
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
 	"strings"
+	"text/template"
 	"time"
 )
 
@@ -230,6 +230,11 @@ func (s *Service) PreviewCode(id string) (err error, dataMap map[string]string) 
 	if err, tableView := s.SelectGenTableById(id); err != nil {
 		return err, nil
 	} else {
+		// 塞入作者
+		tableView.Author = global.Viper.GetString("gen.author")
+		tableView.CreateTime = time.Now().Format("2006-01-02 15:04:05")
+		// 塞入字典
+		tableView.Dicts = strings.Join(genutils.GetDictList(tableView), ",")
 		if tableView.TplCategory == constants.TPL_TREE {
 			if err, dataMap = s.PreviewTreeCode(tableView); err != nil {
 				return err, nil
@@ -292,9 +297,6 @@ func (s *Service) SelectGenTableById(id string) (err error, tableView *view.Tabl
 func (s *Service) PreviewSubTable(tableView *view.TableView) (err error, dataMap map[string]string) {
 	dataMap = make(map[string]string)
 	var templatePath = genutils.GenTemplatePath(tableView.TplCategory)
-	// 塞入作者
-	tableView.Author = global.Viper.GetString("gen.author")
-	tableView.CreateTime = time.Now().Format("2006-01-02 15:04:05")
 	for _, path := range templatePath {
 		//tmpl := template.New("").Funcs(
 		//	template.FuncMap{

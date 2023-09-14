@@ -41,6 +41,7 @@ type TableView struct {
 	InsertColumn []*view.TableColumnView
 	EditColumn   []*view.TableColumnView
 	ListColumn   []*view.TableColumnView
+	Dicts        string
 }
 
 // TableViewOptions Options 扩展字段

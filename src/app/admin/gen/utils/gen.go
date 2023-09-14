@@ -2,6 +2,7 @@ package utils
 
 import (
 	"manager-gin/src/app/admin/gen/model"
+	"manager-gin/src/app/admin/gen/service/table/view"
 	"manager-gin/src/common/constants"
 	"manager-gin/src/global"
 	"manager-gin/src/utils"
@@ -179,4 +180,17 @@ func GenTemplatePath(tplCategory string) []string {
 		"./resources/tmpl/" + tplCategory + "/js/api.js.txt",
 		"./resources/tmpl/" + tplCategory + "/vue/index.vue.txt",
 	}
+}
+
+// GetDictList 获取字典列表
+func GetDictList(table *view.TableView) []string {
+	dicts := make([]string, 0)
+	if table != nil && table.ColumnList != nil {
+		for _, columnView := range table.ColumnList {
+			if (!utils.Contains(constants.BASE_ENTITY, columnView.JsonField) && !utils.Contains(constants.TREE_ENTITY, columnView.ColumnName)) && columnView.DictType != "" && utils.Contains([]string{constants.HTML_SELECT, constants.HTML_RADIO, constants.HTML_CHECKBOX}, columnView.DictType) {
+				dicts = append(dicts, columnView.DictType)
+			}
+		}
+	}
+	return dicts
 }
