@@ -103,8 +103,6 @@
 
     <el-table v-loading="loading" :data="noticeList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="公告ID" align="center" prop="id" width="100" />
-
       <el-table-column label="公告标题" align="center" prop="noticeTitle" />
       <el-table-column label="公告类型" align="center" prop="noticeType">
         <template slot-scope="scope">
@@ -112,13 +110,18 @@
           <dict-tag :options="dict.type.sys_notice_type" :value="scope.row.noticeType"/>
         </template>
       </el-table-column>
+      <el-table-column label="公告内容" align="center" prop="noticeContent" />
       <el-table-column label="公告状态" align="center" prop="status">
         <template slot-scope="scope">
 
           <dict-tag :options="dict.type.sys_notice_status" :value="scope.row.status"/>
         </template>
       </el-table-column>
-      <el-table-column label="备注" align="center" prop="remark" />
+      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+        <template slot-scope="scope">
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
         <template slot-scope="scope">
           <el-button
@@ -151,9 +154,6 @@
     <el-dialog :title="title" :visible.sync="open" width="780px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
 
-        <el-form-item label="公告ID" prop="id">
-          <el-input v-model="form.id" placeholder="请输入公告ID" />
-        </el-form-item>
         <el-form-item label="公告标题" prop="noticeTitle">
           <el-input v-model="form.noticeTitle" placeholder="请输入公告标题" />
         </el-form-item>
@@ -192,9 +192,6 @@
                           value-format="yyyy-MM-dd"
                           placeholder="请选择更新时间">
           </el-date-picker>
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="form.remark" placeholder="请输入备注" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">

@@ -71,6 +71,8 @@ func (viewUtils *TableColumnViewUtils) Data2View(data *model.TableColumn) (err e
 
 	tmp.IsRequired = data.IsRequired
 
+	tmp.IsBase = data.IsBase
+
 	tmp.QueryType = data.QueryType
 
 	tmp.Sort = data.Sort
@@ -129,6 +131,7 @@ func (viewUtils *TableColumnViewUtils) View2Data(view *TableColumnView) (err err
 	tmp.IsPk = view.IsPk
 	tmp.IsQuery = view.IsQuery
 	tmp.IsRequired = view.IsRequired
+	tmp.IsBase = view.IsBase
 	tmp.QueryType = view.QueryType
 	tmp.Sort = view.Sort
 	tmp.TableId = view.TableId

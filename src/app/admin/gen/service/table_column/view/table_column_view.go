@@ -30,6 +30,7 @@ type TableColumnView struct {
 	IsPk          string `json:"isPk" form:"isPk"`
 	IsQuery       string `json:"isQuery" form:"isQuery"`
 	IsRequired    string `json:"isRequired" form:"isRequired"`
+	IsBase        string `json:"isBase" form:"isBase"`
 	QueryType     string `json:"queryType" form:"queryType"`
 	Sort          int    `json:"sort" form:"sort"`
 	TableId       string `json:"tableId" form:"tableId"`

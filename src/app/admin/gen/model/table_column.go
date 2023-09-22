@@ -56,6 +56,8 @@ type TableColumn struct {
 
 	IsRequired string `json:"isRequired" form:"isRequired" gorm:"column:is_required;comment:是否必填（1是）;"`
 
+	IsBase string `gorm:"column:is_base;comment:是否基础字段（1是）;"`
+
 	QueryType string `json:"queryType" form:"queryType" gorm:"column:query_type;comment:查询方式（等于、不等于、大于、小于、范围）;"`
 
 	Sort int `json:"sort" form:"sort" gorm:"column:sort;comment:排序;"`

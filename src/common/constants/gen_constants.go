@@ -50,6 +50,9 @@ const (
 	// TYPE_INTERFACE 接口类型
 	TYPE_INTERFACE = "interface{}"
 
+	// 字符切片类型
+	TYPE_BYTE_SLICE = "[]byte"
+
 	// DEFAULT_STR 字符串默认值
 	DEFAULT_STR = ""
 
@@ -97,17 +100,17 @@ var (
 	// COLUMN_TYPE_FLOAT 数据库浮点类型
 	COLUMN_TYPE_FLOAT = []string{"float", "double", "decimal"}
 	// COLUMN_NAME_NOT_EDIT 页面不需要编辑字段
-	COLUMN_NAME_NOT_EDIT = []string{"id", "create_by", "create_time", "delete_at"}
+	COLUMN_NAME_NOT_EDIT = []string{"id", "create_by", "create_time", "is_del"}
 	// COLUMN_NAME_NOT_LIST 页面不需要显示的列表字段
-	COLUMN_NAME_NOT_LIST = []string{"id", "create_by", "create_time", "delete_at", "update_by",
+	COLUMN_NAME_NOT_LIST = []string{"id", "create_by", "create_time", "is_del", "update_by",
 		"update_time"}
 
 	// COLUMN_NAME_NOT_QUERY 页面不需要查询字段
-	COLUMN_NAME_NOT_QUERY = []string{"id", "create_by", "create_time", "delete_at", "update_by",
+	COLUMN_NAME_NOT_QUERY = []string{"id", "create_by", "create_time", "is_del", "update_by",
 		"update_time", "remark"}
 
 	// BASE_ENTITY Entity基类字段
-	BASE_ENTITY = []string{"createBy", "createTime", "updateBy", "updateTime", "remark"}
+	BASE_ENTITY = []string{"createBy", "createTime", "updateBy", "updateTime", "remark", "is_del"}
 
 	// TREE_ENTITY Tree基类字段
 	TREE_ENTITY = []string{"parentName", "parentId", "orderNum", "ancestors", "children"}

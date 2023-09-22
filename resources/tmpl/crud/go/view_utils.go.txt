@@ -26,7 +26,7 @@ func (viewUtils *{{.StructName}}ViewUtils) Data2View(data *model.{{.StructName}}
         }
     }()
     view = &{{.StructName}}View{}
-    {{range .ColumnList}}{{if eq .GoType "*time.Time"}}view.{{.GoField}} = utils.Time2Str(data.{{.GoField}}){{else}}view.{{.GoField}} = data.{{.GoField}}{{end}}
+    {{range .ColumnList}}{{if eq .GoType "*time.Time"}}view.{{.GoField}} = utils.Time2Str(data.{{.GoField}}){{else if eq .GoType "[]byte"}}view.{{.GoField}}=string(data.{{.GoField}}){{else}}view.{{.GoField}} = data.{{.GoField}}{{end}}
     {{end}}
     return
 }
@@ -41,7 +41,7 @@ func (viewUtils *{{.StructName}}ViewUtils) View2Data(view *{{.StructName}}View) 
         }
     }()
     data = &model.{{.StructName}}{}
-    {{range .ColumnList}}{{if eq .GoType "*time.Time"}}data.{{.GoField}} = utils.Str2Time(view.{{.GoField}}){{else}}data.{{.GoField}} = view.{{.GoField}}{{end}}
+    {{range .ColumnList}}{{if eq .GoType "*time.Time"}}data.{{.GoField}} = utils.Str2Time(view.{{.GoField}}){{else if eq .GoType "[]byte"}}data.{{.GoField}} = []byte(view.{{.GoField}}){{else}}data.{{.GoField}} = view.{{.GoField}}{{end}}
     {{end}}
     return
 }

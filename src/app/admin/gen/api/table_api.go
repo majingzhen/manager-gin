@@ -196,3 +196,19 @@ func (api *TableApi) Preview(c *gin.Context) {
 		response.OkWithDetailed(code, "预览成功", c)
 	}
 }
+
+// SyncDb 同步数据库
+func (api *TableApi) SyncDb(c *gin.Context) {
+	dbName := c.Param("db_name")
+	if dbName == "" {
+		global.Logger.Error("参数解析失败！")
+		response.FailWithMessage("参数解析失败", c)
+		return
+	}
+	if err := api.tableService.SyncDb(dbName); err != nil {
+		global.Logger.Error("同步数据库失败！", zap.Error(err))
+		response.FailWithMessage("同步数据库失败", c)
+	} else {
+		response.OkWithMessage("同步数据库成功", c)
+	}
+}

@@ -11,8 +11,7 @@ import (
 
 // {{.StructName}} 结构体
 type {{.StructName}} struct {
-{{range .ColumnList}}
-    {{.GoField}} {{.GoType}} `gorm:"column:{{.ColumnName}};comment:{{.ColumnComment}};"`
+{{range .ColumnList}}{{.GoField}} {{.GoType}} `gorm:"column:{{.ColumnName}};comment:{{.ColumnComment}};"`
 {{end}}
 }
 

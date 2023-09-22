@@ -8,8 +8,8 @@ package table
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
-	"github.com/goccy/go-json"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/gen/dao"
 	"manager-gin/src/app/admin/gen/model"
@@ -298,14 +298,6 @@ func (s *Service) PreviewSubTable(tableView *view.TableView) (err error, dataMap
 	dataMap = make(map[string]string)
 	var templatePath = genutils.GenTemplatePath(tableView.TplCategory)
 	for _, path := range templatePath {
-		//tmpl := template.New("").Funcs(
-		//	template.FuncMap{
-		//		"Contains": func(s, t string) bool {
-		//			return strings.Contains(s, t)
-		//		},
-		//	},
-		//)
-		//tmpl = template.Must(tmpl.ParseFiles(path))
 		tmpl := template.Must(template.ParseFiles(path))
 		var buf bytes.Buffer
 		if err = tmpl.Execute(&buf, tableView); err != nil {
@@ -314,4 +306,9 @@ func (s *Service) PreviewSubTable(tableView *view.TableView) (err error, dataMap
 		dataMap[path] = buf.String()
 	}
 	return
+}
+
+// SyncDb 同步表
+func (s *Service) SyncDb(dbName string) error {
+
 }

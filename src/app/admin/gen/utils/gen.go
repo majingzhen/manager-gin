@@ -64,7 +64,7 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 		columnLength := getColumnLength(column.ColumnType)
 		if columnLength >= 500 || utils.Contains(constants.COLUMN_TYPE_TEXT, dataType) {
 			column.HtmlType = constants.HTML_TEXTAREA
-			column.GoType = constants.TYPE_STRING
+			column.GoType = constants.TYPE_BYTE_SLICE
 			column.DefaultValue = constants.DEFAULT_STR
 		} else {
 			column.HtmlType = constants.HTML_INPUT
@@ -98,6 +98,10 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	// 查询字段
 	if !utils.Contains(constants.COLUMN_NAME_NOT_QUERY, columnName) && column.IsPk != "1" {
 		column.IsQuery = constants.REQUIRE
+	}
+	// 是否为基础列
+	if utils.Contains(constants.BASE_ENTITY, columnName) || column.IsPk == "1" {
+		column.IsBase = constants.REQUIRE
 	}
 	// 状态字段设置单选框
 	if utils.EndsWithIgnoreCase(columnName, "status") || utils.EndsWithIgnoreCase(columnName, "flag") || utils.BeginsWithIgnoreCase(columnName, "is") {

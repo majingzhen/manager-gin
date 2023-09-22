@@ -22,10 +22,6 @@ func (routers *Routers) InitRouter() *gin.Engine {
 	// 跨域处理
 	// 使用Cors中间件处理跨域请求
 	r.Use(middleware.Cors())
-
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.String(200, "hello")
-	})
 	api := r.Group("/api")
 	{
 		routers.sysRouter.InitSysRouter(api)

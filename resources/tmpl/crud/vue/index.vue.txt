@@ -98,7 +98,7 @@
 
     <el-table v-loading="loading" :data="{{.BusinessName}}List" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="{{.PKColumn.ShowLabel}}" align="center" prop="{{.PKColumn.JsonField}}" width="100" />
+
       {{range .ListColumn}}{{if eq .HtmlType "datetime"}}
        <el-table-column label="{{.ShowLabel}}" align="center" prop="{{.JsonField}}" width="180">
         <template slot-scope="scope">
@@ -149,7 +149,7 @@
     <!-- 添加或修改{{.FunctionName}}对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="780px" append-to-body>
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
-      {{range .InsertColumn}}{{if eq .HtmlType "input"}}
+      {{range .InsertColumn}}{{if ne .IsBase "1"}}{{if eq .HtmlType "input"}}
       <el-form-item label="{{.ShowLabel}}" prop="{{.JsonField}}">
         <el-input v-model="form.{{.JsonField}}" placeholder="请输入{{.ShowLabel}}" />
       </el-form-item>{{else if eq .HtmlType "imageUpload"}}
@@ -224,7 +224,7 @@
       </el-form-item>{{else if eq .HtmlType "textarea"}}
       <el-form-item label="{{.ShowLabel}}" prop="{{.JsonField}}">
         <el-input v-model="form.{{.JsonField}}" type="textarea" placeholder="请输入内容" />
-      </el-form-item>{{end}}{{end}}
+      </el-form-item>{{end}}{{end}}{{end}}
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="submitForm">确 定</el-button>
