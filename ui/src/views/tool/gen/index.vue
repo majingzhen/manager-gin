@@ -36,14 +36,14 @@
 
     <el-row :gutter="10" class="mb8">
       <el-col :span="1.5">
-        <el-button
-          type="primary"
-          plain
-          icon="el-icon-download"
-          size="mini"
-          @click="handleGenTable"
-          v-hasPermi="['tool:gen:code']"
-        >生成</el-button>
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          icon="el-icon-download"-->
+<!--          size="mini"-->
+<!--          @click="handleGenTable"-->
+<!--          v-hasPermi="['tool:gen:code']"-->
+<!--        >生成</el-button>-->
       </el-col>
       <el-col :span="1.5">
         <el-button
@@ -133,13 +133,13 @@
             @click="handleDelete(scope.row)"
             v-hasPermi="['tool:gen:remove']"
           >删除</el-button>
-          <el-button
-            type="text"
-            size="small"
-            icon="el-icon-refresh"
-            @click="handleSynchDb(scope.row)"
-            v-hasPermi="['tool:gen:edit']"
-          >同步</el-button>
+<!--          <el-button-->
+<!--            type="text"-->
+<!--            size="small"-->
+<!--            icon="el-icon-refresh"-->
+<!--            @click="handleSynchDb(scope.row)"-->
+<!--            v-hasPermi="['tool:gen:edit']"-->
+<!--          >同步</el-button>-->
           <el-button
             type="text"
             size="small"
@@ -257,18 +257,7 @@ export default {
     },
     /** 生成代码操作 */
     handleGenTable(row) {
-      const tableNames = row.tableName || this.tableNames;
-      if (tableNames == "") {
-        this.$modal.msgError("请选择要生成的数据");
-        return;
-      }
-      if(row.genType === "1") {
-        genCode(row.tableName).then(response => {
-          this.$modal.msgSuccess("成功生成到自定义路径：" + row.genPath);
-        });
-      } else {
-        this.$download.zip("/tool/gen/batchGenCode?tables=" + tableNames, "ruoyi.zip");
-      }
+      this.$download.zip("/gen/table/genCode/" + row.id, row.tableName + ".zip");
     },
     /** 同步数据库操作 */
     handleSynchDb(row) {

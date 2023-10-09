@@ -7,6 +7,7 @@
 package table
 
 import (
+	"archive/zip"
 	"bytes"
 	"encoding/json"
 	"errors"
@@ -308,7 +309,51 @@ func (s *Service) PreviewSubTable(tableView *view.TableView) (err error, dataMap
 	return
 }
 
-// SyncDb 同步表
-func (s *Service) SyncDb(dbName string) error {
-
+// GenCode 生成代码
+func (s *Service) GenCode(id string) (error, *bytes.Buffer, string) {
+	if err, tableView := s.SelectGenTableById(id); err != nil {
+		return err, nil, ""
+	} else {
+		err, dataMap := s.PreviewCode(id)
+		if err != nil {
+			return errors.New("生成代码文件失败"), nil, ""
+		} else {
+			zipName := tableView.BusinessName + ".zip"
+			// 创建一个bytes.Buffer来写入zip文件内容
+			zipBuffer := new(bytes.Buffer)
+			// 使用zip.Writer创建zip文件写入器
+			zipWriter := zip.NewWriter(zipBuffer)
+			for key, value := range dataMap {
+				// 去除 txt 后缀
+				newKey := key[:strings.LastIndex(key, ".")]
+				// 去除原路径
+				newKey = newKey[strings.LastIndex(newKey, "/")+1:]
+				// 获取文件类型
+				fileType := newKey[strings.LastIndex(newKey, ".")+1:]
+				filePath := newKey[:strings.LastIndex(newKey, ".")]
+				if strings.Contains(filePath, "view") {
+					filePath = fileType + "/service/view/" + tableView.BusinessName + "_" + newKey
+				} else {
+					if fileType == "vue" {
+						filePath = fileType + "/" + tableView.BusinessName + "/" + newKey
+					} else {
+						filePath = fileType + "/" + filePath + "/" + tableView.BusinessName + "." + fileType
+					}
+				}
+				zipFile, err := zipWriter.Create(filePath)
+				if err != nil {
+					zipWriter.Close()
+					return errors.New("创建zip文件失败"), nil, ""
+				}
+				_, err = zipFile.Write([]byte(value))
+				if err != nil {
+					zipWriter.Close()
+					return errors.New("写入zip文件失败"), nil, ""
+				}
+			}
+			// 关闭zip文件写入器
+			zipWriter.Close()
+			return nil, zipBuffer, zipName
+		}
+	}
 }

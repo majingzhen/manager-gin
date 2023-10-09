@@ -124,7 +124,7 @@ func (api *DeptApi) ListExclude(c *gin.Context) {
 		for i, deptView := range deptView {
 			parentIds := strings.Split(deptView.Ancestors, ",")
 			// 要把查询的这个节点排除掉
-			if deptView.Id == id || utils.Contains(parentIds, id) {
+			if deptView.Id == id || utils.ContainsStr(parentIds, id) {
 				deleteIndexes = append(deleteIndexes, i)
 			}
 		}

@@ -36,4 +36,5 @@ type TableColumnView struct {
 	TableId       string `json:"tableId" form:"tableId"`
 	UpdateBy      string `json:"updateBy" form:"updateBy"`
 	UpdateTime    string `json:"updateTime" form:"updateTime"`
+	Operation     string `json:"operation" form:"operation"`
 }

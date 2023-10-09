@@ -124,3 +124,14 @@ func (dao *TableDao) SelectDbTableList(names []string) (error, []*model.Table) {
 	}
 	return nil, tmp
 }
+
+// SelectDbTableByName 根据表名获取数据库表信息
+func (dao *TableDao) SelectDbTableByName(name string) (error, *model.Table) {
+	var tmp model.Table
+	tx := global.GormDao.Model(&model.Table{})
+	tx.Where("table_name = ?", name)
+	if err := tx.Find(&tmp).Error; err != nil {
+		return err, nil
+	}
+	return nil, &tmp
+}

@@ -59,18 +59,18 @@ export function delTable(tableId) {
   })
 }
 
-// 生成代码（自定义路径）
-export function genCode(tableName) {
+// 生成代码
+export function genCode(tableId) {
   return request({
-    url: '/gen/genCode/' + tableName,
+    url: '/gen/genCode/' + tableId,
     method: 'get'
   })
 }
 
-// 同步数据库
-export function synchDb(tableName) {
-  return request({
-    url: '/gen/synchDb/' + tableName,
-    method: 'get'
-  })
-}
+// // 同步数据库
+// export function synchDb(tableName) {
+//   return request({
+//     url: '/gen/synchDb/' + tableName,
+//     method: 'get'
+//   })
+// }

@@ -7,6 +7,7 @@
 package api
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"manager-gin/src/app/admin/gen/service/table"
@@ -197,18 +198,22 @@ func (api *TableApi) Preview(c *gin.Context) {
 	}
 }
 
-// SyncDb 同步数据库
-func (api *TableApi) SyncDb(c *gin.Context) {
-	dbName := c.Param("db_name")
-	if dbName == "" {
-		global.Logger.Error("参数解析失败！")
+// GenCode 生成代码
+// @Summary 生成代码
+// @Router /table/genCode [get]
+func (api *TableApi) GenCode(c *gin.Context) {
+	id := c.Param("id")
+	if id == "" {
+		global.Logger.Error("参数解析失败!")
 		response.FailWithMessage("参数解析失败", c)
 		return
 	}
-	if err := api.tableService.SyncDb(dbName); err != nil {
-		global.Logger.Error("同步数据库失败！", zap.Error(err))
-		response.FailWithMessage("同步数据库失败", c)
+	if err, zipFile, tableName := api.tableService.GenCode(id); err != nil {
+		global.Logger.Error("生成代码失败!", zap.Error(err))
+		response.FailWithMessage("生成代码失败", c)
 	} else {
-		response.OkWithMessage("同步数据库成功", c)
+		c.Writer.Header().Set("Content-Type", "application/octet-stream")
+		c.Writer.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s.zip\"", tableName))
+		c.Writer.Write(zipFile.Bytes())
 	}
 }

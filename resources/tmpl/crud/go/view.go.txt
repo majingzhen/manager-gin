@@ -14,7 +14,7 @@ type {{.StructName}}View struct {
 // {{.StructName}}PageView 结构体
 type {{.StructName}}PageView struct {
    common.PageView{{range .SearchColumn}}{{if eq .QueryType "BETWEEN"}}Begin{{.GoField}} string `json:"begin{{.JsonField}}" form:"begin{{.JsonField}}"`
-   End{{.GoField}} string `json:"end{{.JsonField}}" form:"end{{.JsonField}}"`
+   End{{.GoField}} string `json:"end{{.JsonField}}" form:"end{{.JsonField}}"`{{end}}
    {{if or (eq .GoType "*time.Time") (eq .GoType "[]byte")}}
    {{.GoField}} string `json:"{{.JsonField}}" form:"{{.JsonField}}"`
    {{else}}
@@ -24,7 +24,7 @@ type {{.StructName}}PageView struct {
 // {{.StructName}}QueryView 结构体
 type {{.StructName}}QueryView struct {
     {{range .SearchColumn}}{{if eq .QueryType "BETWEEN"}}Begin{{.GoField}} string `json:"begin{{.JsonField}}" form:"begin{{.JsonField}}"`
-    End{{.GoField}} string `json:"end{{.JsonField}}" form:"end{{.JsonField}}"`
+    End{{.GoField}} string `json:"end{{.JsonField}}" form:"end{{.JsonField}}"`{{end}}
     {{if or (eq .GoType "*time.Time") (eq .GoType "[]byte")}}{{.GoField}} string `json:"{{.JsonField}}" form:"{{.JsonField}}"`
     {{else}}{{.GoField}} {{.GoType}} `json:"{{.JsonField}}" form:"{{.JsonField}}"`
     {{end}}{{end}}
@@ -42,4 +42,3 @@ type {{.StructName}}EditView struct {
     {{range .EditColumn}}{{.GoField}} {{if or (eq .GoType "*time.Time") (eq .GoType "[]byte")}}string{{else}}{{.GoType}}{{end}} `json:"{{.JsonField}}" form:"{{.JsonField}}"`
     {{end}}
 }
-

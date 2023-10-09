@@ -1,7 +1,7 @@
 package utils
 
-// Contains 判断obj是否在array中
-func Contains(array []string, str string) bool {
+// ContainsStr 判断obj是否在array中
+func ContainsStr(array []string, str string) bool {
 	// 判断array是否包含obj
 	for _, v := range array {
 		if v == str {
@@ -22,4 +22,15 @@ func ArrayIsEmpty(array []interface{}) bool {
 		}
 	}
 	return true
+}
+
+// Contains 判断obj是否在array中
+func Contains(array []interface{}, obj interface{}) bool {
+	// 判断array是否包含obj
+	for _, v := range array {
+		if v == obj {
+			return true
+		}
+	}
+	return false
 }

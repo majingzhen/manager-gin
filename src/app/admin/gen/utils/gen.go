@@ -60,9 +60,9 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	column.GoType = constants.TYPE_INTERFACE
 	column.DefaultValue = constants.DEFAULT_INTERFACE
 	column.QueryType = constants.QUERY_EQ
-	if utils.Contains(constants.COLUMN_TYPE_STR, dataType) || utils.Contains(constants.COLUMN_TYPE_TEXT, dataType) {
+	if utils.ContainsStr(constants.COLUMN_TYPE_STR, dataType) || utils.ContainsStr(constants.COLUMN_TYPE_TEXT, dataType) {
 		columnLength := getColumnLength(column.ColumnType)
-		if columnLength >= 500 || utils.Contains(constants.COLUMN_TYPE_TEXT, dataType) {
+		if columnLength >= 500 || utils.ContainsStr(constants.COLUMN_TYPE_TEXT, dataType) {
 			column.HtmlType = constants.HTML_TEXTAREA
 			column.GoType = constants.TYPE_BYTE_SLICE
 			column.DefaultValue = constants.DEFAULT_STR
@@ -71,15 +71,15 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 			column.GoType = constants.TYPE_STRING
 			column.DefaultValue = constants.DEFAULT_STR
 		}
-	} else if utils.Contains(constants.COLUMN_TYPE_TIME, dataType) {
+	} else if utils.ContainsStr(constants.COLUMN_TYPE_TIME, dataType) {
 		column.HtmlType = constants.HTML_DATETIME
 		column.GoType = constants.TYPE_DATE
 		column.DefaultValue = constants.DEFAULT_INTERFACE
-	} else if utils.Contains(constants.COLUMN_TYPE_NUMBER, dataType) {
+	} else if utils.ContainsStr(constants.COLUMN_TYPE_NUMBER, dataType) {
 		column.HtmlType = constants.HTML_INPUT
 		column.GoType = constants.TYPE_INTEGER
 		column.DefaultValue = constants.DEFAULT_NUM
-	} else if utils.Contains(constants.COLUMN_TYPE_FLOAT, dataType) {
+	} else if utils.ContainsStr(constants.COLUMN_TYPE_FLOAT, dataType) {
 		column.HtmlType = constants.HTML_INPUT
 		column.GoType = constants.TYPE_FLOAT
 		column.DefaultValue = constants.DEFAULT_NUM
@@ -88,19 +88,19 @@ func InitColumnField(column *model.TableColumn, table *model.Table) *model.Table
 	column.IsInsert = constants.REQUIRE
 
 	// 编辑字段
-	if !utils.Contains(constants.COLUMN_NAME_NOT_EDIT, columnName) && column.IsPk != "1" {
+	if !utils.ContainsStr(constants.COLUMN_NAME_NOT_EDIT, columnName) && column.IsPk != "1" {
 		column.IsEdit = constants.REQUIRE
 	}
 	// 列表字段
-	if !utils.Contains(constants.COLUMN_NAME_NOT_LIST, columnName) && column.IsPk != "1" {
+	if !utils.ContainsStr(constants.COLUMN_NAME_NOT_LIST, columnName) && column.IsPk != "1" {
 		column.IsList = constants.REQUIRE
 	}
 	// 查询字段
-	if !utils.Contains(constants.COLUMN_NAME_NOT_QUERY, columnName) && column.IsPk != "1" {
+	if !utils.ContainsStr(constants.COLUMN_NAME_NOT_QUERY, columnName) && column.IsPk != "1" {
 		column.IsQuery = constants.REQUIRE
 	}
 	// 是否为基础列
-	if utils.Contains(constants.BASE_ENTITY, columnName) || column.IsPk == "1" {
+	if utils.ContainsStr(constants.BASE_ENTITY, columnName) || column.IsPk == "1" {
 		column.IsBase = constants.REQUIRE
 	}
 	// 状态字段设置单选框
@@ -206,12 +206,10 @@ func GetDictList(table *view.TableView) []string {
 	dicts := make([]string, 0)
 	if table != nil && table.ColumnList != nil {
 		for _, columnView := range table.ColumnList {
-			if (!utils.Contains(constants.BASE_ENTITY, columnView.JsonField) && !utils.Contains(constants.TREE_ENTITY, columnView.ColumnName)) && columnView.DictType != "" && utils.Contains(constants.DICT_HTML_TYPE, columnView.HtmlType) {
+			if (!utils.ContainsStr(constants.BASE_ENTITY, columnView.JsonField) && !utils.ContainsStr(constants.TREE_ENTITY, columnView.ColumnName)) && columnView.DictType != "" && utils.ContainsStr(constants.DICT_HTML_TYPE, columnView.HtmlType) {
 				dicts = append(dicts, "'"+columnView.DictType+"'")
 			}
 		}
 	}
 	return dicts
 }
-
-//

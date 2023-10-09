@@ -69,7 +69,7 @@ func (api *UserApi) Create(c *gin.Context) {
 func (api *UserApi) Delete(c *gin.Context) {
 	idStr := c.Param("ids")
 	ids := strings.Split(idStr, ",")
-	if utils.Contains(ids, api.GetLoginUserId(c)) {
+	if utils.ContainsStr(ids, api.GetLoginUserId(c)) {
 		response.FailWithMessage("当前用户不能删除", c)
 	}
 	if err := api.userService.DeleteByIds(ids, api.GetLoginUserId(c)); err != nil {
